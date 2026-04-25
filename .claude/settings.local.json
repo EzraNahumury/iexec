@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/ASUS ROG/.claude/projects/C--iexec/memory//**)",
+      "Read(//c/Users/ASUS ROG/.claude/projects/C--iexec/memory/**)",
+      "WebFetch(domain:ethglobal.com)",
+      "WebSearch"
+    ]
+  }
+}
