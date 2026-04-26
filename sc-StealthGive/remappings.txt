@@ -1,0 +1,5 @@
+forge-std/=lib/forge-std/src/
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+@iexec-nox/nox-protocol-contracts/=node_modules/@iexec-nox/nox-protocol-contracts/
+@iexec-nox/nox-confidential-contracts/=node_modules/@iexec-nox/nox-confidential-contracts/
+encrypted-types/=node_modules/encrypted-types/

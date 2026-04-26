@@ -1,0 +1,21 @@
+{
+  "name": "sc-stealthgive",
+  "version": "1.0.0",
+  "description": "Solidity contracts for the **StealthGive** confidential crowdfunding dApp, built on the [iExec Nox protocol](https://docs.iex.ec/nox-protocol/getting-started/welcome) and ERC-7984 Confidential Tokens. Submission for the **iExec Vibe Coding Challenge** (April 2026).",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@iexec-nox/nox-confidential-contracts": "^0.1.0",
+    "@iexec-nox/nox-protocol-contracts": "^0.2.2"
+  }
+}

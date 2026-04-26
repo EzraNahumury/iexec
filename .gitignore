@@ -1,0 +1,56 @@
+# ===========================================================================
+# StealthGive monorepo — gitignore
+# ===========================================================================
+
+# Secrets — NEVER commit
+.env
+.env.*
+!.env.example
+
+# Foundry artifacts
+sc-StealthGive/cache/
+sc-StealthGive/out/
+sc-StealthGive/broadcast/*/31337/
+sc-StealthGive/broadcast/**/dry-run/
+
+# Forge dependencies (installed via `forge install`)
+sc-StealthGive/lib/
+# Keep openzeppelin-contracts and forge-std re-fetchable, but allow vendor/
+!sc-StealthGive/vendor/
+
+# Node / Next.js
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+dist/
+build/
+out/
+**/out/.tmp/
+*.tsbuildinfo
+next-env.d.ts
+
+# Claude Code working files (project-local)
+.claude/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Coverage
+coverage/
+lcov.info
+
+# Misc temporary
+.tmp/
+*.tmp

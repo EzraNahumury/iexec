@@ -1,0 +1,29 @@
+# Foundry artifacts
+cache/
+out/
+broadcast/*/31337/
+broadcast/**/dry-run/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# Node (if frontend lands here later)
+node_modules/
+dist/
+.next/
+
+# Local logs
+*.log
+
+# Coverage
+lcov.info
+coverage/
