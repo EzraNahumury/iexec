@@ -73,14 +73,16 @@ Di setiap kasus, **verifikasi publik atas total terkumpul** itu esensial (donatu
 
 ## 🌐 Live di Arbitrum Sepolia
 
+Semua kontrak StealthGive **diverifikasi** di Arbiscan (source code publik, ABI dapat diambil langsung, "Read Contract" / "Write Contract" tabs aktif):
+
 | Komponen | Alamat | Arbiscan |
 | --- | --- | --- |
-| **StealthGiveDollar** (SGD, ERC-20 publik) | `0xCA662c692e67A5ec3402D13327895eA762F702Bb` | [view](https://sepolia.arbiscan.io/address/0xCA662c692e67A5ec3402D13327895eA762F702Bb) |
-| **ConfidentialSGD** (cSGD, ERC-7984) | `0xa89340C4BC163ced823653d09DB1E1ba65Ca6849` | [view](https://sepolia.arbiscan.io/address/0xa89340C4BC163ced823653d09DB1E1ba65Ca6849) |
-| **StealthGiveFactory** | `0xbD124A4C743847f5862024906B66ABeDeB9cCB6e` | [view](https://sepolia.arbiscan.io/address/0xbD124A4C743847f5862024906B66ABeDeB9cCB6e) |
-| **CampaignRegistry** | `0x1023b4ff42c3Ed560B07b9A705E9A2d0Fc465DC4` | [view](https://sepolia.arbiscan.io/address/0x1023b4ff42c3Ed560B07b9A705E9A2d0Fc465DC4) |
-| **Demo Campaign** ("Press Freedom Legal Defense") | `0x63b2b615c9112Bb03Cd25cbB0f8fcd82Dc8C124c` | [view](https://sepolia.arbiscan.io/address/0x63b2b615c9112Bb03Cd25cbB0f8fcd82Dc8C124c) |
-| **iExec NoxCompute precompile** (TEE) | `0xd464B198f06756a1d00be223634b85E0a731c229` | [view](https://sepolia.arbiscan.io/address/0xd464B198f06756a1d00be223634b85E0a731c229) |
+| **StealthGiveDollar** (SGD, ERC-20 publik) | `0xCA662c692e67A5ec3402D13327895eA762F702Bb` | [✅ verified](https://sepolia.arbiscan.io/address/0xCA662c692e67A5ec3402D13327895eA762F702Bb#code) |
+| **ConfidentialSGD** (cSGD, ERC-7984) | `0xa89340C4BC163ced823653d09DB1E1ba65Ca6849` | [✅ verified](https://sepolia.arbiscan.io/address/0xa89340C4BC163ced823653d09DB1E1ba65Ca6849#code) |
+| **StealthGiveFactory** | `0xbD124A4C743847f5862024906B66ABeDeB9cCB6e` | [✅ verified](https://sepolia.arbiscan.io/address/0xbD124A4C743847f5862024906B66ABeDeB9cCB6e#code) |
+| **CampaignRegistry** | `0x1023b4ff42c3Ed560B07b9A705E9A2d0Fc465DC4` | [✅ verified](https://sepolia.arbiscan.io/address/0x1023b4ff42c3Ed560B07b9A705E9A2d0Fc465DC4#code) |
+| **Demo Campaign** ("Press Freedom Legal Defense") | `0x63b2b615c9112Bb03Cd25cbB0f8fcd82Dc8C124c` | [✅ verified](https://sepolia.arbiscan.io/address/0x63b2b615c9112Bb03Cd25cbB0f8fcd82Dc8C124c#code) |
+| **iExec NoxCompute precompile** (TEE, deployed by iExec) | `0xd464B198f06756a1d00be223634b85E0a731c229` | [view](https://sepolia.arbiscan.io/address/0xd464B198f06756a1d00be223634b85E0a731c229) |
 
 ## 🏗️ Cara Kerjanya
 
@@ -406,7 +408,7 @@ Project ini dibangun pakai pengembangan dibantu AI sesuai semangat challenge:
 | **ChainGPT AI risk review (per campaign)** | ✅ Live | `/api/ai/review-campaign` — analyze deployment params (goal, deadline, recipient EOA-vs-contract, donor traction) |
 | **ChainGPT impact report** | ✅ Live | `/api/ai/impact-report` — state-aware ("Projected Impact" → "Final Impact Report"), regenerates as total updates |
 | `feedback.md` (hackathon deliverable) | ✅ Live | [feedback.md](./feedback.md) |
-| Verifikasi kontrak di Arbiscan | ⏳ Pending | Butuh Arbiscan API key |
+| Verifikasi kontrak di Arbiscan | ✅ Live | All 5 kontrak (SGD, cSGD, Factory, Registry, demo Campaign) verified via Etherscan API V2 dengan source code publik |
 | Live demo URL (Vercel) | ⏳ Pending | Frontend siap untuk deploy |
 | Demo video 4 menit | ⏳ Pending | Script outline ready |
 
@@ -417,6 +419,7 @@ Project ini dibangun pakai pengembangan dibantu AI sesuai semangat challenge:
 - [x] Frontend fungsional
 - [x] dApp end-to-end jalan di Arbitrum Sepolia (no mock data)
 - [x] Confidential Token terintegrasi sebagai utility inti (private donations)
+- [x] Semua 5 kontrak [verified di Arbiscan](#-live-di-arbitrum-sepolia) (source code publik)
 - [x] `feedback.md` tentang dev experience iExec — [link](./feedback.md)
 - [ ] Video demo 4 menit (script ready, recording pending)
 - [ ] Submission post di X menandai `@iEx_ec` dan `@Chain_GPT`
