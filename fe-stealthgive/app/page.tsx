@@ -275,18 +275,7 @@ export default function Home() {
                             <span className="text-zinc-300">Confidential giving</span>
                             <br />
                             <span className="font-serif italic font-light">native to</span>{" "}
-                            <span className="text-zinc-900">Arbitrum</span>{" "}
-                            <span className="inline-flex align-middle">
-                                <span className="size-14 rounded-full bg-white border border-zinc-200 inline-flex items-center justify-center shadow-md overflow-hidden p-2">
-                                    <Image
-                                        src="/arbitrum.png"
-                                        alt="Arbitrum"
-                                        width={56}
-                                        height={56}
-                                        className="size-full object-contain"
-                                    />
-                                </span>
-                            </span>
+                            <span className="text-zinc-900">Arbitrum.</span>
                         </h3>
                     </FadeUp>
                 </div>
