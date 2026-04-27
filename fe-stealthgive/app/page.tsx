@@ -1,4 +1,5 @@
-import {ArrowUpRight, EyeOff, Globe, Lock, ShieldCheck, Sparkles, Users, Zap} from "lucide-react";
+import {ArrowUpRight, EyeOff, Globe, ShieldCheck, Sparkles, Users, Zap} from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import {FadeUp} from "@/components/landing/fade-up";
@@ -55,8 +56,15 @@ export default function Home() {
                                 Give to the causes that{" "}
                                 <span className="font-serif italic font-light">cannot be doxxed</span>{" "}
                                 <span className="inline-flex items-center align-middle ml-1">
-                                    <span className="size-12 md:size-16 rounded-full bg-zinc-900 text-white inline-flex items-center justify-center text-2xl shadow-md">
-                                        🦑
+                                    <span className="size-12 md:size-16 rounded-full bg-white border border-zinc-200 inline-flex items-center justify-center shadow-md overflow-hidden p-2">
+                                        <Image
+                                            src="/arbitrum.png"
+                                            alt="Arbitrum"
+                                            width={64}
+                                            height={64}
+                                            className="size-full object-contain"
+                                            priority
+                                        />
                                     </span>
                                 </span>
                             </h1>
@@ -274,8 +282,14 @@ export default function Home() {
                             <span className="font-serif italic font-light">native to</span>{" "}
                             <span className="text-zinc-900">Arbitrum</span>{" "}
                             <span className="inline-flex align-middle">
-                                <span className="size-14 rounded-full bg-zinc-900 text-white inline-flex items-center justify-center text-xl shadow-md">
-                                    <Lock className="size-6" />
+                                <span className="size-14 rounded-full bg-white border border-zinc-200 inline-flex items-center justify-center shadow-md overflow-hidden p-2">
+                                    <Image
+                                        src="/arbitrum.png"
+                                        alt="Arbitrum"
+                                        width={56}
+                                        height={56}
+                                        className="size-full object-contain"
+                                    />
                                 </span>
                             </span>
                         </h3>
