@@ -35,17 +35,17 @@ export function NetworkCanvas() {
         window.addEventListener("resize", resize);
 
         // Seed nodes with a deterministic-feeling spread.
-        const NODE_COUNT = 64;
-        const CONNECT_DIST = 110;
+        const NODE_COUNT = 130;
+        const CONNECT_DIST = 95;
         type Node = {x: number; y: number; vx: number; vy: number; r: number};
         const nodes: Node[] = Array.from({length: NODE_COUNT}, () => {
             const rect = canvas.getBoundingClientRect();
             return {
                 x: Math.random() * rect.width,
                 y: Math.random() * rect.height,
-                vx: (Math.random() - 0.5) * 1.4,
-                vy: (Math.random() - 0.5) * 1.4,
-                r: 1 + Math.random() * 1.5,
+                vx: (Math.random() - 0.5) * 2.6,
+                vy: (Math.random() - 0.5) * 2.6,
+                r: 0.8 + Math.random() * 1.3,
             };
         });
 
