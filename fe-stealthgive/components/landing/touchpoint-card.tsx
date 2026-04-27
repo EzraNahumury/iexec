@@ -11,31 +11,34 @@ type Props = {
     description: string;
 };
 
+// Monochrome to match the rest of the page. We vary gradient direction
+// and stop ordering per variant so each card still feels distinct, but
+// the colour story stays strictly black-and-white.
 const palettes: Record<TouchpointVariant, {bg: string; accent: string; ring: string}> = {
     copy: {
-        bg: "from-violet-500 via-fuchsia-500 to-purple-600",
-        accent: "text-violet-600",
-        ring: "ring-violet-200",
+        bg: "from-zinc-900 via-zinc-800 to-zinc-700",
+        accent: "text-zinc-900",
+        ring: "ring-zinc-300",
     },
     image: {
-        bg: "from-rose-500 via-orange-500 to-amber-500",
-        accent: "text-rose-600",
-        ring: "ring-rose-200",
+        bg: "from-zinc-700 via-zinc-900 to-zinc-800",
+        accent: "text-zinc-900",
+        ring: "ring-zinc-300",
     },
     audit: {
-        bg: "from-emerald-500 via-teal-500 to-cyan-600",
-        accent: "text-emerald-700",
-        ring: "ring-emerald-200",
+        bg: "from-zinc-800 via-zinc-700 to-zinc-900",
+        accent: "text-zinc-900",
+        ring: "ring-zinc-300",
     },
     review: {
-        bg: "from-amber-500 via-orange-500 to-rose-500",
-        accent: "text-amber-700",
-        ring: "ring-amber-200",
+        bg: "from-zinc-900 via-zinc-700 to-zinc-900",
+        accent: "text-zinc-900",
+        ring: "ring-zinc-300",
     },
     impact: {
-        bg: "from-sky-500 via-blue-500 to-indigo-600",
-        accent: "text-sky-700",
-        ring: "ring-sky-200",
+        bg: "from-zinc-700 via-zinc-800 to-black",
+        accent: "text-zinc-900",
+        ring: "ring-zinc-300",
     },
 };
 
