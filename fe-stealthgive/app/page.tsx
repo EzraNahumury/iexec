@@ -4,6 +4,7 @@ import Link from "next/link";
 import {BannerHero} from "@/components/landing/banner-hero";
 import {FadeUp} from "@/components/landing/fade-up";
 import {LandingFooter} from "@/components/landing/landing-footer";
+import {NetworkCanvas} from "@/components/landing/network-canvas";
 import {PillButton} from "@/components/landing/pill-button";
 
 const features = [
@@ -66,38 +67,22 @@ export default function Home() {
 
                     <FadeUp delay={0.15}>
                         <div className="aspect-[4/3] rounded-3xl bg-zinc-950 relative overflow-hidden border border-zinc-200">
-                            {/* Decorative TEE lattice */}
-                            <svg
-                                className="absolute inset-0 w-full h-full opacity-70"
-                                viewBox="0 0 400 300"
-                                fill="none"
-                            >
-                                <defs>
-                                    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-                                        <stop offset="0%" stopColor="white" stopOpacity="0.3" />
-                                        <stop offset="100%" stopColor="white" stopOpacity="0" />
-                                    </radialGradient>
-                                </defs>
-                                <rect width="400" height="300" fill="url(#glow)" />
-                                {Array.from({length: 12}).map((_, i) =>
-                                    Array.from({length: 16}).map((__, j) => {
-                                        const cx = 16 + j * 24;
-                                        const cy = 16 + i * 24;
-                                        const dist = Math.hypot(cx - 200, cy - 150);
-                                        const opacity = Math.max(0.1, 1 - dist / 200);
-                                        return (
-                                            <circle
-                                                key={`${i}-${j}`}
-                                                cx={cx}
-                                                cy={cy}
-                                                r={1.4}
-                                                fill="white"
-                                                opacity={opacity * 0.8}
-                                            />
-                                        );
-                                    }),
-                                )}
-                            </svg>
+                            {/* Animated TEE node graph */}
+                            <NetworkCanvas />
+                            {/* Soft inner glow */}
+                            <div
+                                className="absolute inset-0 pointer-events-none"
+                                style={{
+                                    background:
+                                        "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.08) 0%, transparent 60%)",
+                                }}
+                                aria-hidden
+                            />
+                            {/* Bottom fade so caption stays legible */}
+                            <div
+                                className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-zinc-950 to-transparent pointer-events-none"
+                                aria-hidden
+                            />
                             <div className="absolute inset-0 flex items-end p-8">
                                 <div className="text-white space-y-1">
                                     <div className="text-[11px] tracking-[0.2em] uppercase text-white/60">
