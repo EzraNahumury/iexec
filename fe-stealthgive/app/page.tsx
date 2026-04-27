@@ -1,9 +1,8 @@
 import {ArrowUpRight, EyeOff, Globe, ShieldCheck, Sparkles, Users, Zap} from "lucide-react";
 import Link from "next/link";
 
-import {BannerShowcase} from "@/components/landing/banner-showcase";
+import {BannerHero} from "@/components/landing/banner-hero";
 import {FadeUp} from "@/components/landing/fade-up";
-import {HeroGrid} from "@/components/landing/hero-grid";
 import {LandingFooter} from "@/components/landing/landing-footer";
 import {PillButton} from "@/components/landing/pill-button";
 
@@ -38,55 +37,10 @@ const numbers = [
 export default function Home() {
     return (
         <div id="top" className="bg-white text-zinc-900">
-            {/* ──────────── Hero ──────────── */}
-            <section className="relative">
-                <div className="relative h-[680px] md:h-[760px] flex items-center">
-                    <HeroGrid />
-
-                    <div className="relative max-w-6xl mx-auto px-6 w-full">
-                        <FadeUp>
-                            <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1 text-[11px] font-medium tracking-[0.16em] uppercase text-zinc-600 mb-8 shadow-sm">
-                                <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                Live · Arbitrum Sepolia · iExec Nox
-                            </div>
-                        </FadeUp>
-
-                        <FadeUp delay={0.1}>
-                            <h1 className="text-5xl md:text-7xl leading-[1.05] tracking-tight max-w-4xl">
-                                Give to the causes that{" "}
-                                <span className="font-serif italic font-light">cannot be doxxed</span>
-                            </h1>
-                        </FadeUp>
-
-                        <FadeUp delay={0.2}>
-                            <p className="mt-7 text-lg text-zinc-600 max-w-xl leading-relaxed">
-                                StealthGive is confidential crowdfunding on iExec Nox. Donor amounts are
-                                encrypted in a TEE; campaign totals stay publicly verifiable.
-                            </p>
-                        </FadeUp>
-
-                        <FadeUp delay={0.3}>
-                            <div className="mt-10 flex flex-wrap items-center gap-4">
-                                <PillButton href="/welcome" size="lg">
-                                    Launch App
-                                </PillButton>
-                                <Link
-                                    href="#how-it-works"
-                                    className="text-sm uppercase tracking-[0.18em] text-zinc-700 hover:text-zinc-900 transition-colors inline-flex items-center gap-2"
-                                >
-                                    How it works
-                                    <ArrowUpRight className="size-3.5" />
-                                </Link>
-                            </div>
-                        </FadeUp>
-                    </div>
-                </div>
-            </section>
-
-            {/* Banner showcase */}
-            <section className="relative -mt-16 md:-mt-24 z-10">
-                <div className="max-w-6xl mx-auto px-6">
-                    <BannerShowcase />
+            {/* ──────────── Hero — banner with text overlay ──────────── */}
+            <section className="relative pt-8 md:pt-12">
+                <div className="max-w-[1400px] mx-auto px-4 md:px-8">
+                    <BannerHero />
                 </div>
             </section>
 
