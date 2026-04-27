@@ -204,7 +204,7 @@ export default function Home() {
                                 description: "State-aware narrative of fundraiser outcomes when settled.",
                             },
                         ].map((c, i) => (
-                            <FadeUp key={c.title} delay={0.06 * i}>
+                            <FadeUp key={c.title} delay={0.06 * i} className="h-full">
                                 <TouchpointCard
                                     variant={c.variant}
                                     tag={c.tag}

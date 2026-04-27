@@ -54,14 +54,13 @@ export function TouchpointCard({variant, tag, title, description}: Props) {
         <motion.div
             whileHover={{y: -6}}
             transition={{type: "spring", stiffness: 260, damping: 22}}
-            className={`group rounded-3xl border border-zinc-200 bg-white overflow-hidden hover:shadow-[0_20px_40px_-20px_rgba(0,0,0,0.2)] hover:ring-1 ${palette.ring} transition-shadow`}
+            className={`group h-full flex flex-col rounded-3xl border border-zinc-200 bg-white overflow-hidden hover:shadow-[0_20px_40px_-20px_rgba(0,0,0,0.2)] hover:ring-1 ${palette.ring} transition-shadow`}
         >
-            {/* Illustration area */}
+            {/* Illustration area — fixed aspect so every card's image is the same size */}
             <div
-                className={`relative aspect-[5/3] bg-gradient-to-br ${palette.bg} overflow-hidden`}
+                className={`relative aspect-[5/3] bg-gradient-to-br ${palette.bg} overflow-hidden flex-shrink-0`}
             >
                 <Illustration variant={variant} />
-                {/* Soft inner highlight + bottom darken for depth */}
                 <div
                     className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.35),transparent_60%)] pointer-events-none"
                     aria-hidden
@@ -72,8 +71,8 @@ export function TouchpointCard({variant, tag, title, description}: Props) {
                 />
             </div>
 
-            {/* Body */}
-            <div className="p-5">
+            {/* Body — flex-1 lets it stretch so all 5 cards share the same total height */}
+            <div className="p-5 flex-1 flex flex-col">
                 <div className={`text-[10px] font-semibold tracking-[0.18em] uppercase ${palette.accent}`}>
                     {tag}
                 </div>
