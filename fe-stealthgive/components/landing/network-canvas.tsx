@@ -43,8 +43,8 @@ export function NetworkCanvas() {
             return {
                 x: Math.random() * rect.width,
                 y: Math.random() * rect.height,
-                vx: (Math.random() - 0.5) * 0.35,
-                vy: (Math.random() - 0.5) * 0.35,
+                vx: (Math.random() - 0.5) * 1.4,
+                vy: (Math.random() - 0.5) * 1.4,
                 r: 1 + Math.random() * 1.5,
             };
         });
