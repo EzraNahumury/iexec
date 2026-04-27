@@ -94,20 +94,40 @@ export function HeroGrid() {
                     gridTemplateRows: `repeat(${ROWS}, minmax(0, 1fr))`,
                 }}
             >
-                {cells.map(c => (
-                    <div
-                        key={`${c.col}-${c.row}`}
-                        className={`relative rounded-md border ${
-                            c.chip
-                                ? "bg-zinc-50/70 border-zinc-200/80"
-                                : "bg-zinc-50/40 border-zinc-200/50"
-                        }`}
-                    >
-                        {c.chip && (
-                            <ArbitrumChip delay={c.chip.delay} scale={c.chip.scale} />
-                        )}
-                    </div>
-                ))}
+                {cells.map(c => {
+                    // Diagonal wave delay — top-left fades first, ripples to
+                    // bottom-right. Plus a tiny per-cell jitter so the wave
+                    // stays organic instead of crisply linear.
+                    const jitter = ((c.col * 7 + c.row * 13) % 10) / 30; // 0..0.33
+                    const baseDelay = (c.col + c.row) * 0.18 + jitter;
+
+                    return (
+                        <motion.div
+                            key={`${c.col}-${c.row}`}
+                            initial={{opacity: 0}}
+                            animate={{
+                                opacity: c.chip
+                                    ? [0.55, 1, 0.55] // chip cells stay more present
+                                    : [0.2, 0.9, 0.2], // empty cells breathe wider
+                            }}
+                            transition={{
+                                duration: 4.5 + jitter * 2,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                                delay: baseDelay,
+                            }}
+                            className={`relative rounded-md border ${
+                                c.chip
+                                    ? "bg-zinc-50 border-zinc-200"
+                                    : "bg-zinc-50 border-zinc-200/70"
+                            }`}
+                        >
+                            {c.chip && (
+                                <ArbitrumChip delay={c.chip.delay} scale={c.chip.scale} />
+                            )}
+                        </motion.div>
+                    );
+                })}
             </div>
 
             {/* Soft white-out around the headline so text stays legible */}
