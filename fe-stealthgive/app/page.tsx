@@ -6,6 +6,7 @@ import {FadeUp} from "@/components/landing/fade-up";
 import {LandingFooter} from "@/components/landing/landing-footer";
 import {NetworkCanvas} from "@/components/landing/network-canvas";
 import {PillButton} from "@/components/landing/pill-button";
+import {TouchpointCard} from "@/components/landing/touchpoint-card";
 
 const features = [
     {
@@ -170,21 +171,46 @@ export default function Home() {
                         </div>
                     </FadeUp>
 
-                    <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-5 gap-3">
+                    <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-5 gap-4">
                         {[
-                            {label: "Campaign copy", icon: <Sparkles className="size-4" />},
-                            {label: "Hero image gen", icon: <Zap className="size-4" />},
-                            {label: "Contract audit", icon: <ShieldCheck className="size-4" />},
-                            {label: "Risk review", icon: <Users className="size-4" />},
-                            {label: "Impact report", icon: <Globe className="size-4" />},
+                            {
+                                variant: "copy" as const,
+                                tag: "Web3 LLM",
+                                title: "Campaign copy",
+                                description: "Drafts a compelling title + 3-paragraph story from a one-line brief.",
+                            },
+                            {
+                                variant: "image" as const,
+                                tag: "NFT Image Gen",
+                                title: "Hero artwork",
+                                description: "Generates a unique 16:9 banner for every campaign in seconds.",
+                            },
+                            {
+                                variant: "audit" as const,
+                                tag: "Contract Auditor",
+                                title: "Solidity audit",
+                                description: "Reviews Campaign.sol with severity-rated findings.",
+                            },
+                            {
+                                variant: "review" as const,
+                                tag: "Web3 LLM",
+                                title: "Per-campaign risk review",
+                                description: "Donor-facing analysis of goal, deadline, recipient health.",
+                            },
+                            {
+                                variant: "impact" as const,
+                                tag: "On-chain Insights",
+                                title: "Impact report",
+                                description: "State-aware narrative of fundraiser outcomes when settled.",
+                            },
                         ].map((c, i) => (
-                            <FadeUp key={c.label} delay={0.06 * i}>
-                                <div className="rounded-2xl border border-zinc-200 bg-white p-5 h-full">
-                                    <div className="size-9 rounded-full bg-zinc-900 text-white flex items-center justify-center mb-4">
-                                        {c.icon}
-                                    </div>
-                                    <div className="text-sm font-medium">{c.label}</div>
-                                </div>
+                            <FadeUp key={c.title} delay={0.06 * i}>
+                                <TouchpointCard
+                                    variant={c.variant}
+                                    tag={c.tag}
+                                    title={c.title}
+                                    description={c.description}
+                                />
                             </FadeUp>
                         ))}
                     </div>
