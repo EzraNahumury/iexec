@@ -1,79 +1,120 @@
 "use client";
 
-import {FloatingIcon} from "./floating-icon";
+import {motion} from "framer-motion";
+import Image from "next/image";
 
 /**
- * Hero background: a faint 16×6 grid with Arbitrum logo chips scattered in
- * specific cells. Every chip floats independently with a staggered delay
- * for a subtle "alive" feel without distracting from the headline.
+ * Hero background — Leticia-style grid of soft rectangular cells with
+ * Arbitrum chain chips dropped into selected cells. Each chip floats
+ * gently and independently to give the layer a subtle "alive" feel.
  *
- * Layout note: the grid uses CSS grid for placement, but each FloatingIcon
- * is absolutely-positioned inside it via `gridColumnStart` / `gridRowStart`.
- * That lets the same component drop in anywhere with no flow shifting.
+ * Layout: a 16×5 CSS grid fills the hero area. Each cell is a rounded
+ * rectangle with a faint border; cells listed in `chipCells` also host
+ * a small Arbitrum chip overlaid in the centre.
  */
+
+const COLS = 16;
+const ROWS = 5;
+
+// Chip placements as "col-row" strings (1-based). Spread organically.
+const chipPlacements: {key: string; delay: number; scale: number}[] = [
+    {key: "2-1", delay: 0.0, scale: 1.0},
+    {key: "6-1", delay: 1.2, scale: 1.05},
+    {key: "11-1", delay: 2.0, scale: 0.9},
+    {key: "14-1", delay: 0.6, scale: 1.0},
+    {key: "4-2", delay: 0.4, scale: 1.0},
+    {key: "9-2", delay: 1.6, scale: 0.85},
+    {key: "13-2", delay: 2.4, scale: 1.05},
+    {key: "16-2", delay: 0.8, scale: 0.95},
+    {key: "1-3", delay: 1.8, scale: 1.0},
+    {key: "5-3", delay: 0.2, scale: 1.05},
+    {key: "10-3", delay: 1.4, scale: 0.9},
+    {key: "15-3", delay: 2.2, scale: 1.05},
+    {key: "3-4", delay: 0.5, scale: 0.9},
+    {key: "7-4", delay: 1.7, scale: 1.0},
+    {key: "12-4", delay: 0.9, scale: 0.95},
+    {key: "16-4", delay: 2.1, scale: 0.85},
+    {key: "2-5", delay: 1.1, scale: 1.0},
+    {key: "8-5", delay: 0.7, scale: 1.05},
+    {key: "11-5", delay: 1.9, scale: 0.9},
+    {key: "14-5", delay: 0.3, scale: 1.0},
+];
+
+const chipMap = new Map(chipPlacements.map(p => [p.key, p]));
+
+function ArbitrumChip({delay, scale}: {delay: number; scale: number}) {
+    const size = `${Math.round(46 * scale)}px`;
+    return (
+        <motion.div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            initial={{opacity: 0, scale: 0.6}}
+            animate={{opacity: 1, scale: 1}}
+            transition={{duration: 0.6, delay: delay * 0.05}}
+        >
+            <motion.div
+                className="rounded-full bg-white border border-zinc-200 shadow-sm flex items-center justify-center p-2"
+                style={{width: size, height: size}}
+                animate={{y: [0, -6, 0]}}
+                transition={{
+                    duration: 3.6 + delay * 0.4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay,
+                }}
+            >
+                <Image
+                    src="/arbitrum.png"
+                    alt=""
+                    width={42}
+                    height={42}
+                    className="size-full object-contain"
+                    aria-hidden
+                />
+            </motion.div>
+        </motion.div>
+    );
+}
+
 export function HeroGrid() {
-    // Each entry is a chip placement: column, row, animation delay, optional
-    // size scale. Sizes vary slightly so the layer looks organic instead of
-    // a uniform wallpaper.
-    const placements: {col: number; row: number; delay: number; scale?: number}[] = [
-        {col: 2, row: 1, delay: 0},
-        {col: 6, row: 1, delay: 1, scale: 1.1},
-        {col: 11, row: 1, delay: 2},
-        {col: 14, row: 1, delay: 3, scale: 0.9},
-
-        {col: 4, row: 2, delay: 4, scale: 1.1},
-        {col: 9, row: 2, delay: 5, scale: 0.9},
-        {col: 13, row: 2, delay: 6},
-        {col: 16, row: 2, delay: 7, scale: 0.85},
-
-        {col: 1, row: 3, delay: 8, scale: 1.1},
-        {col: 5, row: 3, delay: 9},
-        {col: 10, row: 3, delay: 10, scale: 0.9},
-        {col: 13, row: 3, delay: 11, scale: 1.1},
-
-        {col: 3, row: 4, delay: 12, scale: 0.9},
-        {col: 7, row: 4, delay: 13},
-        {col: 12, row: 4, delay: 14},
-        {col: 15, row: 4, delay: 15, scale: 1.1},
-
-        {col: 2, row: 5, delay: 16, scale: 1.05},
-        {col: 11, row: 5, delay: 17, scale: 0.9},
-        {col: 14, row: 5, delay: 18},
-
-        {col: 1, row: 6, delay: 19, scale: 0.85},
-        {col: 9, row: 6, delay: 20, scale: 1.1},
-        {col: 16, row: 6, delay: 21},
-    ];
+    const cells = Array.from({length: COLS * ROWS}, (_, i) => {
+        const col = (i % COLS) + 1;
+        const row = Math.floor(i / COLS) + 1;
+        const key = `${col}-${row}`;
+        const chip = chipMap.get(key);
+        return {col, row, chip};
+    });
 
     return (
         <div className="absolute inset-0 overflow-hidden">
-            {/* Static grid lines */}
-            <div className="absolute inset-0 bg-grid" aria-hidden />
-            {/* Soft white-out around the headline so text stays legible */}
+            {/* Cell grid */}
             <div
-                className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,white_70%)]"
-                aria-hidden
-            />
-
-            {/* Floating Arbitrum chips */}
-            <div
-                className="absolute inset-0 grid pointer-events-none"
+                className="absolute inset-0 grid gap-1.5 p-4 md:p-6"
                 style={{
-                    gridTemplateColumns: "repeat(16, minmax(0, 1fr))",
-                    gridTemplateRows: "repeat(6, minmax(96px, 1fr))",
-                    padding: "48px 32px",
+                    gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))`,
+                    gridTemplateRows: `repeat(${ROWS}, minmax(0, 1fr))`,
                 }}
             >
-                {placements.map(p => (
-                    <FloatingIcon
-                        key={`${p.col}-${p.row}`}
-                        col={p.col}
-                        row={p.row}
-                        delay={p.delay}
-                        scale={p.scale}
-                    />
+                {cells.map(c => (
+                    <div
+                        key={`${c.col}-${c.row}`}
+                        className={`relative rounded-md border ${
+                            c.chip
+                                ? "bg-zinc-50/70 border-zinc-200/80"
+                                : "bg-zinc-50/40 border-zinc-200/50"
+                        }`}
+                    >
+                        {c.chip && (
+                            <ArbitrumChip delay={c.chip.delay} scale={c.chip.scale} />
+                        )}
+                    </div>
                 ))}
             </div>
+
+            {/* Soft white-out around the headline so text stays legible */}
+            <div
+                className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_50%_55%,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.5)_60%,rgba(255,255,255,0)_100%)] pointer-events-none"
+                aria-hidden
+            />
         </div>
     );
 }
