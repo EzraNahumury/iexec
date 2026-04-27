@@ -163,27 +163,94 @@ export default function WelcomePage() {
                     transition={{duration: 0.6, delay: 0.45}}
                     className="mt-8 rounded-3xl border border-zinc-200 bg-white shadow-[0_20px_48px_-20px_rgba(0,0,0,0.15)] overflow-hidden"
                 >
-                    {/* Hero strip — bigger active chip in centre, two muted siblings */}
-                    <div className="aspect-[16/7] bg-gradient-to-br from-zinc-50 to-zinc-100 flex items-center justify-center gap-8">
-                        {paths.map(p => {
-                            const isActive = active.id === p.id;
-                            return (
-                                <motion.button
-                                    key={p.id}
-                                    layout
-                                    onClick={() => setActive(p)}
-                                    transition={{type: "spring", stiffness: 300, damping: 26}}
-                                    className={`rounded-full inline-flex items-center justify-center transition-shadow ${
-                                        isActive
-                                            ? `${p.chipBg} text-white size-24 md:size-28 shadow-xl border-4 border-white`
-                                            : "bg-white border-2 border-zinc-200 text-zinc-300 size-12 md:size-14 hover:border-zinc-400 hover:text-zinc-500"
-                                    }`}
-                                    aria-label={p.eyebrow}
+                    {/* Hero strip — dotted pattern + floating decorations + connecting arc */}
+                    <div className="relative aspect-[16/7] bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-hidden">
+                        {/* Dotted grid pattern */}
+                        <svg
+                            className="absolute inset-0 w-full h-full"
+                            xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden
+                        >
+                            <defs>
+                                <pattern
+                                    id="dots"
+                                    width="20"
+                                    height="20"
+                                    patternUnits="userSpaceOnUse"
                                 >
-                                    {p.icon}
-                                </motion.button>
-                            );
-                        })}
+                                    <circle cx="10" cy="10" r="1" fill="rgba(0,0,0,0.08)" />
+                                </pattern>
+                                <radialGradient id="halo" cx="50%" cy="55%" r="35%">
+                                    <stop offset="0%" stopColor="white" stopOpacity="0.95" />
+                                    <stop offset="100%" stopColor="white" stopOpacity="0" />
+                                </radialGradient>
+                            </defs>
+                            <rect width="100%" height="100%" fill="url(#dots)" />
+                            <rect width="100%" height="100%" fill="url(#halo)" />
+                        </svg>
+
+                        {/* Floating decorative particles */}
+                        {[
+                            {top: "18%", left: "12%", size: "size-1.5", delay: 0},
+                            {top: "70%", left: "20%", size: "size-1", delay: 0.6},
+                            {top: "30%", left: "85%", size: "size-2", delay: 1.2},
+                            {top: "78%", left: "82%", size: "size-1", delay: 0.3},
+                            {top: "12%", left: "55%", size: "size-1", delay: 0.9},
+                            {top: "85%", left: "48%", size: "size-1.5", delay: 0.4},
+                        ].map((p, i) => (
+                            <motion.div
+                                key={i}
+                                className={`absolute rounded-full bg-zinc-300 ${p.size}`}
+                                style={{top: p.top, left: p.left}}
+                                animate={{y: [0, -6, 0], opacity: [0.4, 0.9, 0.4]}}
+                                transition={{
+                                    duration: 3 + p.delay,
+                                    delay: p.delay,
+                                    repeat: Infinity,
+                                    ease: "easeInOut",
+                                }}
+                                aria-hidden
+                            />
+                        ))}
+
+                        {/* Chips row */}
+                        <div className="relative h-full flex items-center justify-center gap-8 z-10">
+                            {paths.map(p => {
+                                const isActive = active.id === p.id;
+                                return (
+                                    <motion.button
+                                        key={p.id}
+                                        layout
+                                        onClick={() => setActive(p)}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 300,
+                                            damping: 26,
+                                        }}
+                                        className={`relative rounded-full inline-flex items-center justify-center transition-shadow ${
+                                            isActive
+                                                ? `${p.chipBg} text-white size-24 md:size-28 shadow-xl border-4 border-white`
+                                                : "bg-white border-2 border-zinc-200 text-zinc-300 size-12 md:size-14 hover:border-zinc-400 hover:text-zinc-500"
+                                        }`}
+                                        aria-label={p.eyebrow}
+                                    >
+                                        {/* Pulsing halo around active chip */}
+                                        {isActive && (
+                                            <motion.span
+                                                className={`absolute inset-0 rounded-full ${p.chipBg} -z-10`}
+                                                animate={{scale: [1, 1.4, 1], opacity: [0.3, 0, 0.3]}}
+                                                transition={{
+                                                    duration: 2.4,
+                                                    repeat: Infinity,
+                                                    ease: "easeOut",
+                                                }}
+                                            />
+                                        )}
+                                        {p.icon}
+                                    </motion.button>
+                                );
+                            })}
+                        </div>
                     </div>
 
                     <AnimatePresence mode="wait">
