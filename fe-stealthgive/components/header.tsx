@@ -4,6 +4,7 @@ import {ArrowUpRight} from "lucide-react";
 import {ConnectButton} from "@rainbow-me/rainbowkit";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
+import {useEffect, useState} from "react";
 
 const navLinks = [
     {label: "Resources", href: "https://docs.iex.ec/nox-protocol/getting-started/welcome", external: true},
@@ -14,21 +15,33 @@ const navLinks = [
 export function Header() {
     const pathname = usePathname();
     const isLanding = pathname === "/";
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handle = () => setScrolled(window.scrollY > 32);
+        handle();
+        window.addEventListener("scroll", handle, {passive: true});
+        return () => window.removeEventListener("scroll", handle);
+    }, []);
+
+    // At the very top of every page the header is solid white so the dark
+    // banner / hero artwork doesn't bleed through. Once the user scrolls
+    // past the first ~32px the bar fades to a translucent frosted-glass
+    // panel that lets a hint of the page beneath show through.
+    const bgClass = scrolled
+        ? "bg-white/75 backdrop-blur-md border-b border-zinc-200/60"
+        : "bg-white border-b border-transparent";
 
     return (
         <header
-            className={`sticky top-0 z-50 ${
-                isLanding
-                    ? "bg-white/80 backdrop-blur border-b border-transparent"
-                    : "bg-white/95 backdrop-blur border-b border-zinc-200"
-            }`}
+            className={`sticky top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ${bgClass}`}
         >
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2.5 group">
                     <span className="size-8 rounded-full bg-zinc-900 text-white inline-flex items-center justify-center text-sm">
                         🦑
                     </span>
-                    <span className="font-semibold tracking-wide group-hover:text-zinc-700 transition-colors">
+                    <span className="font-semibold tracking-wide text-zinc-900 group-hover:text-zinc-700 transition-colors">
                         StealthGive
                     </span>
                 </Link>
