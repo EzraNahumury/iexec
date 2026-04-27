@@ -1,8 +1,7 @@
 import {ArrowUpRight, EyeOff, Globe, ShieldCheck, Sparkles, Users, Zap} from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
-import {motion} from "framer-motion";
 
+import {BannerShowcase} from "@/components/landing/banner-showcase";
 import {FadeUp} from "@/components/landing/fade-up";
 import {HeroGrid} from "@/components/landing/hero-grid";
 import {LandingFooter} from "@/components/landing/landing-footer";
@@ -87,24 +86,7 @@ export default function Home() {
             {/* Banner showcase */}
             <section className="relative -mt-16 md:-mt-24 z-10">
                 <div className="max-w-6xl mx-auto px-6">
-                    <FadeUp delay={0.1}>
-                        <motion.div
-                            initial={{opacity: 0, y: 40, scale: 0.96}}
-                            whileInView={{opacity: 1, y: 0, scale: 1}}
-                            viewport={{once: true, margin: "-100px"}}
-                            transition={{duration: 0.9, ease: [0.22, 0.61, 0.36, 1]}}
-                            className="relative rounded-3xl overflow-hidden shadow-[0_30px_80px_-20px_rgba(0,0,0,0.25)] border border-zinc-200 bg-zinc-900"
-                        >
-                            <Image
-                                src="/image.png"
-                                alt="StealthGive — confidential crowdfunding banner"
-                                width={1920}
-                                height={1080}
-                                className="w-full h-auto block"
-                                priority
-                            />
-                        </motion.div>
-                    </FadeUp>
+                    <BannerShowcase />
                 </div>
             </section>
 
