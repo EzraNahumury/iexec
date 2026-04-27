@@ -68,7 +68,7 @@ export function ContractAuditSection() {
                         </div>
                         <p className="text-xs text-zinc-400 mt-0.5">
                             All campaigns share the same{" "}
-                            <code className="text-zinc-300">Campaign.sol</code> template — audited once,
+                            <code className="text-zinc-700">Campaign.sol</code> template — audited once,
                             verifiable everywhere.
                         </p>
                     </div>
@@ -103,7 +103,7 @@ export function ContractAuditSection() {
 
                     {audit && (
                         <>
-                            <pre className="whitespace-pre-wrap break-words text-sm text-zinc-200 leading-relaxed font-sans">
+                            <pre className="whitespace-pre-wrap break-words text-sm text-zinc-800 leading-relaxed font-sans">
                                 {audit}
                             </pre>
                             <button

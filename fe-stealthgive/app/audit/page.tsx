@@ -57,7 +57,7 @@ export default function AuditPage() {
         <div className="max-w-4xl mx-auto px-6 py-12">
             <Link
                 href="/campaigns"
-                className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-200 mb-6"
+                className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-800 mb-6"
             >
                 <ArrowLeft className="size-4" />
                 Back to campaigns
@@ -73,7 +73,7 @@ export default function AuditPage() {
                 </h1>
                 <p className="text-zinc-400 leading-relaxed max-w-2xl">
                     Every campaign on StealthGive is an instance of the same{" "}
-                    <code className="text-zinc-200">Campaign.sol</code> contract. We run it through the
+                    <code className="text-zinc-800">Campaign.sol</code> contract. We run it through the
                     ChainGPT smart-contract auditor model and publish the result here so donors and
                     creators can review the code path their funds will travel.
                 </p>
@@ -104,7 +104,7 @@ export default function AuditPage() {
                         href={CAMPAIGN_TEMPLATE_LINK}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-200"
+                        className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-800"
                     >
                         View Campaign.sol on GitHub
                         <ExternalLink className="size-3.5" />
@@ -119,7 +119,7 @@ export default function AuditPage() {
             )}
 
             {!audit && !error && !loading && (
-                <div className="rounded-2xl border border-dashed border-zinc-800 p-12 text-center">
+                <div className="rounded-2xl border border-dashed border-zinc-200 p-12 text-center">
                     <ShieldCheck className="size-10 mx-auto mb-4 text-zinc-600" />
                     <p className="text-zinc-400">
                         Click <strong>Run audit</strong> to ask ChainGPT to review the contract.
@@ -128,7 +128,7 @@ export default function AuditPage() {
             )}
 
             {audit && (
-                <article className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 md:p-8">
+                <article className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6 md:p-8">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="font-semibold inline-flex items-center gap-2">
                             <ShieldCheck className="size-4 text-emerald-400" />
@@ -138,7 +138,7 @@ export default function AuditPage() {
                             <span className="text-xs text-zinc-500">cached · click Re-run for fresh</span>
                         )}
                     </div>
-                    <pre className="whitespace-pre-wrap break-words text-sm text-zinc-200 leading-relaxed font-sans">
+                    <pre className="whitespace-pre-wrap break-words text-sm text-zinc-800 leading-relaxed font-sans">
                         {audit}
                     </pre>
                 </article>

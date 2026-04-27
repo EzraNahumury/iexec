@@ -1,183 +1,289 @@
-import {ArrowRight, Eye, EyeOff, Heart, Lock, ShieldCheck, Sparkles} from "lucide-react";
+import {ArrowUpRight, EyeOff, Globe, Lock, ShieldCheck, Sparkles, Users, Zap} from "lucide-react";
 import Link from "next/link";
 
-const useCases = [
+import {FadeUp} from "@/components/landing/fade-up";
+import {HeroGrid} from "@/components/landing/hero-grid";
+import {LandingFooter} from "@/components/landing/landing-footer";
+import {PillButton} from "@/components/landing/pill-button";
+
+const features = [
     {
-        icon: "📰",
-        title: "Press freedom",
-        body: "Donors to journalist legal funds become retaliation targets. StealthGive hides the link.",
+        eyebrow: "Encrypted donations",
+        title: "Per-donor amounts stay hidden",
+        body: "Every contribution is encrypted client-side via the iExec Nox gateway. Even campaign creators can't tell who gave how much.",
+        icon: <EyeOff className="size-5" />,
     },
     {
-        icon: "🏳️‍🌈",
-        title: "LGBTQ+ shelters",
-        body: "Donors face criminal liability in 60+ jurisdictions. Confidentiality is survival.",
+        eyebrow: "Public accountability",
+        title: "Total raised stays verifiable",
+        body: "Aggregate totals are publicly decryptable on chain — donors can see real progress without surrendering their identity.",
+        icon: <ShieldCheck className="size-5" />,
     },
     {
-        icon: "⚕️",
-        title: "War-zone medical aid",
-        body: "Cross-border donors face sanctions exposure when amounts are public.",
-    },
-    {
-        icon: "🛡️",
-        title: "Whistleblower funds",
-        body: "Per-donor amounts reveal organisational alignment. We hide them.",
-    },
-    {
-        icon: "🔐",
-        title: "Open-source bounties",
-        body: "Don’t want your employer to know you fund the competing project.",
-    },
-    {
-        icon: "🤝",
-        title: "Mutual-aid pots",
-        body: "Donor doxxing in repressive regimes leads to arrests. Not on our watch.",
+        eyebrow: "Zero gatekeepers",
+        title: "Self-sovereign onboarding",
+        body: "Claim our test SGD token from any wallet, any country. No Circle faucet, no VPN, no KYC — just on-chain donation flow.",
+        icon: <Globe className="size-5" />,
     },
 ];
 
-const steps = [
-    {
-        icon: <Heart className="size-5 text-violet-300" />,
-        title: "Claim test SGD",
-        body: "1,000 SGD per 24h. No KYC, no captcha, no Circle faucet, no VPN.",
-    },
-    {
-        icon: <EyeOff className="size-5 text-violet-300" />,
-        title: "Wrap to cSGD",
-        body: "Confidential balance via the iExec ERC-7984 wrapper.",
-    },
-    {
-        icon: <Lock className="size-5 text-violet-300" />,
-        title: "Donate privately",
-        body: "Amount encrypted client-side. Even creators can’t see it.",
-    },
-    {
-        icon: <Eye className="size-5 text-violet-300" />,
-        title: "Total stays verifiable",
-        body: "Aggregate raised is publicly decryptable. Per-donor stays hidden forever.",
-    },
+const numbers = [
+    {value: "5", label: "Smart contracts deployed & verified"},
+    {value: "5", label: "ChainGPT integrations live"},
+    {value: "1:1", label: "Wrap ratio SGD → cSGD"},
+    {value: "0", label: "Plaintext leaks per donation"},
 ];
 
 export default function Home() {
     return (
-        <div className="flex-1">
-            {/* Hero */}
-            <section className="relative overflow-hidden">
-                <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_-20%,rgba(124,58,237,0.25),transparent_60%)]" />
-                <div className="max-w-5xl mx-auto px-6 py-24 md:py-32 text-center">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1.5 text-xs font-medium text-violet-300 mb-8">
-                        <span className="size-1.5 rounded-full bg-violet-400 animate-pulse" />
-                        Live on Arbitrum Sepolia · Built on iExec Nox
-                    </div>
-                    <h1 className="text-5xl md:text-7xl font-semibold tracking-tight bg-gradient-to-br from-white via-zinc-100 to-zinc-500 bg-clip-text text-transparent leading-[1.05]">
-                        Crowdfunding for
-                        <br />
-                        causes that cannot
-                        <br />
-                        be doxxed.
-                    </h1>
-                    <p className="mt-8 text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-                        Donor amounts are{" "}
-                        <strong className="text-zinc-100">cryptographically hidden</strong> inside the iExec
-                        TEE. The total raised stays publicly verifiable. Even campaign creators can&apos;t
-                        link any donor to any contribution.
-                    </p>
-                    <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-                        <Link
-                            href="/campaigns"
-                            className="inline-flex items-center gap-2 rounded-full bg-violet-600 hover:bg-violet-500 transition-colors px-6 py-3 text-sm font-medium"
-                        >
-                            Browse Campaigns
-                            <ArrowRight className="size-4" />
-                        </Link>
-                        <Link
-                            href="/dashboard"
-                            className="inline-flex items-center gap-2 rounded-full border border-zinc-700 hover:border-zinc-500 transition-colors px-6 py-3 text-sm font-medium"
-                        >
-                            <Sparkles className="size-4" />
-                            Get Test Tokens
-                        </Link>
-                    </div>
-                    <p className="mt-8 text-xs text-zinc-500">
-                        No Circle. No VPN. No KYC. Anyone in the world can use it in two clicks.
-                    </p>
-                </div>
-            </section>
+        <div id="top" className="bg-white text-zinc-900">
+            {/* ──────────── Hero ──────────── */}
+            <section className="relative">
+                <div className="relative h-[680px] md:h-[760px] flex items-center">
+                    <HeroGrid />
 
-            {/* Use cases */}
-            <section className="max-w-5xl mx-auto px-6 py-16">
-                <div className="text-center mb-12">
-                    <div className="inline-flex items-center gap-2 text-xs font-medium text-violet-300 mb-3">
-                        <ShieldCheck className="size-4" />
-                        WHY IT MATTERS
-                    </div>
-                    <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">
-                        Built for the people who get punished for giving.
-                    </h2>
-                </div>
-                <div className="grid md:grid-cols-3 gap-6">
-                    {useCases.map(item => (
-                        <div
-                            key={item.title}
-                            className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 hover:border-zinc-700 hover:bg-zinc-900/60 transition-colors"
-                        >
-                            <div className="text-3xl mb-3">{item.icon}</div>
-                            <h3 className="font-semibold mb-2">{item.title}</h3>
-                            <p className="text-sm text-zinc-400 leading-relaxed">{item.body}</p>
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* How it works */}
-            <section className="max-w-5xl mx-auto px-6 py-16 border-t border-zinc-900">
-                <div className="text-center mb-12">
-                    <div className="inline-flex items-center gap-2 text-xs font-medium text-violet-300 mb-3">
-                        <Sparkles className="size-4" />
-                        HOW IT WORKS
-                    </div>
-                    <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">
-                        Four steps. Zero gatekeepers.
-                    </h2>
-                </div>
-                <div className="grid md:grid-cols-4 gap-4">
-                    {steps.map((s, i) => (
-                        <div
-                            key={s.title}
-                            className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 relative"
-                        >
-                            <div className="text-zinc-700 font-mono text-xs absolute top-4 right-4">
-                                {String(i + 1).padStart(2, "0")}
+                    <div className="relative max-w-6xl mx-auto px-6 w-full">
+                        <FadeUp>
+                            <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1 text-[11px] font-medium tracking-[0.16em] uppercase text-zinc-600 mb-8 shadow-sm">
+                                <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                Live · Arbitrum Sepolia · iExec Nox
                             </div>
-                            <div className="mb-4">{s.icon}</div>
-                            <h3 className="font-semibold mb-2">{s.title}</h3>
-                            <p className="text-sm text-zinc-400 leading-relaxed">{s.body}</p>
-                        </div>
-                    ))}
+                        </FadeUp>
+
+                        <FadeUp delay={0.1}>
+                            <h1 className="text-5xl md:text-7xl leading-[1.05] tracking-tight max-w-4xl">
+                                Give to the causes that{" "}
+                                <span className="font-serif italic font-light">cannot be doxxed</span>{" "}
+                                <span className="inline-flex items-center align-middle ml-1">
+                                    <span className="size-12 md:size-16 rounded-full bg-zinc-900 text-white inline-flex items-center justify-center text-2xl shadow-md">
+                                        🦑
+                                    </span>
+                                </span>
+                            </h1>
+                        </FadeUp>
+
+                        <FadeUp delay={0.2}>
+                            <p className="mt-7 text-lg text-zinc-600 max-w-xl leading-relaxed">
+                                StealthGive is confidential crowdfunding on iExec Nox. Donor amounts are
+                                encrypted in a TEE; campaign totals stay publicly verifiable.
+                            </p>
+                        </FadeUp>
+
+                        <FadeUp delay={0.3}>
+                            <div className="mt-10 flex flex-wrap items-center gap-4">
+                                <PillButton href="/welcome" size="lg">
+                                    Launch App
+                                </PillButton>
+                                <Link
+                                    href="#how-it-works"
+                                    className="text-sm uppercase tracking-[0.18em] text-zinc-700 hover:text-zinc-900 transition-colors inline-flex items-center gap-2"
+                                >
+                                    How it works
+                                    <ArrowUpRight className="size-3.5" />
+                                </Link>
+                            </div>
+                        </FadeUp>
+                    </div>
                 </div>
             </section>
 
-            {/* Final CTA */}
-            <section className="max-w-3xl mx-auto px-6 py-24 text-center">
-                <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
-                    Ready to give without leaving a trail?
-                </h2>
-                <p className="text-zinc-400 mb-8">
-                    Connect your wallet, claim test tokens, donate to a real cause. All on Arbitrum Sepolia,
-                    all confidential.
-                </p>
-                <Link
-                    href="/campaigns"
-                    className="inline-flex items-center gap-2 rounded-full bg-violet-600 hover:bg-violet-500 transition-colors px-8 py-3 text-sm font-medium"
-                >
-                    Browse Campaigns
-                    <ArrowRight className="size-4" />
-                </Link>
+            {/* ──────────── Big text section ──────────── */}
+            <section id="how-it-works" className="border-t border-zinc-100">
+                <div className="max-w-7xl mx-auto px-6 py-24 md:py-32 grid lg:grid-cols-2 gap-16 items-center">
+                    <FadeUp>
+                        <h2 className="text-4xl md:text-6xl tracking-tight leading-[1.05]">
+                            <span className="text-zinc-400">Confidential</span>{" "}
+                            <span className="font-serif italic font-light">DeFi crowdfunding</span>{" "}
+                            <br />
+                            <span className="text-zinc-900">native to Arbitrum.</span>
+                        </h2>
+                        <p className="mt-8 text-zinc-600 leading-relaxed max-w-md">
+                            Built on the iExec Nox protocol with our own ERC-7984 confidential token
+                            (cSGD) — every donation rides through a real Trusted Execution Environment,
+                            on a chain your wallet already speaks.
+                        </p>
+                        <div className="mt-8">
+                            <PillButton href="/welcome">Open App</PillButton>
+                        </div>
+                    </FadeUp>
+
+                    <FadeUp delay={0.15}>
+                        <div className="aspect-[4/3] rounded-3xl bg-zinc-950 relative overflow-hidden border border-zinc-200">
+                            {/* Decorative TEE lattice */}
+                            <svg
+                                className="absolute inset-0 w-full h-full opacity-70"
+                                viewBox="0 0 400 300"
+                                fill="none"
+                            >
+                                <defs>
+                                    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stopColor="white" stopOpacity="0.3" />
+                                        <stop offset="100%" stopColor="white" stopOpacity="0" />
+                                    </radialGradient>
+                                </defs>
+                                <rect width="400" height="300" fill="url(#glow)" />
+                                {Array.from({length: 12}).map((_, i) =>
+                                    Array.from({length: 16}).map((__, j) => {
+                                        const cx = 16 + j * 24;
+                                        const cy = 16 + i * 24;
+                                        const dist = Math.hypot(cx - 200, cy - 150);
+                                        const opacity = Math.max(0.1, 1 - dist / 200);
+                                        return (
+                                            <circle
+                                                key={`${i}-${j}`}
+                                                cx={cx}
+                                                cy={cy}
+                                                r={1.4}
+                                                fill="white"
+                                                opacity={opacity * 0.8}
+                                            />
+                                        );
+                                    }),
+                                )}
+                            </svg>
+                            <div className="absolute inset-0 flex items-end p-8">
+                                <div className="text-white space-y-1">
+                                    <div className="text-[11px] tracking-[0.2em] uppercase text-white/60">
+                                        Encrypted on chain
+                                    </div>
+                                    <div className="font-mono text-sm text-white/90 break-all">
+                                        0x0000066eee2301ec…
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </FadeUp>
+                </div>
+
+                {/* Number row */}
+                <div className="border-y border-zinc-100">
+                    <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 divide-x divide-zinc-100">
+                        {numbers.map((n, i) => (
+                            <FadeUp key={n.label} delay={0.05 * i} className="px-6 py-10">
+                                <div className="text-4xl md:text-5xl font-light tracking-tight">
+                                    {n.value}
+                                </div>
+                                <div className="mt-2 text-[11px] tracking-[0.18em] uppercase text-zinc-500">
+                                    {n.label}
+                                </div>
+                            </FadeUp>
+                        ))}
+                    </div>
+                </div>
             </section>
 
-            <footer className="max-w-5xl mx-auto px-6 py-12 border-t border-zinc-900 text-center text-xs text-zinc-600">
-                Built for the iExec Vibe Coding Challenge · Powered by Nox + ChainGPT · Deployed on Arbitrum
-                Sepolia
-            </footer>
+            {/* ──────────── Why earn cards ──────────── */}
+            <section className="bg-zinc-50">
+                <div className="max-w-7xl mx-auto px-6 py-24 md:py-32">
+                    <FadeUp>
+                        <div className="max-w-3xl">
+                            <div className="text-[11px] tracking-[0.18em] uppercase text-zinc-500 mb-4">
+                                Why give with StealthGive
+                            </div>
+                            <h2 className="text-4xl md:text-6xl tracking-tight leading-[1.05]">
+                                <span className="font-serif italic font-light">Three guarantees</span>{" "}
+                                that ordinary crowdfunding can&apos;t make.
+                            </h2>
+                        </div>
+                    </FadeUp>
+
+                    <div className="mt-16 grid md:grid-cols-3 gap-6">
+                        {features.map((f, i) => (
+                            <FadeUp key={f.title} delay={0.1 * i}>
+                                <div className="rounded-3xl bg-white border border-zinc-200 p-7 h-full hover:shadow-md hover:-translate-y-0.5 transition-all">
+                                    <div className="aspect-[4/3] rounded-2xl bg-zinc-100 flex items-center justify-center mb-6 border border-zinc-200">
+                                        <div className="size-14 rounded-full bg-zinc-900 text-white flex items-center justify-center">
+                                            {f.icon}
+                                        </div>
+                                    </div>
+                                    <div className="text-[10px] tracking-[0.2em] uppercase text-zinc-500 mb-2">
+                                        {f.eyebrow}
+                                    </div>
+                                    <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
+                                    <p className="text-sm text-zinc-600 leading-relaxed">{f.body}</p>
+                                </div>
+                            </FadeUp>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ──────────── ChainGPT touchpoints ──────────── */}
+            <section className="border-t border-zinc-100">
+                <div className="max-w-7xl mx-auto px-6 py-24 md:py-32">
+                    <FadeUp>
+                        <div className="max-w-3xl">
+                            <div className="text-[11px] tracking-[0.18em] uppercase text-zinc-500 mb-4">
+                                AI-assisted, end-to-end
+                            </div>
+                            <h2 className="text-4xl md:text-6xl tracking-tight leading-[1.05]">
+                                Five <span className="font-serif italic font-light">ChainGPT</span>{" "}
+                                touchpoints — live.
+                            </h2>
+                            <p className="mt-6 text-zinc-600 max-w-md leading-relaxed">
+                                We use ChainGPT&apos;s Web3 LLM, NFT/Image Generator, and Smart Contract
+                                Auditor to remove the friction from launching, trusting, and reporting on
+                                a confidential campaign.
+                            </p>
+                        </div>
+                    </FadeUp>
+
+                    <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-5 gap-3">
+                        {[
+                            {label: "Campaign copy", icon: <Sparkles className="size-4" />},
+                            {label: "Hero image gen", icon: <Zap className="size-4" />},
+                            {label: "Contract audit", icon: <ShieldCheck className="size-4" />},
+                            {label: "Risk review", icon: <Users className="size-4" />},
+                            {label: "Impact report", icon: <Globe className="size-4" />},
+                        ].map((c, i) => (
+                            <FadeUp key={c.label} delay={0.06 * i}>
+                                <div className="rounded-2xl border border-zinc-200 bg-white p-5 h-full">
+                                    <div className="size-9 rounded-full bg-zinc-900 text-white flex items-center justify-center mb-4">
+                                        {c.icon}
+                                    </div>
+                                    <div className="text-sm font-medium">{c.label}</div>
+                                </div>
+                            </FadeUp>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ──────────── Final CTA ──────────── */}
+            <section className="border-t border-zinc-100">
+                <div className="max-w-7xl mx-auto px-6 py-24 md:py-32 grid lg:grid-cols-2 gap-12 items-center">
+                    <FadeUp>
+                        <h2 className="text-3xl md:text-5xl tracking-tight leading-[1.1]">
+                            Start giving privately.
+                        </h2>
+                        <p className="mt-5 text-zinc-600 max-w-md leading-relaxed">
+                            Join the growing community of donors taking control of their on-chain
+                            footprint with StealthGive.
+                        </p>
+                        <div className="mt-8">
+                            <PillButton href="/welcome" size="lg">
+                                Launch App
+                            </PillButton>
+                        </div>
+                    </FadeUp>
+
+                    <FadeUp delay={0.15} className="md:text-right">
+                        <h3 className="text-5xl md:text-7xl tracking-tight leading-[1.05]">
+                            <span className="text-zinc-300">Confidential giving</span>
+                            <br />
+                            <span className="font-serif italic font-light">native to</span>{" "}
+                            <span className="text-zinc-900">Arbitrum</span>{" "}
+                            <span className="inline-flex align-middle">
+                                <span className="size-14 rounded-full bg-zinc-900 text-white inline-flex items-center justify-center text-xl shadow-md">
+                                    <Lock className="size-6" />
+                                </span>
+                            </span>
+                        </h3>
+                    </FadeUp>
+                </div>
+            </section>
+
+            <LandingFooter />
         </div>
     );
 }

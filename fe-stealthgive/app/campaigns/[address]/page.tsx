@@ -191,7 +191,7 @@ export default function CampaignDetailPage({
         <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
             <Link
                 href="/campaigns"
-                className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-200"
+                className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-800"
             >
                 <ArrowLeft className="size-4" />
                 All campaigns
@@ -232,7 +232,7 @@ export default function CampaignDetailPage({
                     {meta.title}
                 </h1>
                 {meta.story && (
-                    <p className="text-zinc-300 text-lg leading-relaxed max-w-3xl whitespace-pre-line">
+                    <p className="text-zinc-700 text-lg leading-relaxed max-w-3xl whitespace-pre-line">
                         {meta.story}
                     </p>
                 )}
@@ -241,7 +241,7 @@ export default function CampaignDetailPage({
             <div className="grid lg:grid-cols-3 gap-8">
                 {/* LEFT: progress + stats + post-deadline actions */}
                 <div className="lg:col-span-2 space-y-6">
-                    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+                    <section className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
                         <TotalRaised
                             encryptedTotal={encryptedTotal as `0x${string}` | undefined}
                             goal={(goal as bigint) ?? 0n}
@@ -312,7 +312,7 @@ export default function CampaignDetailPage({
                     )}
 
                     {(state === 1 || state === 3) && (
-                        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+                        <section className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
                             <h2 className="font-semibold mb-2">Donor refund</h2>
                             <p className="text-sm text-zinc-400 mb-4">
                                 Available after the refund grace window (7 days post-settle) if the
@@ -321,7 +321,7 @@ export default function CampaignDetailPage({
                             <button
                                 onClick={onRefund}
                                 disabled={isPending || isMining}
-                                className="rounded-full border border-zinc-700 hover:border-zinc-500 disabled:opacity-50 px-5 py-2 text-sm font-medium"
+                                className="rounded-full border border-zinc-300 hover:border-zinc-500 disabled:opacity-50 px-5 py-2 text-sm font-medium"
                             >
                                 {isPending || isMining ? "Refunding…" : "Refund my contribution"}
                             </button>
@@ -329,8 +329,8 @@ export default function CampaignDetailPage({
                     )}
 
                     {state === 2 && (
-                        <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 text-center">
-                            <p className="text-zinc-300">
+                        <section className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6 text-center">
+                            <p className="text-zinc-700">
                                 ✅ Funds withdrawn. Thanks for supporting this cause.
                             </p>
                         </section>
@@ -416,7 +416,7 @@ export default function CampaignDetailPage({
                                                 placeholder="10"
                                                 value={donateAmount}
                                                 onChange={e => setDonateAmount(e.target.value)}
-                                                className="w-full rounded-lg bg-zinc-950 border border-zinc-700 px-3 py-2.5 text-sm focus:border-violet-500 focus:outline-none"
+                                                className="w-full rounded-lg bg-white border border-zinc-300 px-3 py-2.5 text-sm focus:border-violet-500 focus:outline-none"
                                             />
                                         </div>
                                         <button
@@ -478,7 +478,7 @@ function Stat({
     mono?: boolean;
 }) {
     return (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-3">
+        <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
             <div className="text-xs text-zinc-500 inline-flex items-center gap-1.5 mb-1.5">
                 {icon}
                 {label}

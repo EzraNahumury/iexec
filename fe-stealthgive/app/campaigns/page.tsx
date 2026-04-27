@@ -78,14 +78,14 @@ export default function CampaignsPage() {
                     {[0, 1, 2].map(i => (
                         <div
                             key={i}
-                            className="rounded-2xl border border-zinc-800 bg-zinc-900/40 h-72 animate-pulse"
+                            className="rounded-2xl border border-zinc-200 bg-zinc-50 h-72 animate-pulse"
                         />
                     ))}
                 </div>
             )}
 
             {!isLoading && list.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-zinc-800 p-16 text-center">
+                <div className="rounded-2xl border border-dashed border-zinc-200 p-16 text-center">
                     <p className="text-zinc-400 mb-4">No campaigns yet.</p>
                     <Link
                         href="/create"

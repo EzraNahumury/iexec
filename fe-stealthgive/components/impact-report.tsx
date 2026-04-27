@@ -162,7 +162,7 @@ export function ImpactReport({
             {error && <p className="text-sm text-red-400 break-words">{error}</p>}
 
             {report && (
-                <p className="text-sm text-zinc-200 leading-relaxed whitespace-pre-line">{report}</p>
+                <p className="text-sm text-zinc-800 leading-relaxed whitespace-pre-line">{report}</p>
             )}
         </section>
     );

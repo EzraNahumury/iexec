@@ -143,7 +143,7 @@ export function CampaignReview({
             {error && <p className="text-sm text-red-400 break-words">{error}</p>}
 
             {review && (
-                <p className="text-sm text-zinc-200 leading-relaxed whitespace-pre-line">{review}</p>
+                <p className="text-sm text-zinc-800 leading-relaxed whitespace-pre-line">{review}</p>
             )}
         </section>
     );

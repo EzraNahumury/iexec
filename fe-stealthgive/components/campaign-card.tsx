@@ -31,7 +31,7 @@ export function CampaignCard(props: Props) {
     return (
         <Link
             href={`/campaigns/${props.campaign}`}
-            className="group rounded-2xl border border-zinc-800 bg-zinc-900/40 overflow-hidden hover:border-violet-500/50 transition-colors block"
+            className="group rounded-2xl border border-zinc-200 bg-zinc-50 overflow-hidden hover:border-violet-500/50 transition-colors block"
         >
             <HeroGradient seed={props.campaign} className="h-32" />
             <div className="p-5 space-y-4">
@@ -51,7 +51,7 @@ export function CampaignCard(props: Props) {
                     )}
                 </div>
                 <TotalRaised encryptedTotal={props.encryptedTotal} goal={props.goal} autoLoad={false} />
-                <div className="flex items-center justify-between text-xs text-zinc-500 pt-2 border-t border-zinc-800">
+                <div className="flex items-center justify-between text-xs text-zinc-500 pt-2 border-t border-zinc-200">
                     <Countdown deadlineMs={deadlineMs} />
                     <span className="font-mono">{shortAddress(props.campaign)}</span>
                 </div>

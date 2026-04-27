@@ -181,7 +181,7 @@ export default function CreateCampaignPage() {
         <div className="max-w-2xl mx-auto px-6 py-12">
             <Link
                 href="/campaigns"
-                className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-200 mb-6"
+                className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-800 mb-6"
             >
                 <ArrowLeft className="size-4" />
                 All campaigns
@@ -210,7 +210,7 @@ export default function CreateCampaignPage() {
                         value={brief}
                         onChange={e => setBrief(e.target.value)}
                         placeholder='e.g. "legal fund for journalists facing SLAPP suits in SE Asia"'
-                        className="flex-1 rounded-lg bg-zinc-950 border border-zinc-700 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
+                        className="flex-1 rounded-lg bg-white border border-zinc-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
                         disabled={aiBusy}
                     />
                     <button
@@ -256,7 +256,7 @@ export default function CreateCampaignPage() {
                                 Regenerate
                             </button>
                         </div>
-                        <div className="overflow-hidden rounded-xl border border-zinc-800">
+                        <div className="overflow-hidden rounded-xl border border-zinc-200">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 src={heroImage}
@@ -279,7 +279,7 @@ export default function CreateCampaignPage() {
                         value={title}
                         onChange={e => setTitle(e.target.value)}
                         placeholder="e.g. Press Freedom Legal Defense"
-                        className="w-full rounded-lg bg-zinc-950 border border-zinc-700 px-4 py-2.5 text-sm focus:border-violet-500 focus:outline-none"
+                        className="w-full rounded-lg bg-white border border-zinc-300 px-4 py-2.5 text-sm focus:border-violet-500 focus:outline-none"
                     />
                 </div>
                 <div>
@@ -290,7 +290,7 @@ export default function CreateCampaignPage() {
                         onChange={e => setStory(e.target.value)}
                         rows={6}
                         placeholder="Why does this cause matter and why should donations stay private?"
-                        className="w-full rounded-lg bg-zinc-950 border border-zinc-700 px-4 py-2.5 text-sm focus:border-violet-500 focus:outline-none resize-none"
+                        className="w-full rounded-lg bg-white border border-zinc-300 px-4 py-2.5 text-sm focus:border-violet-500 focus:outline-none resize-none"
                     />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -303,7 +303,7 @@ export default function CreateCampaignPage() {
                             value={goal}
                             onChange={e => setGoal(e.target.value)}
                             placeholder="10000"
-                            className="w-full rounded-lg bg-zinc-950 border border-zinc-700 px-4 py-2.5 text-sm focus:border-violet-500 focus:outline-none"
+                            className="w-full rounded-lg bg-white border border-zinc-300 px-4 py-2.5 text-sm focus:border-violet-500 focus:outline-none"
                         />
                     </div>
                     <div>
@@ -315,7 +315,7 @@ export default function CreateCampaignPage() {
                             max="365"
                             value={days}
                             onChange={e => setDays(e.target.value)}
-                            className="w-full rounded-lg bg-zinc-950 border border-zinc-700 px-4 py-2.5 text-sm focus:border-violet-500 focus:outline-none"
+                            className="w-full rounded-lg bg-white border border-zinc-300 px-4 py-2.5 text-sm focus:border-violet-500 focus:outline-none"
                         />
                     </div>
                 </div>
@@ -326,7 +326,7 @@ export default function CreateCampaignPage() {
                         value={recipient}
                         onChange={e => setRecipient(e.target.value)}
                         placeholder="0x…"
-                        className="w-full rounded-lg bg-zinc-950 border border-zinc-700 px-4 py-2.5 text-sm font-mono focus:border-violet-500 focus:outline-none"
+                        className="w-full rounded-lg bg-white border border-zinc-300 px-4 py-2.5 text-sm font-mono focus:border-violet-500 focus:outline-none"
                     />
                     <p className="text-xs text-zinc-500 mt-1.5">
                         This wallet will be able to call <code>withdraw()</code> after the deadline.

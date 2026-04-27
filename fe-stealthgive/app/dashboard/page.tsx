@@ -159,7 +159,7 @@ export default function DashboardPage() {
                     href={`https://sepolia.arbiscan.io/address/${address}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-sm text-zinc-400 hover:text-zinc-200 inline-flex items-center gap-1"
+                    className="text-sm text-zinc-400 hover:text-zinc-800 inline-flex items-center gap-1"
                 >
                     View on Arbiscan
                     <ArrowRight className="size-3.5" />
@@ -168,7 +168,7 @@ export default function DashboardPage() {
 
             <div className="grid md:grid-cols-2 gap-6">
                 {/* SGD card */}
-                <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 space-y-4">
+                <section className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6 space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="inline-flex items-center gap-2 text-zinc-400 text-sm">
                             <Coins className="size-4" />
@@ -240,7 +240,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Wrap card */}
-            <section className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 space-y-4">
+            <section className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6 space-y-4">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                     <div>
                         <h2 className="font-semibold inline-flex items-center gap-2">
@@ -263,7 +263,7 @@ export default function DashboardPage() {
                             placeholder="100"
                             value={wrapAmount}
                             onChange={e => setWrapAmount(e.target.value)}
-                            className="w-full rounded-lg bg-zinc-950 border border-zinc-700 px-3 py-2.5 text-sm focus:border-violet-500 focus:outline-none"
+                            className="w-full rounded-lg bg-white border border-zinc-300 px-3 py-2.5 text-sm focus:border-violet-500 focus:outline-none"
                         />
                     </div>
                     <button
