@@ -126,9 +126,14 @@ Di setiap kasus, **verifikasi publik atas total terkumpul** itu esensial (donatu
            • Atau, setelah grace 7 hari: donor refund()
                          │
                          ▼
-              ⑤ ChainGPT generate impact report
-                  (planned — lihat status fitur)
+              ⑤ ChainGPT generate impact report (live)
+                 + 4 ChainGPT touchpoint lain di sepanjang alur
+                 (lihat Layer 3 untuk daftar lengkap)
 ```
+
+**Di mana ChainGPT plug in:**
+- Step ① (`/create`) — Web3 LLM draft judul + narasi, NFT Image Generator buat hero banner
+- Detail page — Inline AI Risk Review (per-campaign), Smart Contract Auditor (template), Impact Report (state-aware narrative)
 
 ## 🔬 Arsitektur Teknis
 
@@ -155,18 +160,23 @@ Tiga primitive Nox dipakai sepanjang alur:
 
 Bukti integrasi TEE asli: tx wrap pertama [`0x09d0c4d4...`](https://sepolia.arbiscan.io/tx/0x09d0c4d4777283f9f746ec7d16d82e2fe3c9f8c193beff90590425d3f95ce23f) emit 14 event ke `NoxCompute` precompile (`0xd464B198...`) — bukti komputasi TEE on-chain bukan stub.
 
-### Layer 3 — Integrasi AI ChainGPT (`/fe-stealthgive/lib/chaingpt`)
+### Layer 3 — Integrasi AI ChainGPT (`/fe-stealthgive/app/api/ai`)
 
-Empat titik integrasi yang direncanakan:
+**Lima titik integrasi live**, memakai tiga produk ChainGPT (Web3 LLM, NFT Image Generator, Smart Contract Auditor):
 
-| Touchpoint | Fitur ChainGPT | Status |
-| --- | --- | --- |
-| **Wizard pembuatan kampanye** | Web3 LLM | ⏳ Planned — lihat [Roadmap](#-roadmap) |
-| **Generasi hero image** | NFT/Image Generator | ⏳ Planned |
-| **Audit contract sekali klik** | Smart Contract Auditor | ⏳ Planned |
-| **Generasi laporan dampak** | On-chain Data Insights | ⏳ Planned |
+| Touchpoint | Fitur ChainGPT | Endpoint server | Lokasi UI | Status |
+| --- | --- | --- | --- | --- |
+| **Campaign copy assist** | Web3 LLM (`general_assistant`) | `/api/ai/draft-campaign` | `/create` | ✅ Live |
+| **Hero image generator** | NFT/Image Generator (`velogen` model) | `/api/ai/generate-hero` | `/create` | ✅ Live |
+| **Smart contract audit** | Smart Contract Auditor (`smart_contract_auditor`) | `/api/ai/audit-contract` | Inline expandable di `/campaigns/[address]` + standalone `/audit` | ✅ Live |
+| **AI risk review** | Web3 LLM (`general_assistant`) | `/api/ai/review-campaign` | `/campaigns/[address]` | ✅ Live |
+| **Impact report** | Web3 LLM (state-aware narrative) | `/api/ai/impact-report` | `/campaigns/[address]` | ✅ Live |
 
-Saat ini, `Campaign` di-create dengan judul + narasi yang diketik manual oleh user (disimpan sebagai JSON dalam `data:application/json;base64,...` URI). Hero image otomatis dihasilkan secara deterministik via gradient warna dari hash alamat campaign (lihat `components/hero-gradient.tsx`).
+Semua endpoint dibungkus sebagai Next.js Route Handlers di server-side — API key ChainGPT tidak pernah masuk bundle browser. Prompt-prompt nya difokuskan ke konteks Web3/on-chain karena `general_assistant` ChainGPT punya domain restriction terhadap topik non-Web3 (lihat `feedback.md` untuk catatan lengkap).
+
+**Hero image flow:** AI image dihasilkan saat creator klik *Generate* di `/create`, di-preview, lalu di-cache di `localStorage` keyed by alamat campaign setelah deploy berhasil. Detail page baca dari cache (jatuh ke deterministic gradient kalau missing — lihat `components/hero-gradient.tsx`). Image tidak disimpan on-chain agar gas tetap murah.
+
+**Contract audit flow:** Karena semua kampanye instance dari `Campaign.sol` yang sama, audit di-run sekali, di-cache server-side (module-level), lalu di-render inline di setiap detail page sebagai collapsible section.
 
 ### Layer 4 — Frontend (`/fe-stealthgive`)
 
@@ -185,7 +195,8 @@ Smart Contracts ┃ Solidity ^0.8.28, Foundry, OpenZeppelin v5, ERC-7984 (iExec 
 Nox SDK         ┃ @iexec-nox/nox-protocol-contracts@0.2.2
                 ┃ @iexec-nox/nox-confidential-contracts@0.1.0
                 ┃ @iexec-nox/handle@0.1.0-beta.10 (TypeScript SDK)
-AI              ┃ ChainGPT API (planned: Web3 LLM, NFT Image Gen, Auditor, Insights)
+AI              ┃ ChainGPT API (live, 5 endpoints) — Web3 LLM (general_assistant),
+                ┃ NFT/Image Generator (velogen), Smart Contract Auditor
 Frontend        ┃ Next.js 16, React 19, RainbowKit 2.2, Wagmi 2.19, Viem 2.48,
                 ┃ Tailwind v4, shadcn/ui patterns, lucide-react
 Off-chain       ┃ None — fully on-chain metadata via data URI; view contract for indexing
@@ -212,30 +223,43 @@ stealthgive/
 │   └── foundry.toml
 ├── fe-stealthgive/              # Next.js 16 frontend
 │   ├── app/
+│   │   ├── layout.tsx                # Root layout + Providers
+│   │   ├── providers.tsx             # WagmiProvider + RainbowKit + QueryClient
 │   │   ├── page.tsx                  # Landing dengan use cases
 │   │   ├── dashboard/page.tsx        # Claim SGD + wrap → cSGD + reveal balance
 │   │   ├── campaigns/page.tsx        # Browse semua campaigns
 │   │   ├── campaigns/[address]/page.tsx  # Detail + donate + settle/withdraw/refund
-│   │   └── create/page.tsx           # Form bikin campaign
+│   │   ├── create/page.tsx           # Form bikin campaign + AI assist
+│   │   ├── audit/page.tsx            # Standalone Campaign.sol audit (full report)
+│   │   └── api/ai/
+│   │       ├── draft-campaign/route.ts   # ChainGPT Web3 LLM — title + story
+│   │       ├── generate-hero/route.ts    # ChainGPT NFT/Image Generator
+│   │       ├── audit-contract/route.ts   # ChainGPT Smart Contract Auditor
+│   │       ├── review-campaign/route.ts  # Per-campaign AI risk review
+│   │       └── impact-report/route.ts    # State-aware impact narrative
 │   ├── components/
 │   │   ├── header.tsx
-│   │   ├── total-raised.tsx          # publicDecrypt + auto-retry
+│   │   ├── total-raised.tsx          # publicDecrypt + auto-retry + onReveal callback
 │   │   ├── progress-bar.tsx
 │   │   ├── countdown.tsx
-│   │   ├── hero-gradient.tsx         # deterministic gradient per address
+│   │   ├── hero-gradient.tsx         # AI image dengan deterministic gradient fallback
 │   │   ├── status-badge.tsx
-│   │   └── campaign-card.tsx
+│   │   ├── campaign-card.tsx
+│   │   ├── campaign-review.tsx       # ChainGPT per-campaign risk review
+│   │   ├── contract-audit-section.tsx # Inline collapsible audit
+│   │   └── impact-report.tsx         # State-aware impact narrative
 │   └── lib/
 │       ├── abis.ts                   # Auto-generated dari forge artifacts
 │       ├── addresses.ts
 │       ├── wagmi.ts
 │       ├── nox.ts                    # Nox SDK wrapper + auth-refresh
 │       ├── metadata.ts               # data: URI parser
+│       ├── hero-image.ts             # localStorage cache per campaign
 │       ├── format.ts
 │       └── gas.ts                    # Arbitrum Sepolia gas overrides
-├── feedback.md                  # ⏳ Required hackathon deliverable
-├── README.md                    # ← Anda di sini
-└── LICENSE
+├── feedback.md                  # ✅ Hackathon deliverable — dev experience notes
+├── LICENSE                      # MIT
+└── README.md                    # ← Anda di sini
 ```
 
 ## 🚀 Memulai (Local Dev)
@@ -327,12 +351,13 @@ Project ini dibangun pakai pengembangan dibantu AI sesuai semangat challenge:
 | --- | --- | --- |
 | Berjalan end-to-end tanpa data mock | ⭐⭐⭐ | ✅ Setiap donasi melalui Nox Confidential Token asli di Arbitrum Sepolia. Verified via on-chain tx ([sample donate](https://sepolia.arbiscan.io/tx/0xb04025b98b61fa98...)). 14 event ke NoxCompute precompile per wrap = real TEE komputasi. |
 | Deploy di Arbitrum / Arbitrum Sepolia | ⭐⭐ | ✅ Deployed di Arbitrum Sepolia (chain id 421614). Semua alamat di [section atas](#-live-di-arbitrum-sepolia). |
-| `feedback.md` disediakan | ⭐⭐ | ⏳ In progress — covers iExec dev experience, Circle blocked workaround, RainbowKit/wagmi v3 compat, Vibe wallet EIP-712 quirks, Nox gateway sync delay. |
+| `feedback.md` disediakan | ⭐⭐ | ✅ [feedback.md](./feedback.md) — covers iExec dev experience, Circle-blocked workaround, RainbowKit/wagmi v3 compat, EIP-712 token expiry, Nox gateway sync delay, ChainGPT domain restrictions. |
 | Video demo maksimal 4 menit | ⭐⭐ | ⏳ Recording planned — script outline tersedia. |
 | Kedalaman pemakaian Confidential Token & Nox | ⭐ | ✅ 4 titik integrasi: (1) `ERC20ToERC7984Wrapper` untuk deploy own confidential token, (2) `confidentialTransferFrom` untuk donate, (3) `Nox.allowPublicDecryption` per donate untuk live total reveal, (4) `@iexec-nox/handle` SDK client-side encrypt + decrypt. ERC-7984 fully implemented (no partial). |
+| **Kedalaman integrasi ChainGPT** (sponsor track) | ⭐ | ✅ 5 endpoint live menggunakan 3 produk ChainGPT — Web3 LLM (`general_assistant`), NFT/Image Generator (`velogen`), Smart Contract Auditor (`smart_contract_auditor`). Semua server-side, API key tidak terekspos ke client. Detail di [Layer 3](#layer-3--integrasi-ai-chaingpt-fe-stealthgiveappapiai). |
 | Use case dunia nyata | ⭐ | ✅ 6 persona pengguna konkret (jurnalis, LGBTQ+, war zone, dll). Threat model didokumentasikan dengan jujur. |
 | Kualitas code | ⭐ | ✅ TypeScript strict mode, Foundry test 24/24 pass, custom error selectors di Solidity, NatSpec docs lengkap, React strict mode, no `any`, no `TODO` di critical paths. |
-| UX | ⭐ | ✅ Onboarding 2-klik (claim + wrap), no jargon di copy user-facing, mobile-responsive, hero gradient per campaign, progress bar live, countdown timer, deterministic UI tanpa external image hosting. |
+| UX | ⭐ | ✅ Onboarding 2-klik (claim + wrap), no jargon di copy user-facing, mobile-responsive, hero AI image dengan gradient fallback, progress bar live, countdown timer, inline AI risk review + audit di setiap campaign. |
 
 ## 🗺️ Roadmap
 
@@ -342,15 +367,14 @@ Project ini dibangun pakai pengembangan dibantu AI sesuai semangat challenge:
 - [x] Self-sovereign confidential token (`SGD` + `cSGD`) — zero dependency Circle/VPN
 - [x] Deploy Arbitrum Sepolia
 - [x] Frontend Next.js 16 lengkap dengan claim/wrap/donate/settle/withdraw/refund flows
-- [x] Donor self-decrypt balance via Nox gateway (gasless EIP-712)
-- [x] Foundry test suite
-- [x] Hero gradient + progress bar + countdown UI
-
-**ChainGPT integration (planned for v1.1):**
-- [ ] **Campaign copy assist** (`/create` page) — input brief 1 baris, ChainGPT Web3 LLM draft judul + narasi lengkap
-- [ ] **Hero image generator** — replace deterministic gradient dengan custom illustration via ChainGPT NFT/Image Generator
-- [ ] **One-click contract audit** — call ChainGPT Smart Contract Auditor pada Campaign instance, badge hasil di halaman detail
-- [ ] **Impact report generator** — ChainGPT On-chain Insights generate ringkasan agregat (tanpa membongkar per-donor) saat campaign settled
+- [x] Donor self-decrypt balance via Nox gateway (gasless EIP-712, auto-refresh on 401)
+- [x] Foundry test suite (24/24 passing)
+- [x] Progress bar live + countdown timer + state-aware UI
+- [x] **ChainGPT campaign copy assist** — Web3 LLM, AI-drafted title + 3-paragraph story dari brief 1 baris
+- [x] **ChainGPT AI hero image** — NFT/Image Generator (`velogen`), banner-aspect, deterministic gradient fallback
+- [x] **ChainGPT smart contract audit** — Smart Contract Auditor on `Campaign.sol`, inline collapsible di setiap detail page + standalone `/audit` page
+- [x] **ChainGPT per-campaign AI risk review** — Web3 LLM analisis deployment params (goal, deadline, recipient EOA-vs-contract, dll)
+- [x] **ChainGPT impact report** — state-aware narrative summary (Active = "Projected Impact", Settled = "Final Impact Report")
 
 **Pasca-hackathon:**
 - [ ] Subdomain ENS per kampanye (mis. `presslegal.stealthgive.eth`)
@@ -376,10 +400,12 @@ Project ini dibangun pakai pengembangan dibantu AI sesuai semangat challenge:
 | Progress bar + countdown timer | ✅ Live | Update tiap menit |
 | Settle / Withdraw / Refund flows | ✅ Live (untested at deadline) | Logic on-chain verified, butuh wait until deadline untuk e2e test |
 | Create campaign baru | ✅ Live | Form simpel, metadata jadi data URI on-chain |
-| **ChainGPT campaign copy assist** | ⏳ Planned | Lihat Roadmap |
-| **ChainGPT hero image generation** | ⏳ Planned | Currently menggunakan deterministic gradient |
-| **ChainGPT contract audit badge** | ⏳ Planned | |
-| **ChainGPT impact report** | ⏳ Planned | |
+| **ChainGPT campaign copy assist** | ✅ Live | `/api/ai/draft-campaign` — input 1-line brief, output title + 3-paragraph story |
+| **ChainGPT hero image generation** | ✅ Live | `/api/ai/generate-hero` — `velogen` model, 768×432 banner, cached per-campaign in localStorage |
+| **ChainGPT smart contract audit** | ✅ Live | `/api/ai/audit-contract` — inline collapsible di campaign detail + standalone `/audit` page; cached server-side |
+| **ChainGPT AI risk review (per campaign)** | ✅ Live | `/api/ai/review-campaign` — analyze deployment params (goal, deadline, recipient EOA-vs-contract, donor traction) |
+| **ChainGPT impact report** | ✅ Live | `/api/ai/impact-report` — state-aware ("Projected Impact" → "Final Impact Report"), regenerates as total updates |
+| `feedback.md` (hackathon deliverable) | ✅ Live | [feedback.md](./feedback.md) |
 | Verifikasi kontrak di Arbiscan | ⏳ Pending | Butuh Arbiscan API key |
 | Live demo URL (Vercel) | ⏳ Pending | Frontend siap untuk deploy |
 | Demo video 4 menit | ⏳ Pending | Script outline ready |
@@ -391,7 +417,7 @@ Project ini dibangun pakai pengembangan dibantu AI sesuai semangat challenge:
 - [x] Frontend fungsional
 - [x] dApp end-to-end jalan di Arbitrum Sepolia (no mock data)
 - [x] Confidential Token terintegrasi sebagai utility inti (private donations)
-- [ ] `feedback.md` tentang dev experience iExec (in progress)
+- [x] `feedback.md` tentang dev experience iExec — [link](./feedback.md)
 - [ ] Video demo 4 menit (script ready, recording pending)
 - [ ] Submission post di X menandai `@iEx_ec` dan `@Chain_GPT`
 - [x] Bergabung di Discord iExec & channel Vibe Coding Challenge

@@ -33,6 +33,12 @@ export function Header() {
                         >
                             Dashboard
                         </Link>
+                        <Link
+                            href="/audit"
+                            className="text-zinc-400 hover:text-zinc-100 transition-colors"
+                        >
+                            Audit
+                        </Link>
                     </nav>
                 </div>
                 <ConnectButton

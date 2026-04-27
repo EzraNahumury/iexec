@@ -1,7 +1,17 @@
+"use client";
+
+import {useEffect, useState} from "react";
+
+import {loadHeroImage} from "@/lib/hero-image";
+
 /**
- * Deterministic gradient banner derived from a string (typically the campaign
- * address). Avoids needing to host hero images while still giving each
- * campaign a unique visual identity.
+ * Hero banner component.
+ *
+ * If the campaign has an AI-generated image cached locally (saved by the
+ * `/create` flow after deploy, or revealed via Regenerate on the detail
+ * page), render it. Otherwise fall back to a deterministic gradient derived
+ * from the campaign address so every campaign still has a unique visual
+ * identity even before its hero is generated.
  */
 function hash(input: string): number {
     let h = 0;
@@ -22,7 +32,42 @@ const palettes = [
     "from-sky-600 via-blue-500 to-indigo-500",
 ];
 
-export function HeroGradient({seed, className = ""}: {seed: string; className?: string}) {
+export function HeroGradient({
+    seed,
+    className = "",
+    overrideImage,
+}: {
+    seed: string;
+    className?: string;
+    overrideImage?: string | null;
+}) {
+    const [image, setImage] = useState<string | null>(overrideImage ?? null);
+
+    useEffect(() => {
+        if (overrideImage !== undefined) {
+            setImage(overrideImage);
+            return;
+        }
+        // The seed is the campaign address; mount-side lookup keeps SSR happy.
+        setImage(loadHeroImage(seed));
+    }, [seed, overrideImage]);
+
+    if (image) {
+        return (
+            <div className={`relative overflow-hidden rounded-2xl ${className}`}>
+                {/* Use a plain <img> (not next/image) so data: URIs work without remote-domain config. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                    src={image}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    aria-hidden
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-zinc-950/20 to-transparent" />
+            </div>
+        );
+    }
+
     const palette = palettes[hash(seed) % palettes.length];
     return (
         <div

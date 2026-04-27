@@ -1,14 +1,27 @@
 "use client";
 
 import {use, useEffect, useState, type ReactNode} from "react";
-import {ArrowLeft, ExternalLink, Lock, Send, ShieldCheck, Target, Users, Wallet} from "lucide-react";
+import {
+    ArrowLeft,
+    ExternalLink,
+    Lock,
+    Send,
+    Shield,
+    ShieldCheck,
+    Target,
+    Users,
+    Wallet,
+} from "lucide-react";
 import Link from "next/link";
 import {formatUnits} from "viem";
 import {useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract} from "wagmi";
 import {arbitrumSepolia} from "wagmi/chains";
 
+import {CampaignReview} from "@/components/campaign-review";
+import {ContractAuditSection} from "@/components/contract-audit-section";
 import {Countdown} from "@/components/countdown";
 import {HeroGradient} from "@/components/hero-gradient";
+import {ImpactReport} from "@/components/impact-report";
 import {StatusBadge} from "@/components/status-badge";
 import {TotalRaised} from "@/components/total-raised";
 import {campaignAbi, confidentialSGDAbi} from "@/lib/abis";
@@ -90,6 +103,9 @@ export default function CampaignDetailPage({
             reset();
         }
     }, [txSuccess, refetchState, refetchDonors, refetchTotal, reset]);
+
+    /* ---------------- Revealed total (lifted up so ImpactReport can use it) ---------------- */
+    const [revealedTotal, setRevealedTotal] = useState<bigint | null>(null);
 
     /* ---------------- Donate ---------------- */
     const [donateAmount, setDonateAmount] = useState("");
@@ -204,6 +220,13 @@ export default function CampaignDetailPage({
                             You created this
                         </span>
                     )}
+                    <a
+                        href="#contract-audit"
+                        className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 inline-flex items-center gap-1.5 hover:bg-emerald-500/20 transition-colors"
+                    >
+                        <Shield className="size-3" />
+                        Audited by ChainGPT
+                    </a>
                 </div>
                 <h1 className="text-3xl md:text-5xl font-semibold tracking-tight leading-tight">
                     {meta.title}
@@ -223,6 +246,7 @@ export default function CampaignDetailPage({
                             encryptedTotal={encryptedTotal as `0x${string}` | undefined}
                             goal={(goal as bigint) ?? 0n}
                             autoLoad
+                            onReveal={setRevealedTotal}
                         />
                     </section>
 
@@ -311,6 +335,53 @@ export default function CampaignDetailPage({
                             </p>
                         </section>
                     )}
+
+                    {/* AI commentary on this specific campaign */}
+                    {goal !== undefined && deadline !== undefined && recipient && (
+                        <CampaignReview
+                            campaign={campaignAddress}
+                            title={meta.title}
+                            goalCSGD={formatUnits(goal as bigint, 6)}
+                            deadlineMs={deadlineMs}
+                            recipient={recipient as `0x${string}`}
+                            donorCount={Number(donorCount ?? 0)}
+                            refundGraceSeconds={604_800}
+                        />
+                    )}
+
+                    {/* Impact report — narrative summary of on-chain figures */}
+                    {goal !== undefined && deadline !== undefined && (
+                        <ImpactReport
+                            campaign={campaignAddress}
+                            title={meta.title}
+                            goalCSGD={formatUnits(goal as bigint, 6)}
+                            totalRaisedCSGD={
+                                revealedTotal !== null ? formatUnits(revealedTotal, 6) : null
+                            }
+                            donorCount={Number(donorCount ?? 0)}
+                            createdAtMs={meta.createdAt}
+                            deadlineMs={deadlineMs}
+                            settledAtMs={
+                                state !== undefined && Number(state) >= 1
+                                    ? deadlineMs
+                                    : undefined
+                            }
+                            state={
+                                state === 0
+                                    ? "active"
+                                    : state === 1
+                                      ? "settling"
+                                      : state === 2
+                                        ? "withdrawn"
+                                        : "refunding"
+                            }
+                        />
+                    )}
+
+                    {/* Shared smart-contract audit (Campaign.sol template) */}
+                    <div id="contract-audit">
+                        <ContractAuditSection />
+                    </div>
                 </div>
 
                 {/* RIGHT: sticky donate panel */}

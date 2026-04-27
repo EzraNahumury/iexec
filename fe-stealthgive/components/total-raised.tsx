@@ -12,6 +12,8 @@ type Props = {
     encryptedTotal?: `0x${string}` | string;
     goal: bigint;
     autoLoad?: boolean;
+    /** Notified every time a fresh decrypt succeeds. */
+    onReveal?: (value: bigint) => void;
 };
 
 const ZERO_HANDLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
@@ -28,7 +30,7 @@ const ZERO_HANDLE = "0x000000000000000000000000000000000000000000000000000000000
  * handle propagates, label the state as "syncing", and silently retry every
  * 6 seconds for up to 3 minutes before surfacing a real error.
  */
-export function TotalRaised({encryptedTotal, goal, autoLoad = true}: Props) {
+export function TotalRaised({encryptedTotal, goal, autoLoad = true, onReveal}: Props) {
     const {client: handleClient, refresh: refreshHandleClient} = useHandleClient();
     const [revealed, setRevealed] = useState<bigint | null>(null);
     const [syncing, setSyncing] = useState(false);
@@ -64,6 +66,7 @@ export function TotalRaised({encryptedTotal, goal, autoLoad = true}: Props) {
                     }
                 }
                 setRevealed(res.value as bigint);
+                onReveal?.(res.value as bigint);
                 lastDecryptedHandle.current = handleStr;
                 setError(null);
                 setSyncing(false);
@@ -91,7 +94,7 @@ export function TotalRaised({encryptedTotal, goal, autoLoad = true}: Props) {
                 }
             }
         },
-        [handleClient, encryptedTotal, isZero, handleStr, refreshHandleClient],
+        [handleClient, encryptedTotal, isZero, handleStr, refreshHandleClient, onReveal],
     );
 
     // Auto-load on mount + whenever the handle changes (new donation).

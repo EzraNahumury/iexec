@@ -1,6 +1,6 @@
 "use client";
 
-import {ArrowLeft, Sparkles, Wand2} from "lucide-react";
+import {ArrowLeft, ImageIcon, RefreshCw, Sparkles, Wand2} from "lucide-react";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
@@ -11,6 +11,7 @@ import {arbitrumSepolia} from "wagmi/chains";
 import {stealthGiveFactoryAbi} from "@/lib/abis";
 import {addresses} from "@/lib/addresses";
 import {arbSepoliaGas} from "@/lib/gas";
+import {saveHeroImage} from "@/lib/hero-image";
 import {encodeMetadataURI} from "@/lib/metadata";
 
 const ADDR = addresses[arbitrumSepolia.id];
@@ -28,34 +29,85 @@ export default function CreateCampaignPage() {
 
     // ---------- AI assist ----------
     const [brief, setBrief] = useState("");
-    const [aiBusy, setAiBusy] = useState(false);
+    const [aiBusyText, setAiBusyText] = useState(false);
+    const [aiBusyImage, setAiBusyImage] = useState(false);
     const [aiError, setAiError] = useState<string | null>(null);
+    const [heroImage, setHeroImage] = useState<string | null>(null);
+
+    async function fetchHeroImage(prompt: string) {
+        const res = await fetch("/api/ai/generate-hero", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({prompt}),
+        });
+        const data = (await res.json()) as {imageDataUri?: string; error?: string};
+        if (!res.ok || !data.imageDataUri) {
+            throw new Error(data.error || "Image generation failed");
+        }
+        return data.imageDataUri;
+    }
+
+    async function fetchDraft(briefText: string) {
+        const res = await fetch("/api/ai/draft-campaign", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({brief: briefText}),
+        });
+        const data = (await res.json()) as {title?: string; story?: string; error?: string};
+        if (!res.ok || !data.title || !data.story) {
+            throw new Error(data.error || "Draft generation failed");
+        }
+        return {title: data.title, story: data.story};
+    }
 
     async function generateWithAI() {
         if (brief.trim().length < 4) {
             setAiError("Brief should be at least a few words.");
             return;
         }
-        setAiBusy(true);
         setAiError(null);
+        setAiBusyText(true);
+        setAiBusyImage(true);
+        // Run text + image in parallel; either can complete or fail independently.
+        const textPromise = fetchDraft(brief)
+            .then(t => {
+                setTitle(t.title);
+                setStory(t.story);
+            })
+            .catch(err => {
+                setAiError(prev =>
+                    prev ? `${prev}\nText: ${(err as Error).message}` : `Text: ${(err as Error).message}`,
+                );
+            })
+            .finally(() => setAiBusyText(false));
+        const imagePromise = fetchHeroImage(brief)
+            .then(uri => setHeroImage(uri))
+            .catch(err => {
+                setAiError(prev =>
+                    prev
+                        ? `${prev}\nImage: ${(err as Error).message}`
+                        : `Image: ${(err as Error).message}`,
+                );
+            })
+            .finally(() => setAiBusyImage(false));
+        await Promise.allSettled([textPromise, imagePromise]);
+    }
+
+    async function regenerateHero() {
+        const seed = title.trim() || brief.trim();
+        if (seed.length < 4) {
+            setAiError("Add a title or brief before regenerating the image.");
+            return;
+        }
+        setAiError(null);
+        setAiBusyImage(true);
         try {
-            const res = await fetch("/api/ai/draft-campaign", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({brief}),
-            });
-            const data = (await res.json()) as
-                | {title: string; story: string}
-                | {error: string};
-            if (!res.ok || "error" in data) {
-                throw new Error("error" in data ? data.error : "AI generation failed");
-            }
-            setTitle(data.title);
-            setStory(data.story);
+            const uri = await fetchHeroImage(seed);
+            setHeroImage(uri);
         } catch (err) {
-            setAiError((err as Error).message ?? "AI generation failed");
+            setAiError(`Image: ${(err as Error).message}`);
         } finally {
-            setAiBusy(false);
+            setAiBusyImage(false);
         }
     }
 
@@ -77,6 +129,10 @@ export default function CreateCampaignPage() {
                 });
                 if (decoded.eventName === "CampaignCreated") {
                     const args = decoded.args as {campaign: `0x${string}`};
+                    // Persist the AI hero image to localStorage so the detail
+                    // page can render it (we don't put images on chain to avoid
+                    // ballooning the deploy gas).
+                    if (heroImage) saveHeroImage(args.campaign, heroImage);
                     router.push(`/campaigns/${args.campaign}`);
                     return;
                 }
@@ -84,7 +140,7 @@ export default function CreateCampaignPage() {
                 // not a factory event; skip
             }
         }
-    }, [receipt, router]);
+    }, [receipt, router, heroImage]);
 
     async function onSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -119,6 +175,8 @@ export default function CreateCampaignPage() {
         );
     }
 
+    const aiBusy = aiBusyText || aiBusyImage;
+
     return (
         <div className="max-w-2xl mx-auto px-6 py-12">
             <Link
@@ -139,11 +197,13 @@ export default function CreateCampaignPage() {
                 <div className="flex items-center gap-2 mb-2">
                     <Wand2 className="size-4 text-violet-300" />
                     <h2 className="text-sm font-semibold text-violet-200">Draft with AI</h2>
-                    <span className="text-xs text-zinc-500">powered by ChainGPT Web3 LLM</span>
+                    <span className="text-xs text-zinc-500">
+                        powered by ChainGPT — Web3 LLM + NFT Image Generator
+                    </span>
                 </div>
                 <p className="text-xs text-zinc-400 mb-3">
-                    Describe your cause in one line. AI will draft a compelling title and a 3-paragraph
-                    story you can edit below.
+                    Describe your cause in one line. AI will draft a title, a 3-paragraph story, and a
+                    unique hero image — all of which you can edit or regenerate.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2">
                     <input
@@ -163,8 +223,51 @@ export default function CreateCampaignPage() {
                         {aiBusy ? "Generating…" : "Generate"}
                     </button>
                 </div>
+                {aiBusyText && (
+                    <p className="text-xs text-zinc-500 mt-2">
+                        Drafting title and story…
+                    </p>
+                )}
+                {aiBusyImage && (
+                    <p className="text-xs text-zinc-500 mt-1">
+                        Painting your hero image (this takes ~10–20s)…
+                    </p>
+                )}
                 {aiError && (
-                    <p className="text-xs text-red-400 mt-2 break-words">{aiError}</p>
+                    <p className="text-xs text-red-400 mt-2 whitespace-pre-line break-words">
+                        {aiError}
+                    </p>
+                )}
+
+                {/* Hero preview */}
+                {heroImage && (
+                    <div className="mt-4 space-y-2">
+                        <div className="flex items-center justify-between">
+                            <span className="text-xs text-zinc-400 inline-flex items-center gap-1.5">
+                                <ImageIcon className="size-3.5" /> Hero image preview
+                            </span>
+                            <button
+                                type="button"
+                                onClick={regenerateHero}
+                                disabled={aiBusyImage}
+                                className="text-xs text-violet-300 hover:text-violet-200 inline-flex items-center gap-1 disabled:opacity-50"
+                            >
+                                <RefreshCw className={`size-3 ${aiBusyImage ? "animate-spin" : ""}`} />
+                                Regenerate
+                            </button>
+                        </div>
+                        <div className="overflow-hidden rounded-xl border border-zinc-800">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src={heroImage}
+                                alt="Generated hero preview"
+                                className="w-full aspect-[16/9] object-cover"
+                            />
+                        </div>
+                        <p className="text-[10px] text-zinc-500">
+                            Saved locally on submit (browser only — keeps the on-chain metadata light).
+                        </p>
+                    </div>
                 )}
             </section>
 
