@@ -8,12 +8,14 @@
 
 *Private donations powered by iExec Nox & ERC-7984 Confidential Tokens, with AI-assisted campaign tooling from ChainGPT.*
 
+[![Live App](https://img.shields.io/badge/Live%20App-stealthgive.vercel.app-10B981?style=for-the-badge&logo=vercel&logoColor=white)](https://stealthgive.vercel.app/)
+[![Docs](https://img.shields.io/badge/Docs-docs--stealthgive.vercel.app-0a0a0a?style=for-the-badge&logo=readthedocs&logoColor=white)](https://docs-stealthgive.vercel.app/)
 [![Built on Nox](https://img.shields.io/badge/Built%20on-iExec%20Nox-FFD800?style=for-the-badge)](https://docs.iex.ec/nox-protocol/getting-started/welcome)
 [![Powered by ChainGPT](https://img.shields.io/badge/Powered%20by-ChainGPT-7C3AED?style=for-the-badge)](https://chaingpt.org)
 [![Deployed on](https://img.shields.io/badge/Deployed%20on-Arbitrum%20Sepolia-28A0F0?style=for-the-badge)](https://sepolia.arbiscan.io/address/0xbD124A4C743847f5862024906B66ABeDeB9cCB6e)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-[Live Demo](#) · [Demo Video (4 min)](#) · [Submission Tweet](#) · [Arbiscan — Factory](https://sepolia.arbiscan.io/address/0xbD124A4C743847f5862024906B66ABeDeB9cCB6e)
+[Try the dApp ↗](https://stealthgive.vercel.app/) · [Read the Docs ↗](https://docs-stealthgive.vercel.app/) · [Demo Video (4 min)](#) · [Submission Tweet](#) · [Arbiscan — Factory](https://sepolia.arbiscan.io/address/0xbD124A4C743847f5862024906B66ABeDeB9cCB6e)
 
 </div>
 
@@ -587,7 +589,8 @@ npm run dev
 | **ChainGPT impact report** | ✅ Live | `/api/ai/impact-report` — state-aware ("Projected Impact" → "Final Impact Report"), regenerates as total updates |
 | `feedback.md` (hackathon deliverable) | ✅ Live | [feedback.md](./feedback.md) |
 | Arbiscan contract verification | ✅ Live | All 5 contracts (SGD, cSGD, Factory, Registry, demo Campaign) verified via Etherscan API V2 |
-| Live demo URL (Vercel) | ⏳ Pending | Frontend ready for deploy |
+| Live demo URL (Vercel) | ✅ Live | [stealthgive.vercel.app](https://stealthgive.vercel.app/) |
+| Live docs site | ✅ Live | [docs-stealthgive.vercel.app](https://docs-stealthgive.vercel.app/) |
 | Demo video ≤ 4 min | ⏳ Pending | Script outline ready |
 
 ---
