@@ -484,9 +484,9 @@ export default function DashboardPage() {
                         <button
                             onClick={onApprove}
                             disabled={txBusy || !wrapAmount}
-                            className="rounded-full bg-white border border-zinc-300 hover:border-zinc-900 hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2.5 text-[11px] font-semibold tracking-[0.16em] uppercase transition-colors inline-flex items-center gap-2"
+                            className="rounded-full bg-white border-2 border-zinc-900 text-zinc-900 hover:bg-zinc-900 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed px-5 py-3 text-xs font-bold tracking-[0.18em] uppercase transition-colors inline-flex items-center gap-2"
                         >
-                            <span className="inline-flex items-center justify-center size-4 rounded-full border border-zinc-300 text-[9px] font-bold">
+                            <span className="inline-flex items-center justify-center size-5 rounded-full border border-current text-[10px] font-bold">
                                 1
                             </span>
                             Approve
@@ -494,14 +494,14 @@ export default function DashboardPage() {
                         <button
                             onClick={onWrap}
                             disabled={txBusy || !wrapAmount}
-                            className="group rounded-full bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-200 disabled:text-zinc-500 disabled:cursor-not-allowed text-white px-4 py-2.5 text-[11px] font-semibold tracking-[0.16em] uppercase transition-colors inline-flex items-center gap-2"
+                            className="group rounded-full bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-300 disabled:text-zinc-600 disabled:cursor-not-allowed text-white px-5 py-3 text-xs font-bold tracking-[0.18em] uppercase transition-colors inline-flex items-center gap-2 shadow-[0_8px_20px_-8px_rgba(0,0,0,0.4)] disabled:shadow-none"
                         >
-                            <span className="inline-flex items-center justify-center size-4 rounded-full border border-white/30 text-[9px] font-bold">
+                            <span className="inline-flex items-center justify-center size-5 rounded-full border border-white/40 text-[10px] font-bold">
                                 2
                             </span>
                             Wrap
-                            <span className="inline-flex items-center justify-center size-4 rounded-full border border-white/30 group-hover:border-white/60 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                                <ArrowUpRight className="size-2.5" />
+                            <span className="inline-flex items-center justify-center size-5 rounded-full border border-white/40 group-hover:border-white/70 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                                <ArrowUpRight className="size-3" />
                             </span>
                         </button>
                     </div>
