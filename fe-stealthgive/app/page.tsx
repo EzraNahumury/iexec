@@ -1,31 +1,37 @@
-import {ArrowUpRight, EyeOff, Globe, ShieldCheck, Sparkles, Users, Zap} from "lucide-react";
+import {ArrowUpRight} from "lucide-react";
 import Link from "next/link";
 
 import {BannerHero} from "@/components/landing/banner-hero";
 import {FadeUp} from "@/components/landing/fade-up";
+import {FeatureCard, type FeatureVariant} from "@/components/landing/feature-card";
 import {LandingFooter} from "@/components/landing/landing-footer";
 import {NetworkCanvas} from "@/components/landing/network-canvas";
 import {PillButton} from "@/components/landing/pill-button";
 import {TouchpointCard} from "@/components/landing/touchpoint-card";
 
-const features = [
+const features: {
+    variant: FeatureVariant;
+    eyebrow: string;
+    title: string;
+    body: string;
+}[] = [
     {
+        variant: "hidden",
         eyebrow: "Encrypted donations",
         title: "Per-donor amounts stay hidden",
         body: "Every contribution is encrypted client-side via the iExec Nox gateway. Even campaign creators can't tell who gave how much.",
-        icon: <EyeOff className="size-5" />,
     },
     {
+        variant: "verifiable",
         eyebrow: "Public accountability",
         title: "Total raised stays verifiable",
         body: "Aggregate totals are publicly decryptable on chain — donors can see real progress without surrendering their identity.",
-        icon: <ShieldCheck className="size-5" />,
     },
     {
+        variant: "open",
         eyebrow: "Zero gatekeepers",
         title: "Self-sovereign onboarding",
         body: "Claim our test SGD token from any wallet, any country. No Circle faucet, no VPN, no KYC — just on-chain donation flow.",
-        icon: <Globe className="size-5" />,
     },
 ];
 
@@ -132,19 +138,13 @@ export default function Home() {
 
                     <div className="mt-16 grid md:grid-cols-3 gap-6">
                         {features.map((f, i) => (
-                            <FadeUp key={f.title} delay={0.1 * i}>
-                                <div className="rounded-3xl bg-white border border-zinc-200 p-7 h-full hover:shadow-md hover:-translate-y-0.5 transition-all">
-                                    <div className="aspect-[4/3] rounded-2xl bg-zinc-100 flex items-center justify-center mb-6 border border-zinc-200">
-                                        <div className="size-14 rounded-full bg-zinc-900 text-white flex items-center justify-center">
-                                            {f.icon}
-                                        </div>
-                                    </div>
-                                    <div className="text-[10px] tracking-[0.2em] uppercase text-zinc-500 mb-2">
-                                        {f.eyebrow}
-                                    </div>
-                                    <h3 className="font-semibold text-lg mb-2">{f.title}</h3>
-                                    <p className="text-sm text-zinc-600 leading-relaxed">{f.body}</p>
-                                </div>
+                            <FadeUp key={f.title} delay={0.1 * i} className="h-full">
+                                <FeatureCard
+                                    variant={f.variant}
+                                    eyebrow={f.eyebrow}
+                                    title={f.title}
+                                    body={f.body}
+                                />
                             </FadeUp>
                         ))}
                     </div>
