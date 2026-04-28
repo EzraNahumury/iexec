@@ -528,7 +528,7 @@ export default function CreateCampaignPage() {
 }
 
 const inputCls =
-    "w-full rounded-xl bg-white border border-zinc-200 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all";
+    "w-full rounded-xl bg-white border border-zinc-300 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:bg-white focus:outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all";
 
 function FormSection({
     step,
@@ -547,7 +547,7 @@ function FormSection({
             whileInView={{opacity: 1, y: 0}}
             viewport={{once: true, margin: "-50px"}}
             transition={{duration: 0.5}}
-            className="rounded-3xl border border-zinc-200 bg-white p-6 md:p-7 space-y-5"
+            className="rounded-3xl border border-zinc-300 bg-white p-6 md:p-7 space-y-5 shadow-[0_4px_16px_-8px_rgba(0,0,0,0.08)]"
         >
             <div className="flex items-baseline gap-4">
                 <span className="font-mono text-[11px] tabular-nums font-semibold text-zinc-400 mt-1.5">
