@@ -464,9 +464,9 @@ export default function DashboardPage() {
                         </div>
                     </div>
 
-                    {/* Form */}
-                    <div className="space-y-4">
-                        <div>
+                    {/* Form — input + actions on one tight row */}
+                    <div className="flex flex-wrap items-end gap-3">
+                        <div className="flex-1 min-w-[200px]">
                             <label className="block text-[10px] font-semibold tracking-[0.16em] uppercase text-zinc-500 mb-2">
                                 Amount (SGD)
                             </label>
@@ -477,35 +477,33 @@ export default function DashboardPage() {
                                 placeholder="100"
                                 value={wrapAmount}
                                 onChange={e => setWrapAmount(e.target.value)}
-                                className="w-full rounded-xl bg-zinc-50 border border-zinc-200 px-4 py-3 text-base focus:border-zinc-900 focus:bg-white focus:outline-none transition-colors"
+                                className="w-full rounded-xl bg-zinc-50 border border-zinc-200 px-4 py-2.5 text-base focus:border-zinc-900 focus:bg-white focus:outline-none transition-colors"
                             />
                         </div>
 
-                        <div className="flex flex-wrap gap-3">
-                            <button
-                                onClick={onApprove}
-                                disabled={txBusy || !wrapAmount}
-                                className="flex-1 min-w-[140px] rounded-full bg-white border border-zinc-300 hover:border-zinc-900 hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed px-5 py-3 text-xs font-semibold tracking-[0.16em] uppercase transition-colors inline-flex items-center justify-center gap-2"
-                            >
-                                <span className="inline-flex items-center justify-center size-5 rounded-full border border-zinc-300 text-[10px] font-bold">
-                                    1
-                                </span>
-                                Approve
-                            </button>
-                            <button
-                                onClick={onWrap}
-                                disabled={txBusy || !wrapAmount}
-                                className="group flex-1 min-w-[140px] rounded-full bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-200 disabled:text-zinc-500 disabled:cursor-not-allowed text-white px-5 py-3 text-xs font-semibold tracking-[0.16em] uppercase transition-colors inline-flex items-center justify-center gap-2"
-                            >
-                                <span className="inline-flex items-center justify-center size-5 rounded-full border border-white/30 text-[10px] font-bold">
-                                    2
-                                </span>
-                                Wrap
-                                <span className="inline-flex items-center justify-center size-5 rounded-full border border-white/30 group-hover:border-white/60 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                                    <ArrowUpRight className="size-2.5" />
-                                </span>
-                            </button>
-                        </div>
+                        <button
+                            onClick={onApprove}
+                            disabled={txBusy || !wrapAmount}
+                            className="rounded-full bg-white border border-zinc-300 hover:border-zinc-900 hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2.5 text-[11px] font-semibold tracking-[0.16em] uppercase transition-colors inline-flex items-center gap-2"
+                        >
+                            <span className="inline-flex items-center justify-center size-4 rounded-full border border-zinc-300 text-[9px] font-bold">
+                                1
+                            </span>
+                            Approve
+                        </button>
+                        <button
+                            onClick={onWrap}
+                            disabled={txBusy || !wrapAmount}
+                            className="group rounded-full bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-200 disabled:text-zinc-500 disabled:cursor-not-allowed text-white px-4 py-2.5 text-[11px] font-semibold tracking-[0.16em] uppercase transition-colors inline-flex items-center gap-2"
+                        >
+                            <span className="inline-flex items-center justify-center size-4 rounded-full border border-white/30 text-[9px] font-bold">
+                                2
+                            </span>
+                            Wrap
+                            <span className="inline-flex items-center justify-center size-4 rounded-full border border-white/30 group-hover:border-white/60 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                                <ArrowUpRight className="size-2.5" />
+                            </span>
+                        </button>
                     </div>
                 </motion.section>
 
