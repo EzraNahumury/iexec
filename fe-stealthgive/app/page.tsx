@@ -1,6 +1,7 @@
 import {ArrowUpRight} from "lucide-react";
 import Link from "next/link";
 
+import {AnimatedCounter} from "@/components/landing/animated-counter";
 import {BannerHero} from "@/components/landing/banner-hero";
 import {FadeUp} from "@/components/landing/fade-up";
 import {FeatureCard, type FeatureVariant} from "@/components/landing/feature-card";
@@ -108,11 +109,17 @@ export default function Home() {
                 <div className="border-y border-zinc-100">
                     <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 divide-x divide-zinc-100">
                         {numbers.map((n, i) => (
-                            <FadeUp key={n.label} delay={0.05 * i} className="px-6 py-10">
-                                <div className="text-4xl md:text-5xl font-light tracking-tight">
-                                    {n.value}
-                                </div>
-                                <div className="mt-2 text-[11px] tracking-[0.18em] uppercase text-zinc-500">
+                            <FadeUp
+                                key={n.label}
+                                delay={0.05 * i}
+                                className="group px-6 py-10 hover:bg-zinc-50 transition-colors"
+                            >
+                                <AnimatedCounter
+                                    value={n.value}
+                                    className="block text-4xl md:text-5xl font-light tracking-tight tabular-nums"
+                                    duration={1.6}
+                                />
+                                <div className="mt-2 text-[11px] tracking-[0.18em] uppercase text-zinc-500 group-hover:text-zinc-700 transition-colors">
                                     {n.label}
                                 </div>
                             </FadeUp>
