@@ -1,0 +1,220 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────────────────
+   StealthGive Docs — "Editorial Cryptography Quarterly"
+   White paper. Ink. One deeper emerald. Hairlines, no shadows.
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+    /* Surfaces */
+    --paper: #fafaf7;
+    --paper-edge: #efefe9;
+    --ink: #0a0a0a;
+    --ink-soft: #1c1c1c;
+    --graphite: #4a4a48;
+    --pencil: #7a7a76;
+    --rule: #d8d6cf;
+    --rule-soft: #ebe9e2;
+
+    /* Accent — a deeper, less-SaaS emerald (closer to forest ink) */
+    --vault: #0d6d4f;
+    --vault-soft: #e6f1ec;
+    --vault-edge: #b9d6c8;
+
+    /* Reserved muted tones */
+    --amber: #8a5a00;
+    --amber-soft: #fbf3e4;
+    --rust: #8a3422;
+    --rust-soft: #f7e8e2;
+
+    /* Type scale */
+    --serif: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+    --italic: var(--font-instrument), "Iowan Old Style", Georgia, serif;
+    --sans: var(--font-geist-sans), -apple-system, system-ui, sans-serif;
+    --mono: var(--font-jetbrains), "Berkeley Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+
+@theme inline {
+    --color-background: var(--paper);
+    --color-foreground: var(--ink);
+    --font-sans: var(--sans);
+    --font-mono: var(--mono);
+    --font-serif: var(--serif);
+    --font-italic: var(--italic);
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px;
+    background: var(--paper);
+}
+
+body {
+    background:
+        /* paper grain — extremely subtle warm noise */
+        radial-gradient(rgba(0, 0, 0, 0.018) 1px, transparent 1px) 0 0 / 3px 3px,
+        var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-feature-settings: "ss01", "cv11", "cv05";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* ── Selection ───────────────────────────────────────────────────────── */
+::selection {
+    background: var(--ink);
+    color: var(--paper);
+}
+
+/* ── Scrollbar — almost invisible ───────────────────────────────────── */
+.scrollbar-thin::-webkit-scrollbar { width: 5px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--rule);
+    border-radius: 0;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: var(--graphite); }
+
+/* ── Backgrounds ─────────────────────────────────────────────────────── */
+.bg-grid-soft {
+    background-image:
+        linear-gradient(to right, rgba(10, 10, 10, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(10, 10, 10, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+}
+.bg-paper {
+    background: var(--paper);
+}
+.bg-rule-tint {
+    background: var(--rule-soft);
+}
+
+/* ── Animations ──────────────────────────────────────────────────────── */
+@keyframes fade-up {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+
+@keyframes blink-soft {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+}
+.animate-blink { animation: blink-soft 2.4s ease-in-out infinite; }
+
+@keyframes ink-stamp {
+    from { opacity: 0; transform: scale(0.96) rotate(-2deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+.animate-stamp { animation: ink-stamp 0.55s ease-out both; }
+
+/* ── Typography helpers ──────────────────────────────────────────────── */
+.font-display { font-family: var(--serif); font-feature-settings: "ss01", "lnum"; }
+.font-italic-ed { font-family: var(--italic); font-style: italic; }
+.font-mono-ed { font-family: var(--mono); font-feature-settings: "ss01", "ss02", "zero"; }
+
+/* OldStyle figures inline */
+.osf { font-feature-settings: "onum"; }
+.lnum { font-feature-settings: "lnum"; }
+
+/* Editorial small caps for labels */
+.smallcaps {
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.66rem;
+    font-weight: 500;
+    color: var(--graphite);
+}
+
+/* Manuscript hairline */
+.hr-ink {
+    border: none;
+    height: 1px;
+    background: var(--rule);
+}
+.hr-ink-bold {
+    border: none;
+    height: 1px;
+    background: var(--ink);
+}
+
+/* Drop cap utility */
+.drop-cap::first-letter {
+    font-family: var(--italic);
+    font-style: italic;
+    font-size: 3.4em;
+    line-height: 0.85;
+    float: left;
+    padding-right: 0.06em;
+    padding-top: 0.08em;
+    color: var(--ink);
+}
+
+/* Manuscript code */
+.docs-prose code:not(pre code) {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    padding: 0;
+    /* Hairline underline */
+    box-shadow: 0 1px 0 var(--rule);
+    border-radius: 0;
+}
+
+.docs-prose pre {
+    background: transparent;
+    border: none;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    border-radius: 0;
+    padding: 1.1rem 0;
+    overflow-x: auto;
+    font-size: 0.84rem;
+    line-height: 1.7;
+    margin: 1.5rem 0;
+    color: var(--ink-soft);
+}
+
+.docs-prose pre code {
+    font-family: var(--mono);
+}
+
+.docs-prose h2,
+.docs-prose h3 {
+    scroll-margin-top: 110px;
+}
+
+/* Underline link style — editorial */
+.link-ink {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--rule);
+    transition: text-decoration-color 0.2s, color 0.2s;
+}
+.link-ink:hover {
+    text-decoration-color: var(--vault);
+    color: var(--vault);
+}
+
+/* Folio stamp (top-right page label) */
+.folio {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pencil);
+}
+
+/* Asymmetric ornament (manual divider) */
+.ornament::before {
+    content: "❡";
+    color: var(--rule);
+    font-size: 1.1em;
+}
