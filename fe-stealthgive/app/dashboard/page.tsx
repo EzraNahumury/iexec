@@ -15,21 +15,29 @@ import {
 } from "lucide-react";
 import {AnimatePresence, motion} from "framer-motion";
 import {useEffect, useState} from "react";
-import {useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract} from "wagmi";
+import {
+    useAccount,
+    useDisconnect,
+    useReadContract,
+    useWaitForTransactionReceipt,
+    useWriteContract,
+} from "wagmi";
 import {arbitrumSepolia} from "wagmi/chains";
 
 import {confidentialSGDAbi, stealthGiveDollarAbi} from "@/lib/abis";
 import {addresses} from "@/lib/addresses";
 import {formatSGD, shortAddress} from "@/lib/format";
 import {arbSepoliaGas} from "@/lib/gas";
-import {isAuthError, useHandleClient} from "@/lib/nox";
+import {friendlyAuthError, isAuthError, useHandleClient} from "@/lib/nox";
 
 const ADDR = addresses[arbitrumSepolia.id];
 const ZERO_HANDLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
 
 export default function DashboardPage() {
     const {address, isConnected} = useAccount();
+    const {disconnect} = useDisconnect();
     const {client: handleClient, refresh: refreshHandleClient} = useHandleClient();
+    const [authExpired, setAuthExpired] = useState(false);
 
     /* ─────────── reads ─────────── */
     const {data: sgdBalance, refetch: refetchSGD} = useReadContract({
@@ -77,6 +85,7 @@ export default function DashboardPage() {
         if (!handleClient || !cSGDHandle) return;
         setDecrypting(true);
         setDecryptError(null);
+        setAuthExpired(false);
         try {
             const res = await handleClient.decrypt(cSGDHandle as `0x${string}`);
             setDecrypted(res.value as bigint);
@@ -89,14 +98,35 @@ export default function DashboardPage() {
                     setDecrypted(res.value as bigint);
                     return;
                 } catch (retryErr) {
-                    setDecryptError((retryErr as Error).message ?? "Failed to decrypt");
+                    if (isAuthError(retryErr)) {
+                        setAuthExpired(true);
+                        setDecryptError(friendlyAuthError(retryErr));
+                        return;
+                    }
+                    setDecryptError(friendlyAuthError(retryErr));
                     return;
                 }
             }
-            setDecryptError((err as Error).message ?? "Failed to decrypt");
+            setDecryptError(friendlyAuthError(err));
         } finally {
             setDecrypting(false);
         }
+    }
+
+    function onReconnect() {
+        try {
+            for (const storage of [window.localStorage, window.sessionStorage]) {
+                const keys: string[] = [];
+                for (let i = 0; i < storage.length; i++) {
+                    const k = storage.key(i);
+                    if (k && /iexec|nox|handle|decrypt|wagmi/i.test(k)) keys.push(k);
+                }
+                keys.forEach(k => storage.removeItem(k));
+            }
+        } catch {
+            /* ignore */
+        }
+        disconnect();
     }
 
     /* ─────────── wrap form ─────────── */
@@ -379,7 +409,18 @@ export default function DashboardPage() {
                             </button>
                         )}
                         {decryptError && (
-                            <p className="mt-3 text-xs text-red-300 break-words">{decryptError}</p>
+                            <div className="mt-3 rounded-xl border border-red-400/30 bg-red-500/10 p-3 space-y-2">
+                                <p className="text-xs text-red-200 leading-relaxed">{decryptError}</p>
+                                {authExpired && (
+                                    <button
+                                        onClick={onReconnect}
+                                        className="w-full rounded-full bg-white hover:bg-zinc-100 text-zinc-900 px-3 py-2 text-[10px] font-bold tracking-[0.18em] uppercase transition-colors inline-flex items-center justify-center gap-2"
+                                    >
+                                        <RefreshCw className="size-3" />
+                                        Reconnect wallet
+                                    </button>
+                                )}
+                            </div>
                         )}
                         {!hasNoCSGD && (
                             <p className="mt-3 text-[10px] font-mono text-white/40 break-all">

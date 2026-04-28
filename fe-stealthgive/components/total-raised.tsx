@@ -4,7 +4,7 @@ import {Lock, RefreshCw, Sparkles} from "lucide-react";
 import {useCallback, useEffect, useRef, useState} from "react";
 
 import {formatPercent, formatSGD} from "@/lib/format";
-import {isAuthError, useHandleClient} from "@/lib/nox";
+import {friendlyAuthError, isAuthError, useHandleClient} from "@/lib/nox";
 
 import {ProgressBar} from "./progress-bar";
 
@@ -75,7 +75,7 @@ export function TotalRaised({encryptedTotal, goal, autoLoad = true, onReveal}: P
                     }
                 } else {
                     setSyncing(false);
-                    setError(msg || "Decryption failed");
+                    setError(friendlyAuthError(err));
                 }
             }
         },

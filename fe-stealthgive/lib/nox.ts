@@ -93,3 +93,19 @@ export function isAuthError(err: unknown): boolean {
     const msg = (err as Error)?.message ?? "";
     return /401|unauthor|token is not active|expired/i.test(msg);
 }
+
+/**
+ * Convert a raw SDK error into a clean, actionable user message. Strips
+ * the verbose "Unexpected response from Handle Gateway (status: 401, data:
+ * {...json blob...})" wrapper that the SDK throws and replaces it with
+ * something the donor can act on.
+ */
+export function friendlyAuthError(err: unknown): string {
+    if (isAuthError(err)) {
+        return "Your gateway session has expired. Reconnect your wallet to refresh it.";
+    }
+    const raw = (err as Error)?.message ?? "Something went wrong.";
+    // Trim huge JSON-data dumps the SDK appends.
+    const trimmed = raw.replace(/\s*\(status: \d+,?\s*data:.*\)/i, "").trim();
+    return trimmed || "Something went wrong.";
+}

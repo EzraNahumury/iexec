@@ -33,7 +33,7 @@ import {campaignAbi, confidentialSGDAbi} from "@/lib/abis";
 import {addresses} from "@/lib/addresses";
 import {arbSepoliaGas} from "@/lib/gas";
 import {parseMetadataURI} from "@/lib/metadata";
-import {isAuthError, useHandleClient} from "@/lib/nox";
+import {friendlyAuthError, isAuthError, useHandleClient} from "@/lib/nox";
 import {shortAddress} from "@/lib/format";
 
 const ADDR = addresses[arbitrumSepolia.id];
@@ -164,7 +164,7 @@ export default function CampaignDetailPage({
 
             setDonateAmount("");
         } catch (err) {
-            setDonateError((err as Error).message ?? "Donation failed");
+            setDonateError(friendlyAuthError(err));
         } finally {
             setDonateBusy(false);
         }
