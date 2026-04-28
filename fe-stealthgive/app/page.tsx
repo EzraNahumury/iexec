@@ -1,6 +1,5 @@
-import {ArrowUpRight, FileCode2, Repeat, ShieldOff, Sparkles} from "lucide-react";
+import {ArrowUpRight} from "lucide-react";
 import Link from "next/link";
-import type {ReactNode} from "react";
 
 import {BannerHero} from "@/components/landing/banner-hero";
 import {FadeUp} from "@/components/landing/fade-up";
@@ -36,49 +35,12 @@ const features: {
     },
 ];
 
-const numbers: {
-    value: string;
-    label: string;
-    sub: string;
-    icon: ReactNode;
-    accent: "emerald" | "violet" | "amber" | "sky";
-}[] = [
-    {
-        value: "5",
-        label: "Smart contracts deployed & verified",
-        sub: "Source-verified on Arbiscan",
-        icon: <FileCode2 className="size-4" />,
-        accent: "emerald",
-    },
-    {
-        value: "5",
-        label: "ChainGPT integrations live",
-        sub: "Web3 LLM · Image Gen · Auditor",
-        icon: <Sparkles className="size-4" />,
-        accent: "violet",
-    },
-    {
-        value: "1:1",
-        label: "Wrap ratio SGD → cSGD",
-        sub: "Lossless ERC-7984 wrap",
-        icon: <Repeat className="size-4" />,
-        accent: "amber",
-    },
-    {
-        value: "0",
-        label: "Plaintext leaks per donation",
-        sub: "Encrypted in TEE end-to-end",
-        icon: <ShieldOff className="size-4" />,
-        accent: "sky",
-    },
+const numbers = [
+    {value: "5", label: "Smart contracts deployed & verified"},
+    {value: "5", label: "ChainGPT integrations live"},
+    {value: "1:1", label: "Wrap ratio SGD → cSGD"},
+    {value: "0", label: "Plaintext leaks per donation"},
 ];
-
-const accentRing: Record<"emerald" | "violet" | "amber" | "sky", string> = {
-    emerald: "bg-emerald-500/15 group-hover:bg-emerald-500/25",
-    violet: "bg-violet-500/15 group-hover:bg-violet-500/25",
-    amber: "bg-amber-500/15 group-hover:bg-amber-500/25",
-    sky: "bg-sky-500/15 group-hover:bg-sky-500/25",
-};
 
 export default function Home() {
     return (
@@ -142,73 +104,16 @@ export default function Home() {
                     </FadeUp>
                 </div>
 
-            </section>
-
-            {/* ──────────── Number row — dark stats band ──────────── */}
-            <section className="relative bg-zinc-950 text-white overflow-hidden">
-                {/* Decorative grid pattern */}
-                <div
-                    className="absolute inset-0 opacity-[0.06] pointer-events-none"
-                    style={{
-                        backgroundImage:
-                            "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-                        backgroundSize: "64px 64px",
-                    }}
-                    aria-hidden
-                />
-                {/* Soft gradient orb */}
-                <div className="absolute -top-32 left-1/2 -translate-x-1/2 size-[600px] rounded-full bg-emerald-500/[0.04] blur-3xl pointer-events-none" />
-
-                <div className="relative max-w-7xl mx-auto px-6 py-20 md:py-24">
-                    <FadeUp>
-                        <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
-                            <div>
-                                <div className="text-[11px] font-semibold tracking-[0.2em] uppercase text-white/50 mb-3 inline-flex items-center gap-2">
-                                    <span className="size-1 rounded-full bg-emerald-400 animate-pulse" />
-                                    By the numbers
-                                </div>
-                                <h3 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.05]">
-                                    The shape of{" "}
-                                    <span className="font-serif italic font-light text-white/70">
-                                        this build
-                                    </span>
-                                </h3>
-                            </div>
-                            <p className="text-sm text-white/50 max-w-xs leading-relaxed">
-                                Every figure verified on chain or by reading the source — no
-                                marketing inflation.
-                            </p>
-                        </div>
-                    </FadeUp>
-
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                {/* Number row */}
+                <div className="border-y border-zinc-100">
+                    <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 divide-x divide-zinc-100">
                         {numbers.map((n, i) => (
-                            <FadeUp key={n.label} delay={0.06 * i}>
-                                <div className="group relative rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur p-5 md:p-6 hover:border-white/25 hover:bg-white/[0.06] transition-all duration-300 overflow-hidden h-full">
-                                    {/* Corner glow */}
-                                    <div
-                                        className={`absolute -bottom-12 -right-12 size-32 rounded-full blur-2xl pointer-events-none transition-colors ${accentRing[n.accent]}`}
-                                    />
-
-                                    {/* Icon chip */}
-                                    <div className="size-9 rounded-xl bg-white/10 backdrop-blur border border-white/15 flex items-center justify-center mb-5 group-hover:bg-white/15 group-hover:border-white/25 transition-colors">
-                                        {n.icon}
-                                    </div>
-
-                                    {/* Big value */}
-                                    <div className="text-5xl md:text-6xl font-semibold tabular-nums tracking-tight leading-none">
-                                        {n.value}
-                                    </div>
-
-                                    {/* Label + sub */}
-                                    <div className="mt-5 space-y-1.5">
-                                        <div className="text-[11px] font-semibold tracking-[0.16em] uppercase text-white/70 leading-snug">
-                                            {n.label}
-                                        </div>
-                                        <div className="text-[11px] text-white/40 leading-snug">
-                                            {n.sub}
-                                        </div>
-                                    </div>
+                            <FadeUp key={n.label} delay={0.05 * i} className="px-6 py-10">
+                                <div className="text-4xl md:text-5xl font-light tracking-tight">
+                                    {n.value}
+                                </div>
+                                <div className="mt-2 text-[11px] tracking-[0.18em] uppercase text-zinc-500">
+                                    {n.label}
                                 </div>
                             </FadeUp>
                         ))}
