@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {Plus} from "lucide-react";
+import {ArrowUpRight, Plus} from "lucide-react";
 import {useReadContract, useReadContracts} from "wagmi";
 import {arbitrumSepolia} from "wagmi/chains";
 
@@ -55,21 +55,30 @@ export default function CampaignsPage() {
     });
 
     return (
-        <div className="max-w-6xl mx-auto px-6 py-12">
-            <header className="flex flex-wrap items-end justify-between gap-4 mb-10">
+        <div className="max-w-6xl mx-auto px-6 py-16 md:py-20">
+            <header className="flex flex-wrap items-end justify-between gap-6 mb-12">
                 <div>
-                    <h1 className="text-4xl font-semibold tracking-tight">Active campaigns</h1>
-                    <p className="text-zinc-400 mt-2">
-                        {list.length} on-chain {list.length === 1 ? "campaign" : "campaigns"}. Per-donor
-                        amounts hidden, totals publicly verifiable.
+                    <div className="text-[11px] font-medium tracking-[0.18em] uppercase text-zinc-500 mb-3">
+                        On-chain · Arbitrum Sepolia
+                    </div>
+                    <h1 className="text-5xl md:text-6xl font-semibold tracking-tight text-zinc-900 leading-[1.05]">
+                        Active{" "}
+                        <span className="font-serif italic font-light">campaigns</span>
+                    </h1>
+                    <p className="text-zinc-600 mt-4 max-w-md">
+                        {list.length} confidential {list.length === 1 ? "fundraiser" : "fundraisers"} live.
+                        Per-donor amounts encrypted; totals publicly verifiable.
                     </p>
                 </div>
                 <Link
                     href="/create"
-                    className="inline-flex items-center gap-2 rounded-full bg-violet-600 hover:bg-violet-500 px-5 py-2.5 text-sm font-medium transition-colors"
+                    className="group inline-flex items-center gap-3 rounded-full bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold tracking-[0.16em] uppercase px-5 py-3 transition-colors"
                 >
                     <Plus className="size-4" />
                     Start a campaign
+                    <span className="inline-flex items-center justify-center size-6 rounded-full border border-white/30 group-hover:border-white/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                        <ArrowUpRight className="size-3" />
+                    </span>
                 </Link>
             </header>
 
@@ -78,18 +87,18 @@ export default function CampaignsPage() {
                     {[0, 1, 2].map(i => (
                         <div
                             key={i}
-                            className="rounded-2xl border border-zinc-200 bg-zinc-50 h-72 animate-pulse"
+                            className="rounded-2xl border border-zinc-200 bg-zinc-50 h-80 animate-pulse"
                         />
                     ))}
                 </div>
             )}
 
             {!isLoading && list.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-zinc-200 p-16 text-center">
-                    <p className="text-zinc-400 mb-4">No campaigns yet.</p>
+                <div className="rounded-3xl border border-dashed border-zinc-300 bg-zinc-50/50 p-16 text-center">
+                    <p className="text-zinc-600 mb-4">No campaigns yet.</p>
                     <Link
                         href="/create"
-                        className="inline-block text-violet-400 hover:text-violet-300 text-sm font-medium"
+                        className="inline-block text-zinc-900 hover:text-zinc-700 text-sm font-medium underline underline-offset-4"
                     >
                         Be the first to start one →
                     </Link>
