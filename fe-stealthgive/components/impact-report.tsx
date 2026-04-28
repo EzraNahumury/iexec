@@ -1,6 +1,6 @@
 "use client";
 
-import {Loader2, RefreshCw, ScrollText, Sparkles} from "lucide-react";
+import {ArrowUpRight, Loader2, RefreshCw, ScrollText, Sparkles} from "lucide-react";
 import {useEffect, useState} from "react";
 
 type State = "active" | "settling" | "withdrawn" | "refunding";
@@ -9,7 +9,7 @@ type Props = {
     campaign: `0x${string}`;
     title: string;
     goalCSGD: string;
-    totalRaisedCSGD: string | null; // null when not yet decrypted / 0
+    totalRaisedCSGD: string | null;
     donorCount: number;
     createdAtMs?: number;
     deadlineMs: number;
@@ -19,21 +19,25 @@ type Props = {
 
 const STORAGE_PREFIX = "stealthgive:impact:";
 
-const stateLabels: Record<State, {heading: string; sub: string}> = {
+const stateLabels: Record<State, {heading: string; emphasis: string; sub: string}> = {
     active: {
-        heading: "Projected Impact",
+        heading: "Projected",
+        emphasis: "Impact",
         sub: "AI narrative based on current traction. Will be regenerated automatically as donations come in.",
     },
     settling: {
-        heading: "Impact Report (Pending Withdrawal)",
+        heading: "Pending",
+        emphasis: "Withdrawal",
         sub: "Campaign deadline reached. Aggregate total revealed; awaiting recipient action.",
     },
     withdrawn: {
-        heading: "Final Impact Report",
+        heading: "Final",
+        emphasis: "Impact",
         sub: "Campaign settled and recipient has withdrawn. Privacy of every donor preserved.",
     },
     refunding: {
-        heading: "Refund Impact Report",
+        heading: "Refund",
+        emphasis: "Phase",
         sub: "Recipient did not withdraw within grace window. Donors can reclaim their contributions.",
     },
 };
@@ -57,9 +61,6 @@ export function ImpactReport({
         STORAGE_PREFIX + campaign.toLowerCase() + ":" + (totalRaisedCSGD ?? "0");
     const labels = stateLabels[state];
 
-    // Restore the most recent impact report for this exact (campaign, total)
-    // pair on mount. When the revealed total changes the cache key changes,
-    // so the report regenerates rather than showing stale numbers.
     useEffect(() => {
         try {
             const cached = window.localStorage.getItem(cacheKey);
@@ -116,53 +117,69 @@ export function ImpactReport({
         totalRaisedCSGD === null || Number(totalRaisedCSGD) <= 0;
 
     return (
-        <section className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-transparent p-5">
-            <div className="flex items-center justify-between mb-2">
-                <div className="inline-flex items-center gap-2">
-                    <ScrollText className="size-4 text-amber-300" />
-                    <h2 className="font-semibold text-sm">{labels.heading}</h2>
-                    <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-200">
-                        ChainGPT · On-chain Insights
-                    </span>
+        <section className="rounded-3xl border border-zinc-200 bg-white p-6 md:p-7 relative overflow-hidden">
+            <div className="absolute -bottom-16 -left-12 size-48 rounded-full bg-zinc-100/70 blur-3xl pointer-events-none" />
+
+            <div className="flex items-start justify-between mb-4 relative gap-4">
+                <div>
+                    <div className="text-[10px] font-semibold tracking-[0.18em] uppercase text-zinc-500 mb-2 inline-flex items-center gap-2">
+                        <ScrollText className="size-3" />
+                        Impact Narrative
+                    </div>
+                    <h2 className="text-xl font-semibold text-zinc-900 tracking-tight">
+                        {labels.heading}{" "}
+                        <span className="font-serif italic font-light">{labels.emphasis}</span>
+                    </h2>
                 </div>
-                {report && !loading && (
-                    <button
-                        onClick={fetchReport}
-                        className="text-xs text-amber-200 hover:text-amber-100 inline-flex items-center gap-1"
-                    >
-                        <RefreshCw className="size-3" />
-                        Regenerate
-                    </button>
-                )}
+                <span className="text-[10px] font-semibold tracking-[0.16em] uppercase px-2.5 py-1 rounded-full bg-zinc-900 text-white whitespace-nowrap shrink-0">
+                    ChainGPT
+                </span>
             </div>
 
-            <p className="text-xs text-zinc-400 mb-3">{labels.sub}</p>
+            <p className="text-sm text-zinc-500 mb-5 leading-relaxed">{labels.sub}</p>
 
             {cantGenerateYet ? (
-                <p className="text-xs text-zinc-500 italic">
+                <p className="text-xs text-zinc-500 italic inline-flex items-center gap-2">
+                    <span className="size-1 rounded-full bg-zinc-300" />
                     Available after the first donation reveals an aggregate total.
                 </p>
             ) : !report && !loading && !error ? (
                 <button
                     onClick={fetchReport}
-                    className="w-full rounded-full bg-amber-600 hover:bg-amber-500 px-4 py-2 text-sm font-medium inline-flex items-center justify-center gap-2"
+                    className="group inline-flex items-center gap-3 rounded-full bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-bold tracking-[0.18em] uppercase px-5 py-3 transition-colors"
                 >
                     <Sparkles className="size-3.5" />
-                    Generate impact report (~6s)
+                    Generate impact report · ~6s
+                    <span className="inline-flex items-center justify-center size-5 rounded-full border border-white/40 group-hover:border-white/70 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                        <ArrowUpRight className="size-3" />
+                    </span>
                 </button>
             ) : null}
 
             {loading && (
-                <div className="flex items-center gap-2 text-sm text-zinc-400">
+                <div className="flex items-center gap-2 text-sm text-zinc-600">
                     <Loader2 className="size-4 animate-spin" />
                     Drafting impact narrative…
                 </div>
             )}
 
-            {error && <p className="text-sm text-red-400 break-words">{error}</p>}
+            {error && <p className="text-sm text-red-600 break-words">{error}</p>}
 
             {report && (
-                <p className="text-sm text-zinc-800 leading-relaxed whitespace-pre-line">{report}</p>
+                <>
+                    <p className="text-sm text-zinc-700 leading-relaxed whitespace-pre-line">
+                        {report}
+                    </p>
+                    {!loading && (
+                        <button
+                            onClick={fetchReport}
+                            className="mt-4 text-[11px] font-semibold tracking-[0.16em] uppercase text-zinc-500 hover:text-zinc-900 inline-flex items-center gap-1.5 transition-colors"
+                        >
+                            <RefreshCw className="size-3" />
+                            Regenerate
+                        </button>
+                    )}
+                </>
             )}
         </section>
     );

@@ -18,25 +18,12 @@ type Props = {
 
 const ZERO_HANDLE = "0x0000000000000000000000000000000000000000000000000000000000000000";
 
-/**
- * Decryption flow:
- *   1. The handle returned by `encryptedTotal()` changes every time someone
- *      donates (Nox is immutable — each `add()` allocates a fresh handle).
- *   2. The contract calls `allowPublicDecryption(newHandle)` on chain.
- *   3. The off-chain Nox gateway then needs to index that event before
- *      `publicDecrypt` succeeds. This is usually 5–60s but can be longer.
- *
- * We therefore: keep the previous decrypted value on screen while the new
- * handle propagates, label the state as "syncing", and silently retry every
- * 6 seconds for up to 3 minutes before surfacing a real error.
- */
 export function TotalRaised({encryptedTotal, goal, autoLoad = true, onReveal}: Props) {
     const {client: handleClient, refresh: refreshHandleClient} = useHandleClient();
     const [revealed, setRevealed] = useState<bigint | null>(null);
     const [syncing, setSyncing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Avoid losing the last successful value when the handle rotates.
     const lastDecryptedHandle = useRef<string | null>(null);
     const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const startedAt = useRef<number>(0);
@@ -78,8 +65,6 @@ export function TotalRaised({encryptedTotal, goal, autoLoad = true, onReveal}: P
                 const msg = (err as Error).message ?? "";
                 const isNotReady = /not publicly decryptable|does not exist/i.test(msg);
                 if (isNotReady) {
-                    // Gateway hasn't indexed the new handle yet — keep previous value
-                    // visible, show subtle "syncing", and retry shortly.
                     setSyncing(true);
                     const elapsed = Date.now() - startedAt.current;
                     if (elapsed < 180_000) {
@@ -97,7 +82,6 @@ export function TotalRaised({encryptedTotal, goal, autoLoad = true, onReveal}: P
         [handleClient, encryptedTotal, isZero, handleStr, refreshHandleClient, onReveal],
     );
 
-    // Auto-load on mount + whenever the handle changes (new donation).
     useEffect(() => {
         if (!autoLoad) return;
         if (lastDecryptedHandle.current && lastDecryptedHandle.current === handleStr) return;
@@ -109,15 +93,20 @@ export function TotalRaised({encryptedTotal, goal, autoLoad = true, onReveal}: P
 
     if (isZero) {
         return (
-            <div className="space-y-2">
+            <div className="space-y-3">
                 <div className="flex items-baseline justify-between">
-                    <span className="text-zinc-400 text-sm">Raised</span>
-                    <span className="font-mono text-lg">
-                        0 / <span className="text-zinc-500">{formatSGD(goal)} cSGD</span>
+                    <span className="text-[11px] font-medium tracking-[0.16em] uppercase text-zinc-500">
+                        Raised
+                    </span>
+                    <span className="font-mono text-base text-zinc-700">
+                        0 / <span className="text-zinc-400">{formatSGD(goal)} cSGD</span>
                     </span>
                 </div>
                 <ProgressBar percent={0} />
-                <p className="text-xs text-zinc-500">No donations yet — be the first.</p>
+                <p className="text-xs text-zinc-500 inline-flex items-center gap-1.5">
+                    <Lock className="size-3" />
+                    No donations yet — be the first.
+                </p>
             </div>
         );
     }
@@ -125,13 +114,18 @@ export function TotalRaised({encryptedTotal, goal, autoLoad = true, onReveal}: P
     const percent = revealed !== null ? formatPercent(revealed, goal) : 0;
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-3">
             <div className="flex items-baseline justify-between gap-2">
-                <span className="text-zinc-400 text-sm">Raised</span>
+                <span className="text-[11px] font-medium tracking-[0.16em] uppercase text-zinc-500">
+                    Raised
+                </span>
                 <div className="flex items-center gap-2">
                     {revealed !== null ? (
-                        <span className="font-mono text-lg">
-                            <span className="text-emerald-400">{formatSGD(revealed)}</span> /{" "}
+                        <span className="font-mono text-base">
+                            <span className="text-zinc-900 font-semibold tabular-nums">
+                                {formatSGD(revealed)}
+                            </span>{" "}
+                            <span className="text-zinc-300">/</span>{" "}
                             <span className="text-zinc-500">{formatSGD(goal)} cSGD</span>
                         </span>
                     ) : syncing ? (
@@ -143,7 +137,7 @@ export function TotalRaised({encryptedTotal, goal, autoLoad = true, onReveal}: P
                         <button
                             onClick={() => reveal()}
                             disabled={!handleClient}
-                            className="inline-flex items-center gap-1.5 text-xs text-violet-300 hover:text-violet-200 disabled:opacity-50"
+                            className="inline-flex items-center gap-1.5 text-xs text-zinc-700 hover:text-zinc-900 disabled:opacity-50"
                         >
                             <Sparkles className="size-3.5" />
                             Reveal
@@ -151,16 +145,16 @@ export function TotalRaised({encryptedTotal, goal, autoLoad = true, onReveal}: P
                     )}
                 </div>
             </div>
-            <ProgressBar percent={percent} accent={percent >= 100 ? "emerald" : "violet"} />
-            <div className="flex items-center justify-between text-xs">
+            <ProgressBar percent={percent} accent={percent >= 100 ? "emerald" : "zinc"} />
+            <div className="flex items-center justify-between text-xs gap-4">
                 <p className="inline-flex items-center gap-1.5 text-zinc-500">
                     <Lock className="size-3" />
                     Aggregate decrypted via the iExec Nox gateway. Per-donor amounts stay private.
                 </p>
                 {syncing && revealed !== null && (
-                    <span className="inline-flex items-center gap-1 text-amber-400">
+                    <span className="inline-flex items-center gap-1 text-zinc-500 shrink-0">
                         <RefreshCw className="size-3 animate-spin" />
-                        Syncing new donation…
+                        Syncing…
                     </span>
                 )}
             </div>
@@ -169,7 +163,7 @@ export function TotalRaised({encryptedTotal, goal, autoLoad = true, onReveal}: P
                     <span className="text-zinc-500">{error}</span>
                     <button
                         onClick={() => reveal()}
-                        className="inline-flex items-center gap-1 text-violet-300 hover:text-violet-200"
+                        className="inline-flex items-center gap-1 text-zinc-700 hover:text-zinc-900"
                     >
                         <RefreshCw className="size-3" />
                         Retry

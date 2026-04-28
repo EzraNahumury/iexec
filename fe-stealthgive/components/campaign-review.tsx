@@ -1,13 +1,13 @@
 "use client";
 
-import {Loader2, RefreshCw, Sparkles} from "lucide-react";
+import {ArrowUpRight, Loader2, RefreshCw, Sparkles} from "lucide-react";
 import {useEffect, useState} from "react";
 import {usePublicClient} from "wagmi";
 
 type Props = {
     campaign: `0x${string}`;
     title: string;
-    goalCSGD: string; // e.g. "10000"
+    goalCSGD: string;
     deadlineMs: number;
     recipient: `0x${string}`;
     donorCount: number;
@@ -16,14 +16,6 @@ type Props = {
 
 const STORAGE_PREFIX = "stealthgive:review:";
 
-/**
- * Per-campaign AI risk review. Calls /api/ai/review-campaign with the
- * campaign's deployment parameters and renders the resulting 2-paragraph
- * review.
- *
- * Result is cached in localStorage keyed by campaign address so revisits
- * don't burn ChainGPT credits.
- */
 export function CampaignReview({
     campaign,
     title,
@@ -40,7 +32,6 @@ export function CampaignReview({
 
     const cacheKey = STORAGE_PREFIX + campaign.toLowerCase();
 
-    // Load cached review once on mount.
     useEffect(() => {
         try {
             const cached = window.localStorage.getItem(cacheKey);
@@ -55,14 +46,12 @@ export function CampaignReview({
         setLoading(true);
         setError(null);
         try {
-            // Detect whether the recipient is a contract (multisig vs EOA) so
-            // the model can comment on it.
             let recipientIsContract = false;
             try {
                 const code = await publicClient.getCode({address: recipient});
                 recipientIsContract = !!code && code !== "0x";
             } catch {
-                /* ignore — non-fatal */
+                /* ignore */
             }
 
             const daysLeft = Math.max(
@@ -103,47 +92,62 @@ export function CampaignReview({
     }
 
     return (
-        <section className="rounded-2xl border border-violet-500/30 bg-gradient-to-br from-violet-500/10 to-transparent p-5">
-            <div className="flex items-center justify-between mb-3">
-                <div className="inline-flex items-center gap-2">
-                    <Sparkles className="size-4 text-violet-300" />
-                    <h2 className="font-semibold text-sm">AI Risk Review</h2>
-                    <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-violet-500/20 text-violet-200">
-                        ChainGPT · this campaign
-                    </span>
+        <section className="rounded-3xl border border-zinc-200 bg-white p-6 md:p-7 relative overflow-hidden">
+            <div className="absolute -top-12 -right-12 size-40 rounded-full bg-zinc-100/70 blur-2xl pointer-events-none" />
+
+            <div className="flex items-start justify-between mb-4 relative gap-4">
+                <div>
+                    <div className="text-[10px] font-semibold tracking-[0.18em] uppercase text-zinc-500 mb-2 inline-flex items-center gap-2">
+                        <span className="size-1 rounded-full bg-zinc-900" />
+                        AI Risk Review
+                    </div>
+                    <h2 className="text-xl font-semibold text-zinc-900 tracking-tight">
+                        How safe is{" "}
+                        <span className="font-serif italic font-light">this campaign?</span>
+                    </h2>
                 </div>
-                {review && !loading && (
-                    <button
-                        onClick={fetchReview}
-                        className="text-xs text-violet-300 hover:text-violet-200 inline-flex items-center gap-1"
-                    >
-                        <RefreshCw className="size-3" />
-                        Refresh
-                    </button>
-                )}
+                <span className="text-[10px] font-semibold tracking-[0.16em] uppercase px-2.5 py-1 rounded-full bg-zinc-900 text-white whitespace-nowrap shrink-0">
+                    ChainGPT
+                </span>
             </div>
 
             {!review && !loading && !error && (
                 <button
                     onClick={fetchReview}
-                    className="w-full rounded-full bg-violet-600 hover:bg-violet-500 px-4 py-2 text-sm font-medium inline-flex items-center justify-center gap-2"
+                    className="group inline-flex items-center gap-3 rounded-full bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-bold tracking-[0.18em] uppercase px-5 py-3 transition-colors"
                 >
                     <Sparkles className="size-3.5" />
-                    Generate review (~5s)
+                    Generate review · ~5s
+                    <span className="inline-flex items-center justify-center size-5 rounded-full border border-white/40 group-hover:border-white/70 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                        <ArrowUpRight className="size-3" />
+                    </span>
                 </button>
             )}
 
             {loading && (
-                <div className="flex items-center gap-2 text-sm text-zinc-400">
+                <div className="flex items-center gap-2 text-sm text-zinc-600">
                     <Loader2 className="size-4 animate-spin" />
                     Analysing this campaign…
                 </div>
             )}
 
-            {error && <p className="text-sm text-red-400 break-words">{error}</p>}
+            {error && <p className="text-sm text-red-600 break-words">{error}</p>}
 
             {review && (
-                <p className="text-sm text-zinc-800 leading-relaxed whitespace-pre-line">{review}</p>
+                <>
+                    <p className="text-sm text-zinc-700 leading-relaxed whitespace-pre-line">
+                        {review}
+                    </p>
+                    {!loading && (
+                        <button
+                            onClick={fetchReview}
+                            className="mt-4 text-[11px] font-semibold tracking-[0.16em] uppercase text-zinc-500 hover:text-zinc-900 inline-flex items-center gap-1.5 transition-colors"
+                        >
+                            <RefreshCw className="size-3" />
+                            Refresh
+                        </button>
+                    )}
+                </>
             )}
         </section>
     );
