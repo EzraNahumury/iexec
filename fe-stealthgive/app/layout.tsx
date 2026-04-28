@@ -23,7 +23,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-    title: "StealthGive — Confidential Crowdfunding on iExec Nox",
+    title: "StealthGive",
     description:
         "Privacy-preserving crowdfunding for causes that cannot be doxxed. Per-donor amounts hidden, total raised verifiable.",
 };
