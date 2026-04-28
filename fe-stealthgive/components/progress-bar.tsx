@@ -18,7 +18,7 @@ export function ProgressBar({percent, accent = "zinc"}: Props) {
         : {width: "0%"};
 
     return (
-        <div className="h-2 w-full rounded-full bg-zinc-100 overflow-hidden">
+        <div className="h-2 w-full rounded-full bg-zinc-200 overflow-hidden">
             <div
                 className={`h-full rounded-full transition-all duration-700 ${fill}`}
                 style={widthStyle}
