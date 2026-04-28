@@ -98,7 +98,7 @@ export default function WelcomePage() {
                 >
                     <div className="size-16 inline-flex items-center justify-center overflow-hidden">
                         <Image
-                            src="/logo-new.png"
+                            src="/logo-new-removebg-preview.png"
                             alt="StealthGive"
                             width={64}
                             height={64}

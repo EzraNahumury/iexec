@@ -52,7 +52,7 @@ export function Header() {
                 <Link href="/" className="flex items-center gap-2.5 group">
                     <span className="size-9 inline-flex items-center justify-center overflow-hidden">
                         <Image
-                            src="/logo-new.png"
+                            src="/logo-new-removebg-preview.png"
                             alt="StealthGive logo"
                             width={36}
                             height={36}
