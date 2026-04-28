@@ -7,15 +7,25 @@ import Link from "next/link";
 import {usePathname} from "next/navigation";
 import {useEffect, useState} from "react";
 
-const navLinks = [
+const landingNav = [
     {label: "Resources", href: "https://docs.iex.ec/nox-protocol/getting-started/welcome", external: true},
     {label: "Browse", href: "/campaigns"},
     {label: "Audit", href: "/audit"},
 ];
 
+const appNav = [
+    {label: "Browse Campaigns", href: "/campaigns", external: false},
+    {label: "Create Campaign", href: "/create", external: false},
+    {label: "Dashboard", href: "/dashboard", external: false},
+    {label: "Audit", href: "/audit", external: false},
+];
+
 export function Header() {
     const pathname = usePathname();
-    const isLanding = pathname === "/";
+    // "Landing context" = the public-facing pages (home + welcome gate).
+    // Everywhere else is "app context" — the wallet-connected dApp.
+    const isLanding = pathname === "/" || pathname === "/welcome";
+    const navLinks = isLanding ? landingNav : appNav;
     const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
