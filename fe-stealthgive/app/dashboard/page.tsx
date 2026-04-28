@@ -589,7 +589,7 @@ export default function DashboardPage() {
 
 function DotPatternDark() {
     return (
-        <svg className="absolute inset-0 w-full h-full opacity-30" aria-hidden>
+        <svg className="absolute inset-0 w-full h-full opacity-30 pointer-events-none" aria-hidden>
             <defs>
                 <pattern id="dash-dots" width="22" height="22" patternUnits="userSpaceOnUse">
                     <circle cx="11" cy="11" r="1" fill="rgba(255,255,255,0.18)" />
