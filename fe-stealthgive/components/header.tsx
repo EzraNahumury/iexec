@@ -14,8 +14,9 @@ const landingNav = [
 ];
 
 const appNav = [
-    {label: "Browse Campaigns", href: "/campaigns", external: false},
-    {label: "Create Campaign", href: "/create", external: false},
+    // Single "Campaigns" entry covers both browsing and creating —
+    // /campaigns already has a 'Start a campaign' CTA on the page itself.
+    {label: "Campaigns", href: "/campaigns", external: false},
     {label: "Dashboard", href: "/dashboard", external: false},
     {label: "Audit", href: "/audit", external: false},
 ];
