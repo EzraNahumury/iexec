@@ -1,6 +1,7 @@
 "use client";
 
 import {ArrowUpRight, Users} from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import {Countdown} from "./countdown";
@@ -10,6 +11,7 @@ import {formatPercent, formatSGD, shortAddress} from "@/lib/format";
 import {parseMetadataURI} from "@/lib/metadata";
 import {useEffect, useState} from "react";
 import {useHandleClient} from "@/lib/nox";
+import {loadHeroImage} from "@/lib/hero-image";
 
 type Props = {
     campaign: `0x${string}`;
@@ -64,51 +66,53 @@ export function CampaignCard(props: Props) {
     const percent =
         raised !== null && props.goal > 0n ? formatPercent(raised, props.goal) : 0;
 
+    // Pick the most appropriate hero image:
+    //   1. AI-generated hero saved in localStorage at campaign creation
+    //   2. Fallback to /campaigns.png (a shared brand banner for the list)
+    const [heroSrc, setHeroSrc] = useState<string>("/campaigns.png");
+    useEffect(() => {
+        const ai = loadHeroImage(props.campaign);
+        if (ai) setHeroSrc(ai);
+    }, [props.campaign]);
+
     return (
         <Link
             href={`/campaigns/${props.campaign}`}
             className="group flex flex-col rounded-2xl border border-zinc-200 bg-white overflow-hidden hover:border-zinc-400 hover:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.12)] transition-all duration-200"
         >
-            {/* Hero zone — monochrome dotted pattern with overlays */}
-            <div className="relative aspect-[16/8] bg-gradient-to-br from-zinc-50 to-zinc-100 border-b border-zinc-200 overflow-hidden">
-                <svg
-                    className="absolute inset-0 w-full h-full"
-                    xmlns="http://www.w3.org/2000/svg"
+            {/* Hero zone — image background with overlays */}
+            <div className="relative aspect-[16/8] border-b border-zinc-200 overflow-hidden bg-zinc-100">
+                {/* Banner image */}
+                <Image
+                    src={heroSrc}
+                    alt=""
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
                     aria-hidden
-                >
-                    <defs>
-                        <pattern
-                            id={`card-dots-${props.campaign.slice(2, 8)}`}
-                            width="20"
-                            height="20"
-                            patternUnits="userSpaceOnUse"
-                        >
-                            <circle cx="10" cy="10" r="1" fill="rgba(0,0,0,0.06)" />
-                        </pattern>
-                    </defs>
-                    <rect
-                        width="100%"
-                        height="100%"
-                        fill={`url(#card-dots-${props.campaign.slice(2, 8)})`}
-                    />
-                </svg>
+                />
+                {/* Slight light overlay so the badges/text overlaid on top stay readable */}
+                <div
+                    className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-black/15 pointer-events-none"
+                    aria-hidden
+                />
 
                 {/* Status + donor count — top row */}
                 <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
                     <StatusBadge state={props.state} />
-                    <span className="inline-flex items-center gap-1 text-[11px] text-zinc-600 font-medium px-2 py-1 rounded-full bg-white/80 backdrop-blur border border-zinc-200">
+                    <span className="inline-flex items-center gap-1 text-[11px] text-zinc-900 font-medium px-2 py-1 rounded-full bg-white/90 backdrop-blur border border-white/40 shadow-sm">
                         <Users className="size-3" />
                         {props.donorCount.toString()}
                     </span>
                 </div>
 
-                {/* Address watermark — bottom-left */}
-                <div className="absolute bottom-3 left-3 font-mono text-[10px] tracking-wider uppercase text-zinc-400">
+                {/* Address watermark — bottom-left, white on photo */}
+                <div className="absolute bottom-3 left-3 font-mono text-[10px] tracking-wider uppercase text-white/85 drop-shadow-sm">
                     {shortAddress(props.campaign, 6, 4)}
                 </div>
 
                 {/* Hover arrow — bottom-right */}
-                <div className="absolute bottom-3 right-3 size-7 rounded-full bg-white border border-zinc-200 flex items-center justify-center text-zinc-700 group-hover:bg-zinc-900 group-hover:text-white group-hover:border-zinc-900 transition-colors">
+                <div className="absolute bottom-3 right-3 size-7 rounded-full bg-white/90 backdrop-blur flex items-center justify-center text-zinc-900 group-hover:bg-zinc-900 group-hover:text-white transition-colors shadow-sm">
                     <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </div>
             </div>
