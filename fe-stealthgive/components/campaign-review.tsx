@@ -4,6 +4,8 @@ import {ArrowUpRight, Loader2, RefreshCw, Sparkles} from "lucide-react";
 import {useEffect, useState} from "react";
 import {usePublicClient} from "wagmi";
 
+import {Markdown} from "./markdown";
+
 type Props = {
     campaign: `0x${string}`;
     title: string;
@@ -135,9 +137,7 @@ export function CampaignReview({
 
             {review && (
                 <>
-                    <p className="text-sm text-zinc-700 leading-relaxed whitespace-pre-line">
-                        {review}
-                    </p>
+                    <Markdown text={review} />
                     {!loading && (
                         <button
                             onClick={fetchReview}

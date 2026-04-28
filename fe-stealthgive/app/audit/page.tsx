@@ -15,6 +15,8 @@ import Link from "next/link";
 import {AnimatePresence, motion} from "framer-motion";
 import {useEffect, useMemo, useState} from "react";
 
+import {Markdown} from "@/components/markdown";
+
 const CAMPAIGN_TEMPLATE_LINK =
     "https://github.com/EzraNahumury/iexec/blob/main/sc-StealthGive/src/Campaign.sol";
 
@@ -381,9 +383,9 @@ function CompletePanel({audit, fromCache}: {audit: string; fromCache: boolean}) 
                     {fromCache ? "From cache" : "Fresh"}
                 </span>
             </div>
-            <pre className="whitespace-pre-wrap break-words text-sm text-zinc-800 leading-relaxed font-sans bg-zinc-50 border border-zinc-200 rounded-xl p-5">
-                {audit}
-            </pre>
+            <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-5">
+                <Markdown text={audit} />
+            </div>
         </motion.div>
     );
 }

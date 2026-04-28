@@ -3,6 +3,8 @@
 import {ArrowUpRight, Loader2, RefreshCw, ScrollText, Sparkles} from "lucide-react";
 import {useEffect, useState} from "react";
 
+import {Markdown} from "./markdown";
+
 type State = "active" | "settling" | "withdrawn" | "refunding";
 
 type Props = {
@@ -167,9 +169,7 @@ export function ImpactReport({
 
             {report && (
                 <>
-                    <p className="text-sm text-zinc-700 leading-relaxed whitespace-pre-line">
-                        {report}
-                    </p>
+                    <Markdown text={report} />
                     {!loading && (
                         <button
                             onClick={fetchReport}
