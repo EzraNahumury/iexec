@@ -1,6 +1,7 @@
 "use client";
 
 import {motion} from "framer-motion";
+import {ArrowRight, Check, Eye, EyeOff, Globe, Lock, Shield, ShieldCheck} from "lucide-react";
 
 export type FeatureVariant = "hidden" | "verifiable" | "open";
 
@@ -12,10 +13,10 @@ type Props = {
 };
 
 /**
- * Big "Three guarantees" feature card. Light visual zone (zinc-50/white)
- * with dark animated illustration so it reads as the inverse of the
- * dark-zone TouchpointCard further up the page — gives the landing a
- * dark→light→dark visual rhythm.
+ * Big "Three guarantees" feature card. The illustration zone is rendered as
+ * a small dashboard-style mockup (chips, pills, mini chart) so each card
+ * looks like a screenshot of a real dApp module rather than an abstract
+ * decoration. Monochrome to match the rest of the site.
  */
 export function FeatureCard({variant, eyebrow, title, body}: Props) {
     return (
@@ -24,13 +25,9 @@ export function FeatureCard({variant, eyebrow, title, body}: Props) {
             transition={{type: "spring", stiffness: 260, damping: 22}}
             className="group h-full flex flex-col rounded-3xl bg-white border border-zinc-200 overflow-hidden hover:shadow-[0_20px_40px_-20px_rgba(0,0,0,0.18)] hover:ring-1 hover:ring-zinc-300 transition-shadow"
         >
-            {/* Illustration zone */}
-            <div className="relative aspect-[4/3] bg-gradient-to-br from-zinc-50 via-white to-zinc-100 overflow-hidden flex-shrink-0">
-                <Illustration variant={variant} />
-                <div
-                    className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-zinc-100/40 to-transparent pointer-events-none"
-                    aria-hidden
-                />
+            {/* Illustration zone — dashboard mockup */}
+            <div className="relative aspect-[4/3] bg-zinc-100 overflow-hidden flex-shrink-0 p-5">
+                <Mockup variant={variant} />
             </div>
 
             {/* Body */}
@@ -45,137 +42,105 @@ export function FeatureCard({variant, eyebrow, title, body}: Props) {
     );
 }
 
-function Illustration({variant}: {variant: FeatureVariant}) {
+function Mockup({variant}: {variant: FeatureVariant}) {
     switch (variant) {
         case "hidden":
-            return <HiddenIllustration />;
+            return <HiddenMockup />;
         case "verifiable":
-            return <VerifiableIllustration />;
+            return <VerifiableMockup />;
         case "open":
-            return <OpenIllustration />;
+            return <OpenMockup />;
     }
 }
 
-/**
- * "Per-donor amounts stay hidden" — masked digits ●●●●● flickering on/off,
- * with a lock icon orbiting overhead. Communicates encrypted/hidden values.
- */
-function HiddenIllustration() {
+/* ────────────────────────── shared bits ────────────────────────── */
+
+function CornerChip({position, children}: {position: "tl" | "tr" | "bl" | "br"; children: React.ReactNode}) {
+    const pos =
+        position === "tl"
+            ? "top-3 left-3"
+            : position === "tr"
+            ? "top-3 right-3"
+            : position === "bl"
+            ? "bottom-3 left-3"
+            : "bottom-3 right-3";
     return (
-        <div className="absolute inset-0 flex items-center justify-center">
-            {/* Lock icon centred */}
-            <motion.div
-                className="absolute z-10"
-                animate={{y: [0, -3, 0]}}
-                transition={{duration: 2.6, repeat: Infinity, ease: "easeInOut"}}
-            >
-                <div className="size-14 rounded-2xl bg-zinc-900 text-white flex items-center justify-center shadow-lg">
-                    <svg viewBox="0 0 24 24" fill="none" className="size-7">
-                        <path
-                            d="M6 10V7a6 6 0 1 1 12 0v3M5 10h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1Zm7 4v3"
-                            stroke="currentColor"
-                            strokeWidth="1.6"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
-                </div>
-            </motion.div>
-
-            {/* Masked dots row above the lock */}
-            <div className="absolute top-6 flex gap-1.5">
-                {[0, 1, 2, 3, 4].map(i => (
-                    <motion.div
-                        key={i}
-                        className="size-2 rounded-full bg-zinc-900"
-                        animate={{opacity: [0.2, 1, 0.2]}}
-                        transition={{
-                            duration: 1.6,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                            delay: i * 0.18,
-                        }}
-                    />
-                ))}
-            </div>
-
-            {/* Faint number "ghost" peeking through underneath, never resolves */}
-            <motion.div
-                className="absolute bottom-7 font-mono text-2xl tracking-widest text-zinc-300 select-none"
-                animate={{opacity: [0.15, 0.4, 0.15]}}
-                transition={{duration: 3, repeat: Infinity, ease: "easeInOut"}}
-            >
-                **** ****
-            </motion.div>
+        <div
+            className={`absolute ${pos} size-9 rounded-xl bg-white border border-zinc-200 flex items-center justify-center shadow-sm text-zinc-900`}
+        >
+            {children}
         </div>
     );
 }
 
-/**
- * "Total raised stays verifiable" — animated progress ring filling up to
- * a check mark. Communicates public proof / verifiability.
- */
-function VerifiableIllustration() {
-    const radius = 38;
-    const circumference = 2 * Math.PI * radius;
-    return (
-        <div className="absolute inset-0 flex items-center justify-center">
-            <svg viewBox="0 0 100 100" className="size-32">
-                {/* Track */}
-                <circle
-                    cx="50"
-                    cy="50"
-                    r={radius}
-                    stroke="rgba(0,0,0,0.08)"
-                    strokeWidth="6"
-                    fill="none"
-                />
-                {/* Animated arc */}
-                <motion.circle
-                    cx="50"
-                    cy="50"
-                    r={radius}
-                    stroke="rgb(24,24,27)"
-                    strokeWidth="6"
-                    fill="none"
-                    strokeLinecap="round"
-                    transform="rotate(-90 50 50)"
-                    initial={{strokeDasharray: circumference, strokeDashoffset: circumference}}
-                    animate={{strokeDashoffset: [circumference, circumference * 0.15, circumference]}}
-                    transition={{duration: 4, repeat: Infinity, ease: "easeInOut"}}
-                />
-                {/* Check mark in centre */}
-                <motion.path
-                    d="M38 51 L46 59 L62 41"
-                    stroke="rgb(24,24,27)"
-                    strokeWidth="3.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                    initial={{pathLength: 0}}
-                    animate={{pathLength: [0, 1, 1, 0]}}
-                    transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        times: [0, 0.4, 0.85, 1],
-                    }}
-                />
-            </svg>
+/* ────────────────────────── card 1: hidden ────────────────────────── */
 
-            {/* Tiny rising tick marks beside the ring suggesting growing total */}
-            <div className="absolute right-12 flex items-end gap-1 h-12">
-                {[0, 1, 2, 3].map(i => (
+/**
+ * Mockup: a "donations" widget with cipher header (●●●●●) and a bar chart
+ * pulsing underneath, framed by a Lock chip top-left and an EyeOff chip
+ * bottom-right.
+ */
+function HiddenMockup() {
+    const bars = [
+        {h: 30, delay: 0.0},
+        {h: 55, delay: 0.1},
+        {h: 40, delay: 0.2},
+        {h: 70, delay: 0.3},
+        {h: 50, delay: 0.4},
+        {h: 80, delay: 0.5},
+        {h: 65, delay: 0.6},
+        {h: 90, delay: 0.7},
+        {h: 55, delay: 0.8},
+        {h: 75, delay: 0.9},
+    ];
+
+    return (
+        <div className="absolute inset-3 rounded-xl bg-white border border-zinc-200 flex flex-col p-4 shadow-sm">
+            <CornerChip position="tl">
+                <Lock className="size-4" />
+            </CornerChip>
+            <CornerChip position="br">
+                <EyeOff className="size-4" />
+            </CornerChip>
+
+            {/* Header — cipher row + caption */}
+            <div className="ml-12 mr-12 mb-3">
+                <div className="flex items-center gap-1.5">
+                    {[0, 1, 2, 3, 4].map(i => (
+                        <motion.span
+                            key={i}
+                            className="size-2.5 rounded-full bg-zinc-900"
+                            animate={{opacity: [0.25, 1, 0.25]}}
+                            transition={{
+                                duration: 1.6,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                                delay: i * 0.18,
+                            }}
+                        />
+                    ))}
+                    <span className="ml-1.5 text-[10px] font-mono text-zinc-500 uppercase tracking-wider">
+                        cSGD
+                    </span>
+                </div>
+                <div className="text-[9px] uppercase tracking-[0.18em] text-zinc-400 mt-0.5">
+                    Per-donor amount
+                </div>
+            </div>
+
+            {/* Bar chart filling remaining space */}
+            <div className="flex-1 flex items-end gap-1 ml-12 mr-12">
+                {bars.map((b, i) => (
                     <motion.div
                         key={i}
-                        className="w-1 rounded-sm bg-zinc-900/70"
-                        initial={{height: 4}}
-                        animate={{height: [4, 8 + i * 6, 4]}}
+                        className="flex-1 rounded-t-sm bg-zinc-300"
+                        initial={{height: `${b.h * 0.5}%`}}
+                        animate={{height: [`${b.h * 0.5}%`, `${b.h}%`, `${b.h * 0.5}%`]}}
                         transition={{
                             duration: 2.4,
                             repeat: Infinity,
                             ease: "easeInOut",
-                            delay: i * 0.15,
+                            delay: b.delay,
                         }}
                     />
                 ))}
@@ -184,81 +149,116 @@ function VerifiableIllustration() {
     );
 }
 
+/* ────────────────────────── card 2: verifiable ────────────────────────── */
+
 /**
- * "Self-sovereign onboarding" — three nodes connected by a line that
- * carries a "data packet" pulse from left to right, communicating
- * unrestricted flow. No gatekeeper, just user → wallet → app.
+ * Mockup: a goal-progress widget. Big animated percentage counter in the
+ * centre, four "donor pulse" dots ticking above it, and an animated arc
+ * tracing in the background.
  */
-function OpenIllustration() {
+function VerifiableMockup() {
     return (
-        <div className="absolute inset-0 flex items-center justify-center">
-            <svg viewBox="0 0 240 100" className="w-3/4">
-                {/* Connection line */}
-                <line
-                    x1="30"
-                    y1="50"
-                    x2="210"
-                    y2="50"
-                    stroke="rgb(212,212,216)"
-                    strokeWidth="2"
-                />
-                {/* Three nodes */}
-                {[30, 120, 210].map((cx, i) => (
-                    <g key={cx}>
-                        <motion.circle
-                            cx={cx}
-                            cy="50"
-                            r={14}
-                            fill="rgb(24,24,27)"
-                            animate={{r: [14, 16, 14]}}
-                            transition={{
-                                duration: 2.2,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                                delay: i * 0.4,
-                            }}
-                        />
-                        <circle cx={cx} cy="50" r="5" fill="white" />
-                    </g>
+        <div className="absolute inset-3 rounded-xl bg-white border border-zinc-200 flex flex-col items-center justify-center p-4 shadow-sm">
+            <CornerChip position="tl">
+                <ShieldCheck className="size-4" />
+            </CornerChip>
+            <CornerChip position="br">
+                <Check className="size-4" />
+            </CornerChip>
+
+            {/* Donor pulse row */}
+            <div className="flex items-center gap-2 mb-3">
+                {[0, 1, 2, 3].map(i => (
+                    <motion.span
+                        key={i}
+                        className="size-7 rounded-full bg-zinc-200 border-2 border-white"
+                        animate={{
+                            backgroundColor: ["rgb(228,228,231)", "rgb(24,24,27)", "rgb(228,228,231)"],
+                            scale: [1, 1.08, 1],
+                        }}
+                        transition={{
+                            duration: 2.6,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: i * 0.4,
+                        }}
+                    />
                 ))}
+            </div>
 
-                {/* Travelling packet */}
-                <motion.circle
-                    r="4"
-                    fill="rgb(24,24,27)"
-                    cy="50"
-                    initial={{cx: 30}}
-                    animate={{cx: [30, 210, 210]}}
-                    transition={{
-                        duration: 2.6,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        times: [0, 0.7, 1],
-                    }}
-                />
-                <motion.circle
-                    r="8"
-                    fill="rgba(24,24,27,0.2)"
-                    cy="50"
-                    initial={{cx: 30}}
-                    animate={{cx: [30, 210, 210]}}
-                    transition={{
-                        duration: 2.6,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        times: [0, 0.7, 1],
-                    }}
-                />
-            </svg>
+            {/* Counter */}
+            <AnimatedCounter />
 
-            {/* Caption-style chain of words */}
-            <div className="absolute bottom-6 flex items-center gap-3 text-[9px] font-mono uppercase tracking-[0.18em] text-zinc-500">
-                <span>Wallet</span>
-                <span className="text-zinc-300">─</span>
-                <span>Encrypt</span>
-                <span className="text-zinc-300">─</span>
-                <span>Donate</span>
+            <div className="mt-2 text-[10px] uppercase tracking-[0.18em] text-zinc-500">
+                Aggregate total
             </div>
         </div>
     );
 }
+
+function AnimatedCounter() {
+    return (
+        <div className="text-3xl font-semibold tabular-nums text-zinc-900 leading-none flex items-baseline">
+            <motion.span
+                animate={{opacity: [0.4, 1, 0.4]}}
+                transition={{duration: 2.4, repeat: Infinity, ease: "easeInOut"}}
+            >
+                100
+            </motion.span>
+            <span className="text-base text-zinc-400">%</span>
+        </div>
+    );
+}
+
+/* ────────────────────────── card 3: open ────────────────────────── */
+
+/**
+ * Mockup: two pill nodes ("Wallet" and "Donate") connected by a line, with
+ * a packet pulsing left → right, framed by a Globe chip top-left and a
+ * Shield chip bottom-right.
+ */
+function OpenMockup() {
+    return (
+        <div className="absolute inset-3 rounded-xl bg-white border border-zinc-200 flex items-center justify-center p-4 shadow-sm">
+            <CornerChip position="tl">
+                <Globe className="size-4" />
+            </CornerChip>
+            <CornerChip position="br">
+                <Shield className="size-4" />
+            </CornerChip>
+
+            <div className="flex items-center gap-3">
+                {/* Wallet pill */}
+                <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-medium text-zinc-700 inline-flex items-center gap-1.5">
+                    <span className="size-2 rounded-full bg-zinc-400" />
+                    Wallet
+                </div>
+
+                {/* Connection with travelling packet */}
+                <div className="relative h-px w-16 bg-zinc-200">
+                    <motion.span
+                        className="absolute -top-1 size-2 rounded-full bg-zinc-900"
+                        initial={{left: 0}}
+                        animate={{left: ["0%", "100%", "0%"]}}
+                        transition={{duration: 2.4, repeat: Infinity, ease: "easeInOut"}}
+                    />
+                    <motion.span
+                        className="absolute -top-2 size-4 rounded-full bg-zinc-900/15"
+                        initial={{left: "-8px"}}
+                        animate={{left: ["-8px", "calc(100% - 8px)", "-8px"]}}
+                        transition={{duration: 2.4, repeat: Infinity, ease: "easeInOut"}}
+                    />
+                </div>
+
+                {/* Donate pill */}
+                <div className="rounded-xl border border-zinc-300 bg-zinc-900 px-3 py-2 text-xs font-medium text-white inline-flex items-center gap-1.5">
+                    Donate
+                    <ArrowRight className="size-3" />
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// Re-export Eye to silence unused-import warnings if any consumer expects it.
+export {Eye};
