@@ -19,7 +19,7 @@ export function Countdown({deadlineMs, className = ""}: {deadlineMs: number; cla
     return (
         <span
             className={`inline-flex items-center gap-1.5 ${
-                expired ? "text-amber-400" : "text-zinc-300"
+                expired ? "text-amber-600" : ""
             } ${className}`}
         >
             <Clock className="size-3.5" />

@@ -23,7 +23,6 @@ import {useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContr
 import {arbitrumSepolia} from "wagmi/chains";
 
 import {CampaignReview} from "@/components/campaign-review";
-import {ContractAuditSection} from "@/components/contract-audit-section";
 import {Countdown} from "@/components/countdown";
 import {ImpactReport} from "@/components/impact-report";
 import {StatusBadge} from "@/components/status-badge";
@@ -267,7 +266,7 @@ export default function CampaignDetailPage({
                     initial={{opacity: 0, y: 12}}
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 0.5, delay: 0.08}}
-                    className="space-y-4"
+                    className="space-y-5"
                 >
                     <div className="flex flex-wrap items-center gap-2">
                         {isCreator && (
@@ -276,26 +275,37 @@ export default function CampaignDetailPage({
                                 You created this
                             </span>
                         )}
-                        <a
-                            href="#contract-audit"
+                        <Link
+                            href="/audit"
                             className="text-[10px] font-semibold tracking-[0.16em] uppercase px-2.5 py-1 rounded-full bg-white border border-zinc-300 hover:border-zinc-900 text-zinc-700 hover:text-zinc-900 inline-flex items-center gap-1.5 transition-colors"
                         >
                             <Shield className="size-3" />
                             Audited by ChainGPT
-                        </a>
+                        </Link>
                         <span className="text-[10px] font-semibold tracking-[0.16em] uppercase px-2.5 py-1 rounded-full bg-white border border-zinc-200 text-zinc-500 inline-flex items-center gap-1.5">
                             <Lock className="size-3" />
                             Confidential · ERC-7984
                         </span>
                     </div>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.05] text-zinc-900">
-                        {meta.title}
-                    </h1>
-                    {meta.story && (
-                        <p className="text-zinc-600 text-lg leading-relaxed max-w-3xl whitespace-pre-line">
-                            {meta.story}
-                        </p>
-                    )}
+
+                    <div className="space-y-5">
+                        <div className="text-[11px] font-semibold tracking-[0.18em] uppercase text-zinc-500 inline-flex items-center gap-2">
+                            <span className="size-1 rounded-full bg-zinc-900" />
+                            Campaign · {donorCount?.toString() ?? "—"} donor
+                            {Number(donorCount ?? 0) === 1 ? "" : "s"}
+                        </div>
+                        <h1 className="text-4xl md:text-5xl lg:text-[64px] font-semibold tracking-tight leading-[1.02] text-zinc-900">
+                            {meta.title}
+                        </h1>
+                        {meta.story && (
+                            <div className="flex gap-5 max-w-3xl">
+                                <div className="w-[3px] rounded-full bg-zinc-900 self-stretch shrink-0" />
+                                <p className="text-zinc-600 text-lg md:text-xl leading-[1.6] whitespace-pre-line font-light">
+                                    {meta.story}
+                                </p>
+                            </div>
+                        )}
+                    </div>
                 </motion.header>
 
                 <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
@@ -435,9 +445,6 @@ export default function CampaignDetailPage({
                             />
                         )}
 
-                        <div id="contract-audit">
-                            <ContractAuditSection />
-                        </div>
                     </div>
 
                     {/* RIGHT: sticky donate panel */}
