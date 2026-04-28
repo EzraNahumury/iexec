@@ -20,10 +20,11 @@ import {arbitrumSepolia} from "wagmi/chains";
 import {CampaignReview} from "@/components/campaign-review";
 import {ContractAuditSection} from "@/components/contract-audit-section";
 import {Countdown} from "@/components/countdown";
-import {HeroGradient} from "@/components/hero-gradient";
 import {ImpactReport} from "@/components/impact-report";
 import {StatusBadge} from "@/components/status-badge";
 import {TotalRaised} from "@/components/total-raised";
+import {loadHeroImage} from "@/lib/hero-image";
+import Image from "next/image";
 import {campaignAbi, confidentialSGDAbi} from "@/lib/abis";
 import {addresses} from "@/lib/addresses";
 import {arbSepoliaGas} from "@/lib/gas";
@@ -106,6 +107,13 @@ export default function CampaignDetailPage({
 
     /* ---------------- Revealed total (lifted up so ImpactReport can use it) ---------------- */
     const [revealedTotal, setRevealedTotal] = useState<bigint | null>(null);
+
+    /* ---------------- Hero image — AI-generated override or shared banner ---------------- */
+    const [heroSrc, setHeroSrc] = useState<string>("/campaigns.png");
+    useEffect(() => {
+        const ai = loadHeroImage(campaignAddress);
+        if (ai) setHeroSrc(ai);
+    }, [campaignAddress]);
 
     /* ---------------- Donate ---------------- */
     const [donateAmount, setDonateAmount] = useState("");
@@ -197,32 +205,56 @@ export default function CampaignDetailPage({
                 All campaigns
             </Link>
 
-            {/* Hero gradient banner */}
-            <HeroGradient seed={campaignAddress} className="h-48 md:h-56" />
+            {/* Hero banner — AI hero or shared /campaigns.png */}
+            <div className="relative h-56 md:h-72 lg:h-80 rounded-3xl overflow-hidden border border-zinc-200 bg-zinc-100 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.18)]">
+                <Image
+                    src={heroSrc}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 1024px) 1024px, 100vw"
+                    priority
+                    aria-hidden
+                />
+                {/* Bottom gradient so any overlaid text would be readable */}
+                <div
+                    className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/0 to-black/10 pointer-events-none"
+                    aria-hidden
+                />
+                {/* Status + countdown floated on the photo */}
+                <div className="absolute top-4 left-4 right-4 flex flex-wrap items-center gap-3">
+                    {state !== undefined && <StatusBadge state={Number(state)} />}
+                    {deadlineMs > 0 && (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-white/90 backdrop-blur border border-white/40 text-zinc-900">
+                            <Countdown deadlineMs={deadlineMs} />
+                        </span>
+                    )}
+                </div>
+                {/* Address watermark */}
+                <div className="absolute bottom-4 left-4 font-mono text-[11px] uppercase tracking-wider text-white/85 drop-shadow">
+                    {shortAddress(campaignAddress, 6, 4)}
+                </div>
+                <a
+                    href={`https://sepolia.arbiscan.io/address/${campaignAddress}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/90 backdrop-blur border border-white/40 text-zinc-900 hover:bg-white transition-colors"
+                >
+                    Arbiscan
+                    <ExternalLink className="size-3" />
+                </a>
+            </div>
 
             <header className="space-y-4">
                 <div className="flex flex-wrap items-center gap-3">
-                    {state !== undefined && <StatusBadge state={Number(state)} />}
-                    {deadlineMs > 0 && <Countdown deadlineMs={deadlineMs} />}
-                    <span className="text-xs font-mono text-zinc-500 inline-flex items-center gap-1">
-                        {shortAddress(campaignAddress)}
-                        <a
-                            href={`https://sepolia.arbiscan.io/address/${campaignAddress}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="hover:text-violet-300"
-                        >
-                            <ExternalLink className="size-3" />
-                        </a>
-                    </span>
                     {isCreator && (
-                        <span className="text-xs font-medium px-2 py-1 rounded-full bg-violet-500/10 text-violet-300 border border-violet-500/30">
+                        <span className="text-xs font-medium px-2 py-1 rounded-full bg-violet-500/10 text-violet-700 border border-violet-500/30">
                             You created this
                         </span>
                     )}
                     <a
                         href="#contract-audit"
-                        className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 inline-flex items-center gap-1.5 hover:bg-emerald-500/20 transition-colors"
+                        className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-700 border border-emerald-500/30 inline-flex items-center gap-1.5 hover:bg-emerald-500/20 transition-colors"
                     >
                         <Shield className="size-3" />
                         Audited by ChainGPT
