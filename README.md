@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="./assets/logo.png" alt="StealthGive" width="120" height="120" />
+
 # StealthGive
 
 ### Confidential Crowdfunding for Causes That Cannot Be Doxxed
