@@ -1,218 +1,385 @@
 <div align="center">
 
-# 🦑 StealthGive
+# StealthGive
 
-**Crowdfunding Berprivasi untuk Tujuan yang Tidak Boleh Terbongkar**
+### Confidential Crowdfunding for Causes That Cannot Be Doxxed
 
-*Donasi rahasia yang ditenagai iExec Nox & Confidential Token, dengan tooling kampanye berbasis AI dari ChainGPT.*
+*Private donations powered by iExec Nox & ERC-7984 Confidential Tokens, with AI-assisted campaign tooling from ChainGPT.*
 
 [![Built on Nox](https://img.shields.io/badge/Built%20on-iExec%20Nox-FFD800?style=for-the-badge)](https://docs.iex.ec/nox-protocol/getting-started/welcome)
 [![Powered by ChainGPT](https://img.shields.io/badge/Powered%20by-ChainGPT-7C3AED?style=for-the-badge)](https://chaingpt.org)
 [![Deployed on](https://img.shields.io/badge/Deployed%20on-Arbitrum%20Sepolia-28A0F0?style=for-the-badge)](https://sepolia.arbiscan.io/address/0xbD124A4C743847f5862024906B66ABeDeB9cCB6e)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-[Live Demo](#) · [Video Demo (4 menit)](#) · [Submission Tweet](#) · [Arbiscan — Factory](https://sepolia.arbiscan.io/address/0xbD124A4C743847f5862024906B66ABeDeB9cCB6e)
+[Live Demo](#) · [Demo Video (4 min)](#) · [Submission Tweet](#) · [Arbiscan — Factory](https://sepolia.arbiscan.io/address/0xbD124A4C743847f5862024906B66ABeDeB9cCB6e)
 
 </div>
 
 ---
 
-## 🎯 Masalah yang Diselesaikan
+## Table of Contents
 
-Blockchain publik seharusnya membebaskan donatur. Yang terjadi justru sebaliknya — ia menciptakan **panopticon untuk berdonasi**.
+- [The Problem](#the-problem)
+- [The Solution](#the-solution)
+- [Why We Deployed Our Own Token](#why-we-deployed-our-own-token)
+- [Real-World Use Cases](#real-world-use-cases)
+- [System Architecture](#system-architecture)
+- [Donation Flow](#donation-flow)
+- [Campaign Lifecycle](#campaign-lifecycle)
+- [Live on Arbitrum Sepolia](#live-on-arbitrum-sepolia)
+- [Technical Deep Dive](#technical-deep-dive)
+- [Tech Stack](#tech-stack)
+- [Repository Structure](#repository-structure)
+- [Getting Started](#getting-started)
+- [Threat Model](#threat-model)
+- [Judging Criteria Mapping](#judging-criteria-mapping)
+- [Roadmap](#roadmap)
+- [Feature Status](#feature-status)
+- [Submission Checklist](#submission-checklist)
+- [Team](#team)
+- [References](#references)
+- [License](#license)
 
-Hari ini, siapa pun yang mendonasi ke tujuan sensitif on-chain — NGO pembela demokrasi, dana hukum whistleblower, shelter LGBTQ+ di yurisdiksi keras, peneliti keamanan open-source, bantuan medis daerah perang — meninggalkan jejak permanen, publik, dan dapat diatribusikan. Jejak itu bersifat:
+---
 
-- **Dapat dicari** oleh atasan, pemerintah, keluarga, asuransi, stalker, dan AI scraper yang adversarial.
-- **Dapat diagregasi** dengan aktivitas on-chain donatur lainnya, sehingga membongkar profil kekayaannya.
-- **Koersif** — donatur besar jadi target pemerasan atau tekanan sosial. Donatur kecil jadi swasensor.
-- **Permanen** — tidak ada tombol "delete" di blockchain.
+## The Problem
 
-Akibatnya: **orang yang paling membutuhkan donasi mendapat paling sedikit, karena orang yang paling mampu memberi tidak sanggup menanggung risiko terlihat memberi**.
+Public blockchains were supposed to free donors. Instead they have built a **panopticon for giving**.
 
-Tool privasi yang ada (Tornado Cash, Railgun) boros gas, rentan sanksi internasional, dan dirancang untuk transfer umum — bukan crowdfunding. Mereka memberi privasi pada donatur, tapi kampanye kehilangan **transparansi** (Anda tidak bisa secara publik memverifikasi "$50.000 sudah terkumpul" di sebuah mixer).
+Today, anyone donating to a sensitive cause on-chain — a press-freedom legal fund, a whistleblower defense pool, an LGBTQ+ shelter in a hostile jurisdiction, a war-zone medical aid drive — leaves a permanent, public, attributable trail. That trail is:
 
-Yang dibutuhkan adalah hal yang berbeda: **total kampanye yang publik, kontribusi individu yang privat**.
+- **Searchable** — by employers, governments, family members, insurers, stalkers, and adversarial AI scrapers.
+- **Linkable** — combined with the donor's other on-chain activity, it exposes their wealth profile.
+- **Coercive** — large donors become targets for extortion or social pressure; small donors self-censor.
+- **Permanent** — there is no delete button on a blockchain.
 
-## ✨ Solusi
+The net effect: **the people who most need donations receive the least, because the people most able to give cannot afford to be seen giving.**
 
-**StealthGive** adalah dApp crowdfunding di mana:
+Existing privacy tools (Tornado Cash, Railgun) are gas-heavy, sanctions-prone, and built for general transfers — not crowdfunding. They give privacy to the donor but the campaign loses **transparency** (you cannot publicly verify "$50,000 raised" inside a mixer).
 
-- ✅ **Siapa pun bisa membuat kampanye** dengan target dana, batas waktu, narasi, dan alamat penerima.
-- ✅ **Donatur berkontribusi pakai cSGD** (Confidential StealthGive Dollar) — token ERC-7984 milik project yang di-wrap dari ERC-20 publik kami sendiri.
-- ✅ **Jumlah per donatur disembunyikan secara kriptografis** — bahkan pembuat kampanye pun tidak tahu siapa memberi berapa.
-- ✅ **Total terkumpul tetap dapat diverifikasi publik** — akuntabilitas kampanye tetap utuh, dengan progress bar live.
-- ✅ **Penerima menarik dana secara rahasia** untuk membiayai tujuannya tanpa membongkar anggaran operasional.
-- ✅ **Pembuatan kampanye dibantu AI** lewat ChainGPT — penyusunan narasi otomatis dari brief 1 baris (lihat [status integrasi](#-status-fitur)).
+What is needed is something different: **public campaign totals, private individual contributions.**
 
-**Insight kunci:** kerahasiaan dan transparansi bukan dua hal yang berlawanan kalau Anda menempatkan batasannya di tempat yang tepat. StealthGive menempatkan batas di **donatur**: dunia melihat fundraisernya berhasil, tapi tidak ada yang melihat para donatur individualnya.
+## The Solution
 
-## 🪙 Mengapa Token Sendiri (Bukan cUSDC)
+**StealthGive** is a crowdfunding dApp where:
 
-Awalnya kami merencanakan untuk pakai **cUSDC** (Confidential USDC versi iExec). Tapi `faucet.circle.com` — sumber resmi test USDC di Arbitrum Sepolia — **diblokir oleh ISP Indonesia** (Undang-Undang ITE No. 19 Tahun 2008). Artinya pengguna Indonesia (termasuk juri TUM Munich kalau mereka coba dApp dari traffic Asia) tidak bisa onboard tanpa VPN.
+- ✅ **Anyone can launch a campaign** with a goal, deadline, narrative, and recipient.
+- ✅ **Donors contribute in cSGD** — an ERC-7984 confidential token wrapped from our own public ERC-20.
+- ✅ **Per-donor amounts are cryptographically hidden** — even the campaign creator cannot see who gave how much.
+- ✅ **The aggregate total stays publicly verifiable** — campaign accountability is preserved with a live progress bar.
+- ✅ **Recipients withdraw confidentially** to fund their cause without revealing operating budgets.
+- ✅ **Campaign creation is AI-assisted** via ChainGPT — narrative, hero art, audit, risk review, and impact report.
 
-Solusinya: kami **deploy confidential token sendiri** lewat iExec ERC-7984 wrapper:
+> **Key insight:** confidentiality and transparency are not opposites if you draw the boundary in the right place. StealthGive draws the line at the **donor** level: the world sees the fundraiser succeed, but no one sees the individual donors who made it succeed.
 
-1. `StealthGiveDollar` (**SGD**) — ERC-20 publik dengan fungsi `claim()` (1,000 SGD per 24 jam, anti-sybil cooldown). **Zero gatekeepers.**
-2. `ConfidentialSGD` (**cSGD**) — instansi konkret dari `ERC20ToERC7984Wrapper` resmi iExec. Wrap SGD 1:1 menjadi confidential token.
+## Why We Deployed Our Own Token
 
-Ini juga kebetulan menjadi **integration yang lebih dalam** dengan iExec — kami bukan cuma consume cUSDC mereka, kami pakai wrapper primitive mereka untuk membuat confidential token sendiri.
+We originally planned to use **cUSDC** (iExec's confidential USDC). But `faucet.circle.com` — the official source of test USDC on Arbitrum Sepolia — **is blocked by Indonesian ISPs** (Law on Information and Electronic Transactions / UU ITE No. 19/2008). Indonesian users could not onboard without a VPN. Judges testing from Asia would hit the same wall.
 
-## 🌍 Use Case di Dunia Nyata
+So we deployed our own confidential token using iExec's official ERC-7984 wrapper:
 
-| Use Case | Mengapa Kerahasiaan Penting |
+1. **`StealthGiveDollar` (SGD)** — a public ERC-20 with a `claim()` function (1,000 SGD per 24 h, anti-Sybil cooldown). **Zero gatekeepers.**
+2. **`ConfidentialSGD` (cSGD)** — a concrete instance of iExec's `ERC20ToERC7984Wrapper`. Wraps SGD 1:1 into a confidential token.
+
+This turned out to be a **deeper iExec integration**: instead of just consuming an existing confidential token, we use their wrapper primitive to mint our own.
+
+## Real-World Use Cases
+
+| Use Case | Why Confidentiality Matters |
 | --- | --- |
-| **Dana hukum kebebasan pers** | Donatur dana hukum jurnalis bisa jadi target balas dendam. |
-| **Shelter LGBTQ+ di yurisdiksi keras** | Donatur menghadapi tuntutan pidana di 60+ negara. |
-| **Bounty keamanan open-source** | Donatur tidak ingin perusahaannya tahu mereka mendanai proyek pesaing. |
-| **Bantuan medis daerah perang** | Donatur lintas negara bisa terkena risiko sanksi kalau jumlahnya publik. |
-| **Dana dukungan whistleblower** | Jumlah per donatur bisa membongkar afiliasi organisasional. |
-| **Pot bantuan mutual di rezim represif** | Donor doxxing → penangkapan. |
+| **Press-freedom legal defense** | Donors to journalist legal funds become retaliation targets. |
+| **LGBTQ+ shelters in hostile jurisdictions** | Donors face criminal liability in 60+ countries. |
+| **Open-source security bounties** | Donors don't want their employer to learn they're funding a competitor's project. |
+| **War-zone medical aid** | Cross-border donors face sanctions exposure if amounts are public. |
+| **Whistleblower support funds** | Per-donor amounts can leak organizational affiliation. |
+| **Mutual aid pools under repressive regimes** | Donor doxxing → arrests. |
 
-Di setiap kasus, **verifikasi publik atas total terkumpul** itu esensial (donatur perlu percaya pada fundraiser), tapi **atribusi publik atas donasi individu** justru berbahaya.
+In every case, **public verification of the total** is essential (donors need to trust the campaign), but **public attribution of individual donations** is harmful.
 
-## 🌐 Live di Arbitrum Sepolia
+---
 
-Semua kontrak StealthGive **diverifikasi** di Arbiscan (source code publik, ABI dapat diambil langsung, "Read Contract" / "Write Contract" tabs aktif):
+## System Architecture
 
-| Komponen | Alamat | Arbiscan |
+The high-level architecture, end to end:
+
+```mermaid
+flowchart TB
+    subgraph Frontend["Frontend · Next.js 16 + RainbowKit"]
+        UI["Campaign UI<br/>donate · reveal · settle"]
+        AI["AI Touchpoints<br/>copy · image · audit · review · impact"]
+    end
+
+    subgraph SDK["Client SDK"]
+        Handle["@iexec-nox/handle<br/>encryptInput · decrypt"]
+        Wagmi["wagmi · viem<br/>writeContract · readContract"]
+    end
+
+    subgraph Server["Server · API Routes"]
+        ChainGPT["ChainGPT API proxy<br/>5 endpoints"]
+        Time["/api/time<br/>gateway clock probe"]
+    end
+
+    subgraph Onchain["On-chain · Arbitrum Sepolia"]
+        SGD["StealthGiveDollar<br/>public ERC-20"]
+        CSGD["ConfidentialSGD<br/>ERC-7984 wrapper"]
+        Factory["StealthGiveFactory<br/>deploys campaigns"]
+        Campaign["Campaign instance<br/>donate · settle · withdraw"]
+        Registry["CampaignRegistry<br/>read-only index"]
+    end
+
+    subgraph Nox["iExec Nox · Trusted Execution Environment"]
+        Gateway["Handle Gateway<br/>EIP-712 auth · decrypt"]
+        TEE["NoxCompute precompile<br/>encrypted ops in TDX/SGX"]
+    end
+
+    UI --> Wagmi
+    UI --> Handle
+    UI --> ChainGPT
+    UI --> Time
+    Wagmi --> SGD
+    Wagmi --> CSGD
+    Wagmi --> Factory
+    Wagmi --> Campaign
+    Wagmi --> Registry
+    Handle <--> Gateway
+    Campaign <--> TEE
+    CSGD <--> TEE
+
+    classDef chain fill:#FEF3C7,stroke:#D97706,stroke-width:2px
+    classDef nox fill:#DCFCE7,stroke:#16A34A,stroke-width:2px
+    classDef ai fill:#EDE9FE,stroke:#7C3AED,stroke-width:2px
+    class SGD,CSGD,Factory,Campaign,Registry chain
+    class Gateway,TEE nox
+    class ChainGPT ai
+```
+
+The system is built around a clean separation of concerns:
+
+- **Frontend (`/fe-stealthgive`)** — every interactive surface a donor or campaign creator touches.
+- **Smart Contracts (`/sc-StealthGive`)** — the trust layer. All campaign logic, escrow rules, and confidential token mechanics live here.
+- **iExec Nox** — the trusted execution layer. Encrypted amounts never leave the TEE in plaintext; the gateway brokers decryption requests with EIP-712 authorisation.
+- **ChainGPT** — proxied server-side so the API key is never shipped to the browser.
+
+## Donation Flow
+
+A confidential donation is a careful dance between the wallet, the SDK, the contract, and the Nox gateway. Here is exactly what happens when a donor clicks **Donate privately**:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Donor as Donor (Browser)
+    participant Wallet as Wallet
+    participant SDK as Nox Handle SDK
+    participant Gateway as Nox Gateway (TEE)
+    participant Chain as Campaign Contract
+    participant TEE as NoxCompute Precompile
+
+    Donor->>Wallet: Click "Donate privately" (amount = 100)
+    Donor->>SDK: encryptInput(100, uint256, campaignAddr)
+    SDK->>Wallet: signTypedData (EIP-712)<br/>notBefore, expiresAt, RSA pubkey
+    Wallet-->>SDK: signature
+    SDK->>Gateway: POST authorisation
+    Gateway-->>SDK: encrypted handle + proof
+    SDK-->>Donor: { handle, handleProof }
+
+    Donor->>Wallet: setOperator(campaign, +1h)
+    Wallet->>Chain: tx 1 — approve transient operator
+    Chain-->>Wallet: receipt
+
+    Donor->>Wallet: donate(handle, handleProof)
+    Wallet->>Chain: tx 2 — Campaign.donate
+    Chain->>TEE: confidentialTransferFrom + add to encrypted total
+    TEE-->>Chain: encrypted aggregate handle
+    Chain->>TEE: allowPublicDecryption(newTotalHandle)
+    Chain-->>Wallet: receipt + DonationMade event
+
+    Note over Gateway,TEE: Aggregate handle is now publicly decryptable<br/>per-donor amount stays private
+```
+
+What the donor's machine actually does:
+
+1. **Encrypt locally.** The amount never leaves the browser unencrypted. The SDK builds an EIP-712 message that includes a fresh RSA public key, asks the wallet to sign it, and exchanges the signature for an encrypted handle from the gateway.
+2. **Approve the operator.** ERC-7984 doesn't expose plain `transferFrom`; the donor first calls `setOperator(campaign, expiry)` to grant the campaign contract a transient permission window.
+3. **Donate.** The campaign contract receives the encrypted handle and proof, calls `confidentialTransferFrom`, and folds the new amount into its running encrypted total — all inside the TEE.
+4. **Open the new total to the world.** The contract immediately calls `Nox.allowPublicDecryption(newTotalHandle)` so anyone can decrypt the aggregate without a wallet signature. The progress bar is live.
+
+The per-donor contribution remains accessible **only to the donor** through `decrypt(handle)`. The aggregate is public; the components are not.
+
+## Campaign Lifecycle
+
+Each `Campaign` is a small state machine. The transitions enforce the rule "recipients get paid first; if they don't, donors get refunded":
+
+```mermaid
+stateDiagram-v2
+    [*] --> Active: Factory.createCampaign
+
+    Active --> Active: donate(handle, proof)
+    Active --> Settling: settle()<br/>after deadline
+
+    Settling --> Withdrawn: recipient.withdraw()<br/>before grace expires
+    Settling --> Refunding: 7-day grace window passes<br/>without withdraw
+
+    Withdrawn --> [*]
+    Refunding --> Refunding: donor.refund()
+    Refunding --> [*]
+```
+
+| State | Who can act | What unlocks |
 | --- | --- | --- |
-| **StealthGiveDollar** (SGD, ERC-20 publik) | `0xCA662c692e67A5ec3402D13327895eA762F702Bb` | [✅ verified](https://sepolia.arbiscan.io/address/0xCA662c692e67A5ec3402D13327895eA762F702Bb#code) |
+| `Active` | Anyone | `donate()` — amount encrypted, aggregate updated |
+| `Settling` | Recipient first, then anyone after grace | `withdraw()` while grace is open |
+| `Withdrawn` | — | Terminal: funds delivered to recipient |
+| `Refunding` | Each donor independently | `refund()` returns the donor's encrypted contribution |
+
+The 7-day grace window prevents a campaign creator from disappearing with funds while still leaving room for legitimately delayed withdrawals.
+
+## Live on Arbitrum Sepolia
+
+All contracts are **verified on Arbiscan** with public source code, ABI, and Read/Write Contract tabs:
+
+| Component | Address | Arbiscan |
+| --- | --- | --- |
+| **StealthGiveDollar** (SGD, public ERC-20) | `0xCA662c692e67A5ec3402D13327895eA762F702Bb` | [✅ verified](https://sepolia.arbiscan.io/address/0xCA662c692e67A5ec3402D13327895eA762F702Bb#code) |
 | **ConfidentialSGD** (cSGD, ERC-7984) | `0xa89340C4BC163ced823653d09DB1E1ba65Ca6849` | [✅ verified](https://sepolia.arbiscan.io/address/0xa89340C4BC163ced823653d09DB1E1ba65Ca6849#code) |
 | **StealthGiveFactory** | `0xbD124A4C743847f5862024906B66ABeDeB9cCB6e` | [✅ verified](https://sepolia.arbiscan.io/address/0xbD124A4C743847f5862024906B66ABeDeB9cCB6e#code) |
 | **CampaignRegistry** | `0x1023b4ff42c3Ed560B07b9A705E9A2d0Fc465DC4` | [✅ verified](https://sepolia.arbiscan.io/address/0x1023b4ff42c3Ed560B07b9A705E9A2d0Fc465DC4#code) |
 | **Demo Campaign** ("Press Freedom Legal Defense") | `0x63b2b615c9112Bb03Cd25cbB0f8fcd82Dc8C124c` | [✅ verified](https://sepolia.arbiscan.io/address/0x63b2b615c9112Bb03Cd25cbB0f8fcd82Dc8C124c#code) |
-| **iExec NoxCompute precompile** (TEE, deployed by iExec) | `0xd464B198f06756a1d00be223634b85E0a731c229` | [view](https://sepolia.arbiscan.io/address/0xd464B198f06756a1d00be223634b85E0a731c229) |
+| **iExec NoxCompute precompile** (deployed by iExec) | `0xd464B198f06756a1d00be223634b85E0a731c229` | [view](https://sepolia.arbiscan.io/address/0xd464B198f06756a1d00be223634b85E0a731c229) |
 
-## 🏗️ Cara Kerjanya
+Real proof that we run on actual TEE compute: the first wrap transaction [`0x09d0c4d4…`](https://sepolia.arbiscan.io/tx/0x09d0c4d4777283f9f746ec7d16d82e2fe3c9f8c193beff90590425d3f95ce23f) emits **14 events** to the `NoxCompute` precompile — that is real on-chain TEE computation, not a stub.
 
-```
-┌──────────────────────┐         ┌──────────────────────────┐
-│  Pembuat Kampanye    │         │   Donatur (cari privasi) │
-│  (NGO, jurnalis)     │         │                          │
-└──────────┬───────────┘         └─────────────┬────────────┘
-           │                                   │
-   ① Buat kampanye                    ② Claim SGD (1000/24h)
-      (judul, target,                    + Wrap → cSGD via
-       deadline, narasi)                  iExec ERC-7984 wrapper
-           │                                   │
-           ▼                                   ▼
-┌────────────────────────────────────────────────────────────┐
-│                  StealthGiveFactory                        │
-│           (Smart Contract Rahasia di Nox)                  │
-│                                                            │
-│  • Membuat instance Campaign per fundraiser                │
-│  • Menyimpan saldo rahasia (terenkripsi di TEE)            │
-│  • Hanya menampilkan: total terkumpul, jumlah donatur, tgl │
-│  • Jumlah per donatur: hidden (ERC-7984 confidential)      │
-└────────────────────────┬───────────────────────────────────┘
-                         │
-            ③ Donatur encrypt amount client-side via
-              iExec Nox gateway, lalu panggil
-              campaign.donate(externalEuint256, proof)
-                         │
-                         ▼
-┌────────────────────────────────────────────────────────────┐
-│        Settlement Confidential Token (iExec Nox TEE)       │
-│                                                            │
-│  • Jumlah terenkripsi; tidak pernah muncul plaintext       │
-│  • Sum agregat dipertahankan dalam bentuk terenkripsi      │
-│  • Total agregat di-mark allowPublicDecryption setiap      │
-│    donasi → progress bar live ke semua visitor             │
-│  • Per-donor amount: hanya donor yg bersangkutan bisa baca │
-└────────────────────────┬───────────────────────────────────┘
-                         │
-        ④ Setelah deadline:
-           • settle() → state: Active → Settling
-           • Recipient withdraw() (state: Withdrawn)
-           • Atau, setelah grace 7 hari: donor refund()
-                         │
-                         ▼
-              ⑤ ChainGPT generate impact report (live)
-                 + 4 ChainGPT touchpoint lain di sepanjang alur
-                 (lihat Layer 3 untuk daftar lengkap)
-```
+---
 
-**Di mana ChainGPT plug in:**
-- Step ① (`/create`) — Web3 LLM draft judul + narasi, NFT Image Generator buat hero banner
-- Detail page — Inline AI Risk Review (per-campaign), Smart Contract Auditor (template), Impact Report (state-aware narrative)
-
-## 🔬 Arsitektur Teknis
+## Technical Deep Dive
 
 ### Layer 1 — Smart Contracts (`/sc-StealthGive/src`)
 
-| Contract | Tanggung Jawab | Standar |
+```mermaid
+classDiagram
+    class StealthGiveDollar {
+        +ERC20 public
+        +claim() — 1000 SGD per 24h
+        +DRIP, COOLDOWN
+    }
+
+    class ERC20ToERC7984Wrapper {
+        <<iExec>>
+        +wrap(donor, amount)
+        +unwrap(donor, amount)
+    }
+
+    class ConfidentialSGD {
+        +constructor(IERC20)
+    }
+
+    class ConfidentialEscrow {
+        <<abstract>>
+        #_encryptedTotal : euint256
+        #_encryptedContrib : mapping
+        #_credit(donor, handle, proof)
+        #_debit(donor, amount)
+    }
+
+    class Campaign {
+        +creator, recipient, goal, deadline
+        +state : Active~Settling~Withdrawn~Refunding
+        +donate(handle, proof)
+        +settle()
+        +withdraw()
+        +refund()
+    }
+
+    class StealthGiveFactory {
+        +createCampaign(metadataURI, goal, deadline, recipient)
+    }
+
+    class CampaignRegistry {
+        +paginate(offset, limit)
+        +summariseMany(campaigns)
+    }
+
+    StealthGiveDollar <.. ConfidentialSGD : underlying
+    ERC20ToERC7984Wrapper <|-- ConfidentialSGD
+    ConfidentialEscrow <|-- Campaign
+    StealthGiveFactory ..> Campaign : deploys
+    CampaignRegistry ..> Campaign : reads
+```
+
+| Contract | Responsibility | Standard |
 | --- | --- | --- |
-| `StealthGiveDollar.sol` | Public ERC-20 (6 decimals) dengan `claim()` 1000 SGD per 24h. Underlying asset untuk cSGD. | ERC-20 |
-| `ConfidentialSGD.sol` | Concrete instance dari iExec `ERC20ToERC7984Wrapper`. Wrap SGD ↔ cSGD 1:1. | ERC-7984 |
-| `StealthGiveFactory.sol` | Deploy & registrasi instance `Campaign`. Bound ke cSGD saat construction. | — |
-| `Campaign.sol` | Logika per kampanye: `donate()`, `settle()`, `withdraw()`, `refund()`. Implements `IERC7984Receiver` untuk single-tx `confidentialTransferAndCall` flow. | Mengomposisi ERC-7984 |
-| `ConfidentialEscrow.sol` | Abstract base yang memegang aggregate + per-donor encrypted contributions. Meng-encapsulate semua call ke iExec Nox SDK. | ERC-7984 |
-| `CampaignRegistry.sol` | Indexer view-only untuk frontend; melistkan kampanye aktif & summaries. | — |
+| `StealthGiveDollar.sol` | Public ERC-20 (6 decimals) with `claim()` 1000 SGD per 24h. Underlying asset for cSGD. | ERC-20 |
+| `ConfidentialSGD.sol` | Concrete instance of iExec `ERC20ToERC7984Wrapper`. Wraps SGD ↔ cSGD 1:1. | ERC-7984 |
+| `StealthGiveFactory.sol` | Deploys and registers `Campaign` instances. Bound to cSGD at construction. | — |
+| `Campaign.sol` | Per-campaign logic: `donate()`, `settle()`, `withdraw()`, `refund()`. Implements `IERC7984Receiver` for the single-tx `confidentialTransferAndCall` flow. | Composes ERC-7984 |
+| `ConfidentialEscrow.sol` | Abstract base that holds aggregate + per-donor encrypted contributions. Encapsulates every iExec Nox SDK call. | ERC-7984 |
+| `CampaignRegistry.sol` | View-only indexer for the frontend; lists active campaigns and summaries. | — |
 
-> **Mengapa hanya ERC-7984?** Hackathon eksplisit menyatakan implementasi parsial ERC-3643 / ERC-7540 akan ditolak. Kami pakai ERC-7984 (ekstensi confidential token) yang persis on-spec untuk use case kami (hidden amounts).
+> **Why ERC-7984 only?** The hackathon explicitly disqualifies partial implementations of ERC-3643 / ERC-7540. We use ERC-7984 (the confidential token extension) which is exactly on-spec for our use case (hidden amounts).
 
-### Layer 2 — Integrasi iExec Nox
+### Layer 2 — iExec Nox Integration
 
-Tiga primitive Nox dipakai sepanjang alur:
+Three Nox primitives are used throughout the flow:
 
-1. **Wrapping ERC-20 → ERC-7984** — `cSGD.wrap(donor, amount)` mengunci SGD plaintext, mint cSGD encrypted yang hanya donor bisa baca via `Nox.allowTransient`.
-2. **Confidential transfer** — pemanggilan `donate()` mentransfer cSGD dari donor ke contract `Campaign` lewat `confidentialTransferFrom`. Jumlahnya terenkripsi dan diproses di dalam TEE Nox; event log on-chain tidak membawa nilai plaintext.
-3. **Public-aggregate decryption** — setiap donasi memanggil `Nox.allowPublicDecryption(_encryptedTotal)`. Visitor bisa decrypt total terkumpul tanpa signature, sementara per-donor amount tetap private.
+1. **ERC-20 → ERC-7984 wrapping.** `cSGD.wrap(donor, amount)` locks plaintext SGD and mints encrypted cSGD that only the donor can read via `Nox.allowTransient`.
+2. **Confidential transfer.** `donate()` moves cSGD from donor to the `Campaign` contract via `confidentialTransferFrom`. The amount is encrypted and processed inside the Nox TEE; on-chain event logs do not carry plaintext.
+3. **Public-aggregate decryption.** Every donation calls `Nox.allowPublicDecryption(_encryptedTotal)`. Visitors decrypt the aggregate without a signature; per-donor amounts stay private.
 
-Bukti integrasi TEE asli: tx wrap pertama [`0x09d0c4d4...`](https://sepolia.arbiscan.io/tx/0x09d0c4d4777283f9f746ec7d16d82e2fe3c9f8c193beff90590425d3f95ce23f) emit 14 event ke `NoxCompute` precompile (`0xd464B198...`) — bukti komputasi TEE on-chain bukan stub.
+### Layer 3 — ChainGPT AI Integration (`/fe-stealthgive/app/api/ai`)
 
-### Layer 3 — Integrasi AI ChainGPT (`/fe-stealthgive/app/api/ai`)
+**Five live touchpoints**, using three ChainGPT products (Web3 LLM, NFT Image Generator, Smart Contract Auditor):
 
-**Lima titik integrasi live**, memakai tiga produk ChainGPT (Web3 LLM, NFT Image Generator, Smart Contract Auditor):
-
-| Touchpoint | Fitur ChainGPT | Endpoint server | Lokasi UI | Status |
+| Touchpoint | ChainGPT Feature | Server Endpoint | UI Location | Status |
 | --- | --- | --- | --- | --- |
 | **Campaign copy assist** | Web3 LLM (`general_assistant`) | `/api/ai/draft-campaign` | `/create` | ✅ Live |
 | **Hero image generator** | NFT/Image Generator (`velogen` model) | `/api/ai/generate-hero` | `/create` | ✅ Live |
-| **Smart contract audit** | Smart Contract Auditor (`smart_contract_auditor`) | `/api/ai/audit-contract` | Inline expandable di `/campaigns/[address]` + standalone `/audit` | ✅ Live |
+| **Smart contract audit** | Smart Contract Auditor (`smart_contract_auditor`) | `/api/ai/audit-contract` | `/audit` page | ✅ Live |
 | **AI risk review** | Web3 LLM (`general_assistant`) | `/api/ai/review-campaign` | `/campaigns/[address]` | ✅ Live |
 | **Impact report** | Web3 LLM (state-aware narrative) | `/api/ai/impact-report` | `/campaigns/[address]` | ✅ Live |
 
-Semua endpoint dibungkus sebagai Next.js Route Handlers di server-side — API key ChainGPT tidak pernah masuk bundle browser. Prompt-prompt nya difokuskan ke konteks Web3/on-chain karena `general_assistant` ChainGPT punya domain restriction terhadap topik non-Web3 (lihat `feedback.md` untuk catatan lengkap).
+All endpoints are wrapped as Next.js Route Handlers server-side — the ChainGPT API key never lands in the browser bundle. Prompts are explicitly framed with Web3 / on-chain context because ChainGPT's `general_assistant` has a domain restriction against non-Web3 topics (see `feedback.md` for full notes).
 
-**Hero image flow:** AI image dihasilkan saat creator klik *Generate* di `/create`, di-preview, lalu di-cache di `localStorage` keyed by alamat campaign setelah deploy berhasil. Detail page baca dari cache (jatuh ke deterministic gradient kalau missing — lihat `components/hero-gradient.tsx`). Image tidak disimpan on-chain agar gas tetap murah.
+**Hero image flow:** the AI image is generated when the creator clicks *Generate* on `/create`, previewed in the form, then cached in `localStorage` keyed by campaign address after successful deployment. The detail page reads from cache, falling back to a deterministic gradient if missing. Images are not stored on-chain to keep gas low.
 
-**Contract audit flow:** Karena semua kampanye instance dari `Campaign.sol` yang sama, audit di-run sekali, di-cache server-side (module-level), lalu di-render inline di setiap detail page sebagai collapsible section.
+**Contract audit flow:** since every campaign is an instance of the same `Campaign.sol`, the audit runs once, is cached server-side, and is rendered on the standalone `/audit` page.
 
 ### Layer 4 — Frontend (`/fe-stealthgive`)
 
 - **Framework:** Next.js 16 (App Router) + React 19 + TypeScript strict mode
 - **Wallet:** RainbowKit 2.2 + Wagmi 2.19 + Viem 2.48
-- **Styling:** Tailwind CSS v4 + lucide-react icons
-- **State:** Zustand (client) + TanStack Query 5 (server)
-- **Confidential Token UX:** integrated wrap/donate flow pakai `@iexec-nox/handle@0.1.0-beta.10` SDK
-- **Penyimpanan metadata kampanye:** on-chain `data:application/json;base64,...` URI (zero IPFS dependency, fully self-contained)
-- **Off-chain index:** read-only via CampaignRegistry view-contract (no centralized API)
+- **Styling:** Tailwind CSS v4 + lucide-react icons + Framer Motion
+- **State:** TanStack Query 5 (server) + native React hooks (client)
+- **Confidential UX:** integrated wrap/donate flow via `@iexec-nox/handle@0.1.0-beta.10`
+- **Metadata storage:** on-chain `data:application/json;base64,…` URI (zero IPFS dependency)
+- **Off-chain index:** read-only via `CampaignRegistry` view contract (no centralised API)
+- **Clock-skew handling:** `withCorrectedClock(fn)` probes the gateway's `Date` header, computes local↔gateway offset, and monkey-patches `Date.now()` for the duration of SDK calls so EIP-712 timestamps line up with the gateway's clock — visible diagnostic banner on the dashboard
 
-## 🛠️ Tech Stack Sekilas
+---
 
-```
+## Tech Stack
+
+```text
 Smart Contracts ┃ Solidity ^0.8.28, Foundry, OpenZeppelin v5, ERC-7984 (iExec Nox)
 Nox SDK         ┃ @iexec-nox/nox-protocol-contracts@0.2.2
                 ┃ @iexec-nox/nox-confidential-contracts@0.1.0
                 ┃ @iexec-nox/handle@0.1.0-beta.10 (TypeScript SDK)
-AI              ┃ ChainGPT API (live, 5 endpoints) — Web3 LLM (general_assistant),
-                ┃ NFT/Image Generator (velogen), Smart Contract Auditor
+AI              ┃ ChainGPT API (live, 5 endpoints)
+                ┃ Web3 LLM (general_assistant)
+                ┃ NFT/Image Generator (velogen)
+                ┃ Smart Contract Auditor
 Frontend        ┃ Next.js 16, React 19, RainbowKit 2.2, Wagmi 2.19, Viem 2.48,
-                ┃ Tailwind v4, shadcn/ui patterns, lucide-react
+                ┃ Tailwind v4, lucide-react, Framer Motion
 Off-chain       ┃ None — fully on-chain metadata via data URI; view contract for indexing
 Network         ┃ Arbitrum Sepolia (chain id 421614)
-Tooling         ┃ pnpm, Foundry tests (24 unit tests, 100% pass against vendor stubs)
+Tooling         ┃ npm, Foundry tests (24 unit tests, 100% pass against vendor stubs)
 ```
 
-## 📂 Struktur Repository
+## Repository Structure
 
-```
+```text
 stealthgive/
 ├── sc-StealthGive/              # Foundry workspace (smart contracts)
 │   ├── src/
-│   │   ├── StealthGiveDollar.sol    # Public ERC-20 dengan claim()
+│   │   ├── StealthGiveDollar.sol    # Public ERC-20 with claim()
 │   │   ├── ConfidentialSGD.sol      # iExec ERC-7984 wrapper
 │   │   ├── StealthGiveFactory.sol
 │   │   ├── Campaign.sol
@@ -220,62 +387,67 @@ stealthgive/
 │   │   ├── CampaignRegistry.sol
 │   │   └── interfaces/
 │   ├── test/                    # 24 Foundry tests (vendor stub fallback)
-│   ├── script/Deploy.s.sol      # Deploy ke Arbitrum Sepolia
-│   ├── vendor/iexec-nox-stubs/  # Offline-compile stubs (untuk forge test)
+│   ├── script/Deploy.s.sol      # Deploy to Arbitrum Sepolia
+│   ├── vendor/iexec-nox-stubs/  # Offline-compile stubs (forge test)
 │   └── foundry.toml
 ├── fe-stealthgive/              # Next.js 16 frontend
 │   ├── app/
-│   │   ├── layout.tsx                # Root layout + Providers
-│   │   ├── providers.tsx             # WagmiProvider + RainbowKit + QueryClient
-│   │   ├── page.tsx                  # Landing dengan use cases
-│   │   ├── dashboard/page.tsx        # Claim SGD + wrap → cSGD + reveal balance
-│   │   ├── campaigns/page.tsx        # Browse semua campaigns
-│   │   ├── campaigns/[address]/page.tsx  # Detail + donate + settle/withdraw/refund
-│   │   ├── create/page.tsx           # Form bikin campaign + AI assist
-│   │   ├── audit/page.tsx            # Standalone Campaign.sol audit (full report)
-│   │   └── api/ai/
-│   │       ├── draft-campaign/route.ts   # ChainGPT Web3 LLM — title + story
-│   │       ├── generate-hero/route.ts    # ChainGPT NFT/Image Generator
-│   │       ├── audit-contract/route.ts   # ChainGPT Smart Contract Auditor
-│   │       ├── review-campaign/route.ts  # Per-campaign AI risk review
-│   │       └── impact-report/route.ts    # State-aware impact narrative
+│   │   ├── layout.tsx
+│   │   ├── providers.tsx
+│   │   ├── page.tsx                  # Landing
+│   │   ├── dashboard/page.tsx        # Claim · wrap · reveal
+│   │   ├── campaigns/page.tsx        # Browse all campaigns
+│   │   ├── campaigns/[address]/page.tsx  # Detail · donate · settle/withdraw/refund
+│   │   ├── create/page.tsx           # Form + AI assist
+│   │   ├── audit/page.tsx            # Standalone Campaign.sol audit
+│   │   └── api/
+│   │       ├── time/route.ts         # Gateway clock probe
+│   │       └── ai/
+│   │           ├── draft-campaign/route.ts
+│   │           ├── generate-hero/route.ts
+│   │           ├── audit-contract/route.ts
+│   │           ├── review-campaign/route.ts
+│   │           └── impact-report/route.ts
 │   ├── components/
 │   │   ├── header.tsx
-│   │   ├── total-raised.tsx          # publicDecrypt + auto-retry + onReveal callback
+│   │   ├── total-raised.tsx
 │   │   ├── progress-bar.tsx
 │   │   ├── countdown.tsx
-│   │   ├── hero-gradient.tsx         # AI image dengan deterministic gradient fallback
 │   │   ├── status-badge.tsx
 │   │   ├── campaign-card.tsx
-│   │   ├── campaign-review.tsx       # ChainGPT per-campaign risk review
-│   │   ├── contract-audit-section.tsx # Inline collapsible audit
-│   │   └── impact-report.tsx         # State-aware impact narrative
+│   │   ├── campaign-review.tsx
+│   │   ├── impact-report.tsx
+│   │   ├── markdown.tsx              # Lightweight MD renderer for AI output
+│   │   └── clock-skew-banner.tsx
 │   └── lib/
-│       ├── abis.ts                   # Auto-generated dari forge artifacts
+│       ├── abis.ts
 │       ├── addresses.ts
 │       ├── wagmi.ts
-│       ├── nox.ts                    # Nox SDK wrapper + auth-refresh
-│       ├── metadata.ts               # data: URI parser
+│       ├── nox.ts                    # SDK wrapper + auth-refresh + friendly errors
+│       ├── clock.ts                  # withCorrectedClock helper
+│       ├── metadata.ts               # data: URI parser (UTF-8-safe)
 │       ├── hero-image.ts             # localStorage cache per campaign
 │       ├── format.ts
 │       └── gas.ts                    # Arbitrum Sepolia gas overrides
-├── feedback.md                  # ✅ Hackathon deliverable — dev experience notes
+├── feedback.md                  # Hackathon deliverable — dev experience notes
 ├── LICENSE                      # MIT
-└── README.md                    # ← Anda di sini
+└── README.md                    # ← you are here
 ```
 
-## 🚀 Memulai (Local Dev)
+---
 
-### Prasyarat
+## Getting Started
 
-- Node.js ≥ 20, pnpm ≥ 9
+### Prerequisites
+
+- Node.js ≥ 20, npm ≥ 9
 - [Foundry](https://book.getfoundry.sh/) (`forge`, `cast`, `anvil`)
-- Wallet dengan ETH Arbitrum Sepolia ([Google Cloud Faucet](https://cloud.google.com/application/web3/faucet/ethereum/sepolia) → bridge via [bridge.arbitrum.io](https://bridge.arbitrum.io/?destinationChain=arbitrum-sepolia&sourceChain=sepolia))
+- A wallet funded with Arbitrum Sepolia ETH ([Google Cloud Faucet](https://cloud.google.com/application/web3/faucet/ethereum/sepolia) → bridge via [bridge.arbitrum.io](https://bridge.arbitrum.io/?destinationChain=arbitrum-sepolia&sourceChain=sepolia))
 
 ### 1. Clone & Install
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/EzraNahumury/iexec.git stealthgive
 cd stealthgive
 # Smart contracts
 cd sc-StealthGive && forge install && cd ..
@@ -291,22 +463,22 @@ forge build
 forge test -vv          # 24/24 passing against vendor stubs
 ```
 
-### 3. Deploy (opsional — sudah live di Arbitrum Sepolia)
+### 3. Deploy (optional — already live on Arbitrum Sepolia)
 
-Kalau Anda mau deploy versi sendiri:
+If you want to deploy your own copy:
 
 ```bash
 cd sc-StealthGive
 cp .env.example .env
-# Isi PRIVATE_KEY (testnet wallet, jangan reuse mainnet)
+# Fill in PRIVATE_KEY (testnet wallet — do not reuse mainnet)
 source .env
 forge script script/Deploy.s.sol:Deploy \
   --rpc-url $ARB_SEPOLIA_RPC --broadcast --skip test
 ```
 
-Output akan kasih address SGD, cSGD, Factory, Registry. Update `fe-stealthgive/lib/addresses.ts` dengan address baru.
+The output prints SGD, cSGD, Factory, and Registry addresses. Update `fe-stealthgive/lib/addresses.ts` accordingly.
 
-### 4. Run Frontend
+### 4. Run the Frontend
 
 ```bash
 cd fe-stealthgive
@@ -314,147 +486,159 @@ npm run dev
 # → http://localhost:3000
 ```
 
-### 5. Walkthrough End-to-End
+### 5. End-to-End Walkthrough
 
-1. **Connect wallet** (Arbitrum Sepolia auto-prompt).
-2. **`/dashboard`** → klik **"Claim 1,000 SGD"** (cooldown 24h per address).
-3. Input "100" → **"1. Approve"** → confirm → **"2. Wrap"** → confirm. Sekarang Anda punya 100 cSGD encrypted.
-4. **`/campaigns`** → klik kampanye demo "Press Freedom Legal Defense".
-5. Input "10" di sidebar → **"Donate privately"** → 2 tx (setOperator + donate). Amount di-encrypt client-side via Nox gateway, no one bisa lihat berapa Anda kasih.
-6. Refresh → **donor count naik**, **progress bar live update** dengan total terkumpul (publicly decrypted aggregate).
-7. **`/create`** → bikin kampanye baru sendiri.
+1. **Connect wallet** (Arbitrum Sepolia auto-prompts on first action).
+2. **`/dashboard`** → click **Claim 1,000 SGD** (24h cooldown per address).
+3. Type "100" → **1. Approve** → confirm → **2. Wrap** → confirm. You now hold 100 cSGD encrypted.
+4. **`/campaigns`** → open the demo campaign "Press Freedom Legal Defense".
+5. Type "10" in the donate panel → **Donate privately** → 2 transactions (`setOperator` + `donate`). The amount is encrypted client-side via the Nox gateway; nobody can see how much you gave.
+6. Refresh → donor count goes up, progress bar updates with the new aggregate (publicly decrypted), but your individual contribution stays private.
+7. **`/create`** → spin up your own campaign. Try the AI **Generate** button.
 
-## 🔒 Threat Model & Jaminan Privasi
+---
 
-| Adversary | Kemampuan | Yang Dilindungi StealthGive |
+## Threat Model
+
+| Adversary | Capability | What StealthGive Protects |
 | --- | --- | --- |
-| Pengamat publik on-chain (chain analytics, scraper) | Membaca semua event & storage. | ✅ Lihat kampanye eksis & total terkumpul. ❌ Tidak bisa lihat jumlah per donatur atau hubungkan identitas donatur. |
-| Pembuat kampanye (penerima) | Menerima dana, lihat saldo penarikan. | ✅ Lihat agregat terkumpul. ❌ Tidak bisa link alamat donatur ke jumlah kontribusi tertentu. |
-| Donatur lain ke kampanye yang sama | Membaca state on-chain. | ❌ Tidak bisa menyimpulkan jumlah donatur lain. |
-| Operator node iExec Nox (host TEE) | Menjalankan enclave SGX/TDX. | ❌ Tidak bisa mengekstrak plaintext (TEE attestation guarantees enforced by iExec runtime). |
-| Developer StealthGive | Mengoperasikan frontend. | ❌ Tidak bisa decrypt saldo rahasia. Tidak ada backend yang menyimpan data sensitif. |
+| Public on-chain observer (chain analytics, scrapers) | Reads all events & storage. | ✅ Sees campaign exists & total raised. ❌ Cannot see per-donor amounts or link donor identities. |
+| Campaign creator (recipient) | Receives funds, sees withdrawal balance. | ✅ Sees aggregate raised. ❌ Cannot link a donor address to a specific contribution amount. |
+| Other donors to the same campaign | Read on-chain state. | ❌ Cannot infer other donors' amounts. |
+| iExec Nox node operator (TEE host) | Runs SGX/TDX enclave. | ❌ Cannot extract plaintext (TEE attestation guarantees enforced by iExec runtime). |
+| StealthGive developers | Operate the frontend. | ❌ Cannot decrypt private balances. No backend stores sensitive data. |
 
-**Yang di luar scope (didisclose dengan jujur):**
-- Metadata level network (penyedia RPC melihat IP ↔ submission tx). Mitigasi: integrasi private RPC ada di roadmap.
-- Serangan korelasi waktu pada anonymity set kecil. Mitigasi: kampanye dengan donatur sangat sedikit secara inheren lebih lemah; UI menampilkan peringatan risiko ini.
-- Device user yang sudah dikompromikan. Di luar scope semua dApp berbasis wallet.
+**Honestly out of scope:**
 
-## 🤖 Workflow Vibe Coding
+- Network-level metadata (the RPC provider sees `IP ↔ submission tx`). Mitigation: private RPC integration is on the roadmap.
+- Timing-correlation attacks against tiny anonymity sets. Mitigation: a campaign with very few donors is inherently weaker; the UI surfaces this risk.
+- A compromised user device. Out of scope for any wallet-based dApp.
 
-Project ini dibangun pakai pengembangan dibantu AI sesuai semangat challenge:
+---
 
-- **Claude Code** — agen pair-programming utama untuk scaffolding contract, Solidity testing, frontend components, debugging integrasi Nox SDK.
-- **ChainGPT Smart Contract Generator** — direncanakan sebagai entry-point alternatif untuk users yang ingin scaffold confidential token mereka sendiri (lihat [Roadmap](#-roadmap)).
-- **iExec CDeFi Wizard** ([cdefi-wizard.iex.ec](https://cdefi-wizard.iex.ec)) — kami referensikan saat scaffolding awal `ConfidentialSGD`.
+## Judging Criteria Mapping
 
-## 📊 Pemetaan ke Kriteria Penilaian
-
-| Kriteria | Bobot | Status |
+| Criterion | Weight | Status |
 | --- | --- | --- |
-| Berjalan end-to-end tanpa data mock | ⭐⭐⭐ | ✅ Setiap donasi melalui Nox Confidential Token asli di Arbitrum Sepolia. Verified via on-chain tx ([sample donate](https://sepolia.arbiscan.io/tx/0xb04025b98b61fa98...)). 14 event ke NoxCompute precompile per wrap = real TEE komputasi. |
-| Deploy di Arbitrum / Arbitrum Sepolia | ⭐⭐ | ✅ Deployed di Arbitrum Sepolia (chain id 421614). Semua alamat di [section atas](#-live-di-arbitrum-sepolia). |
-| `feedback.md` disediakan | ⭐⭐ | ✅ [feedback.md](./feedback.md) — covers iExec dev experience, Circle-blocked workaround, RainbowKit/wagmi v3 compat, EIP-712 token expiry, Nox gateway sync delay, ChainGPT domain restrictions. |
-| Video demo maksimal 4 menit | ⭐⭐ | ⏳ Recording planned — script outline tersedia. |
-| Kedalaman pemakaian Confidential Token & Nox | ⭐ | ✅ 4 titik integrasi: (1) `ERC20ToERC7984Wrapper` untuk deploy own confidential token, (2) `confidentialTransferFrom` untuk donate, (3) `Nox.allowPublicDecryption` per donate untuk live total reveal, (4) `@iexec-nox/handle` SDK client-side encrypt + decrypt. ERC-7984 fully implemented (no partial). |
-| **Kedalaman integrasi ChainGPT** (sponsor track) | ⭐ | ✅ 5 endpoint live menggunakan 3 produk ChainGPT — Web3 LLM (`general_assistant`), NFT/Image Generator (`velogen`), Smart Contract Auditor (`smart_contract_auditor`). Semua server-side, API key tidak terekspos ke client. Detail di [Layer 3](#layer-3--integrasi-ai-chaingpt-fe-stealthgiveappapiai). |
-| Use case dunia nyata | ⭐ | ✅ 6 persona pengguna konkret (jurnalis, LGBTQ+, war zone, dll). Threat model didokumentasikan dengan jujur. |
-| Kualitas code | ⭐ | ✅ TypeScript strict mode, Foundry test 24/24 pass, custom error selectors di Solidity, NatSpec docs lengkap, React strict mode, no `any`, no `TODO` di critical paths. |
-| UX | ⭐ | ✅ Onboarding 2-klik (claim + wrap), no jargon di copy user-facing, mobile-responsive, hero AI image dengan gradient fallback, progress bar live, countdown timer, inline AI risk review + audit di setiap campaign. |
+| Runs end-to-end with no mock data | ⭐⭐⭐ | ✅ Every donation flows through real Nox confidential tokens on Arbitrum Sepolia. Verified via on-chain tx ([sample donate](https://sepolia.arbiscan.io/tx/0xb04025b98b61fa98...)). 14 events to NoxCompute precompile per wrap = real TEE computation. |
+| Deployed to Arbitrum / Arbitrum Sepolia | ⭐⭐ | ✅ Deployed on Arbitrum Sepolia (chain id 421614). All addresses listed [above](#live-on-arbitrum-sepolia). |
+| `feedback.md` provided | ⭐⭐ | ✅ [feedback.md](./feedback.md) — covers iExec dev experience, Circle-blocked workaround, RainbowKit/wagmi v3 compat, EIP-712 token expiry, Nox gateway sync delay, ChainGPT domain restrictions. |
+| Demo video ≤ 4 min | ⭐⭐ | ⏳ Recording planned — script outline ready. |
+| Depth of Confidential Token & Nox use | ⭐ | ✅ Four integration points: (1) `ERC20ToERC7984Wrapper` to deploy our own confidential token, (2) `confidentialTransferFrom` for donate, (3) `Nox.allowPublicDecryption` per donate for live aggregate reveal, (4) `@iexec-nox/handle` SDK for client-side encrypt + decrypt. ERC-7984 fully implemented (no partial). |
+| **Depth of ChainGPT integration** (sponsor track) | ⭐ | ✅ Five live endpoints across three ChainGPT products — Web3 LLM (`general_assistant`), NFT/Image Generator (`velogen`), Smart Contract Auditor (`smart_contract_auditor`). All server-side, API key never exposed. Details in [Layer 3](#layer-3--chaingpt-ai-integration-fe-stealthgiveappapiai). |
+| Real-world use case | ⭐ | ✅ Six concrete personas (journalists, LGBTQ+, war zones, etc.). Threat model documented honestly. |
+| Code quality | ⭐ | ✅ TypeScript strict mode, Foundry tests 24/24 pass, custom error selectors in Solidity, NatSpec docs throughout, React strict mode, no `any`, no `TODO` in critical paths. |
+| UX | ⭐ | ✅ Two-click onboarding (claim + wrap), no jargon in user copy, mobile-responsive, AI hero image with gradient fallback, live progress bar, countdown timer, inline AI risk review on every campaign. |
 
-## 🗺️ Roadmap
+---
 
-**Scope hackathon (sudah ter-deliver):**
-- [x] Confidential donation flow dengan jumlah per donatur tersembunyi
-- [x] Live agregat total terkumpul (publicDecrypt setiap donate)
-- [x] Self-sovereign confidential token (`SGD` + `cSGD`) — zero dependency Circle/VPN
-- [x] Deploy Arbitrum Sepolia
-- [x] Frontend Next.js 16 lengkap dengan claim/wrap/donate/settle/withdraw/refund flows
+## Roadmap
+
+**Hackathon scope (delivered):**
+
+- [x] Confidential donation flow with hidden per-donor amounts
+- [x] Live aggregate total raised (`publicDecrypt` per donate)
+- [x] Self-sovereign confidential token (`SGD` + `cSGD`) — zero Circle / VPN dependency
+- [x] Deployed to Arbitrum Sepolia
+- [x] Full Next.js 16 frontend with claim · wrap · donate · settle · withdraw · refund
 - [x] Donor self-decrypt balance via Nox gateway (gasless EIP-712, auto-refresh on 401)
 - [x] Foundry test suite (24/24 passing)
-- [x] Progress bar live + countdown timer + state-aware UI
-- [x] **ChainGPT campaign copy assist** — Web3 LLM, AI-drafted title + 3-paragraph story dari brief 1 baris
-- [x] **ChainGPT AI hero image** — NFT/Image Generator (`velogen`), banner-aspect, deterministic gradient fallback
-- [x] **ChainGPT smart contract audit** — Smart Contract Auditor on `Campaign.sol`, inline collapsible di setiap detail page + standalone `/audit` page
-- [x] **ChainGPT per-campaign AI risk review** — Web3 LLM analisis deployment params (goal, deadline, recipient EOA-vs-contract, dll)
+- [x] Live progress bar + countdown timer + state-aware UI
+- [x] Clock-skew correction for EIP-712 auth (gateway `Date` header probe + visible diagnostic banner)
+- [x] **ChainGPT campaign copy assist** — Web3 LLM, AI-drafted title + 3-paragraph story from a one-line brief
+- [x] **ChainGPT AI hero image** — NFT/Image Generator (`velogen`), banner-aspect, with gradient fallback
+- [x] **ChainGPT smart contract audit** — full audit on `Campaign.sol`, available on the standalone `/audit` page
+- [x] **ChainGPT per-campaign AI risk review** — Web3 LLM analysis of deployment params (goal, deadline, recipient EOA-vs-contract, etc.)
 - [x] **ChainGPT impact report** — state-aware narrative summary (Active = "Projected Impact", Settled = "Final Impact Report")
 
-**Pasca-hackathon:**
-- [ ] Subdomain ENS per kampanye (mis. `presslegal.stealthgive.eth`)
-- [ ] Donasi rahasia berulang via session keys
-- [ ] NFT receipt donatur anonim (ZK-proof kontribusi tanpa jumlah)
-- [ ] Multi-token campaigns (cETH, cDAI selain cSGD)
-- [ ] Mode opsional ERC-3643 untuk donatur institusional yang butuh identitas compliant
-- [ ] Private RPC integration (mitigasi kebocoran metadata level IP)
-- [ ] Mobile PWA + integrasi share-sheet iOS/Android
-- [ ] Deploy mainnet di Arbitrum One
+**Post-hackathon:**
 
-## ✅ Status Fitur
+- [ ] ENS subdomain per campaign (e.g. `presslegal.stealthgive.eth`)
+- [ ] Recurring private donations via session keys
+- [ ] Anonymous donor NFT receipts (ZK-proof of contribution without amount)
+- [ ] Multi-token campaigns (cETH, cDAI alongside cSGD)
+- [ ] Optional ERC-3643 mode for institutional donors who need compliant identity
+- [ ] Private RPC integration (mitigates IP-level metadata leak)
+- [ ] Mobile PWA + iOS/Android share-sheet integration
+- [ ] Mainnet deployment on Arbitrum One
 
-| Fitur | Status | Catatan |
+---
+
+## Feature Status
+
+| Feature | Status | Notes |
 | --- | --- | --- |
-| Claim SGD (1000/24h, anti-sybil cooldown) | ✅ Live | Tanpa KYC, tanpa Circle, tanpa VPN |
-| Wrap SGD → cSGD via iExec wrapper | ✅ Live | Verified on-chain dengan 14 event ke NoxCompute |
-| Reveal own cSGD balance (gasless EIP-712) | ✅ Live | Auto-refresh auth token saat expired |
-| Browse campaigns | ✅ Live | Read dari `Registry.summariseMany()` + parallel `encryptedTotal` |
-| Campaign detail dengan hero, judul, story, stats | ✅ Live | Metadata di-parse dari data URI |
-| Live total raised (publicDecrypt) | ✅ Live | Auto-decrypt setelah pertama load + auto-retry pada gateway sync delay |
-| Donate dengan amount encryption client-side | ✅ Live | Nox SDK encryptInput → setOperator + donate dalam 2 tx |
-| Progress bar + countdown timer | ✅ Live | Update tiap menit |
-| Settle / Withdraw / Refund flows | ✅ Live (untested at deadline) | Logic on-chain verified, butuh wait until deadline untuk e2e test |
-| Create campaign baru | ✅ Live | Form simpel, metadata jadi data URI on-chain |
+| Claim SGD (1000 / 24h, anti-Sybil cooldown) | ✅ Live | No KYC, no Circle, no VPN |
+| Wrap SGD → cSGD via iExec wrapper | ✅ Live | Verified on-chain with 14 events to NoxCompute |
+| Reveal own cSGD balance (gasless EIP-712) | ✅ Live | Auto-refresh + clock-skew correction on auth failure |
+| Browse campaigns | ✅ Live | Reads from `Registry.summariseMany()` + parallel `encryptedTotal` |
+| Campaign detail with hero, title, story, stats | ✅ Live | Metadata parsed from on-chain data URI (UTF-8-safe) |
+| Live total raised (`publicDecrypt`) | ✅ Live | Auto-decrypts on first load + auto-retry on gateway sync delay |
+| Donate with client-side amount encryption | ✅ Live | Nox SDK `encryptInput` → `setOperator` + `donate` in 2 tx |
+| Progress bar + countdown timer | ✅ Live | Updates each minute |
+| Settle / Withdraw / Refund flows | ✅ Live (untested at deadline) | Logic verified on-chain; needs wait-for-deadline for full e2e |
+| Create new campaign | ✅ Live | Simple form, metadata becomes data URI on-chain |
 | **ChainGPT campaign copy assist** | ✅ Live | `/api/ai/draft-campaign` — input 1-line brief, output title + 3-paragraph story |
-| **ChainGPT hero image generation** | ✅ Live | `/api/ai/generate-hero` — `velogen` model, 768×432 banner, cached per-campaign in localStorage |
-| **ChainGPT smart contract audit** | ✅ Live | `/api/ai/audit-contract` — inline collapsible di campaign detail + standalone `/audit` page; cached server-side |
-| **ChainGPT AI risk review (per campaign)** | ✅ Live | `/api/ai/review-campaign` — analyze deployment params (goal, deadline, recipient EOA-vs-contract, donor traction) |
+| **ChainGPT hero image generation** | ✅ Live | `/api/ai/generate-hero` — `velogen` model, 768×432 banner, cached per campaign in localStorage |
+| **ChainGPT smart contract audit** | ✅ Live | `/api/ai/audit-contract` — standalone `/audit` page, cached server-side |
+| **ChainGPT AI risk review** | ✅ Live | `/api/ai/review-campaign` — analyses goal, deadline, recipient EOA-vs-contract, donor traction |
 | **ChainGPT impact report** | ✅ Live | `/api/ai/impact-report` — state-aware ("Projected Impact" → "Final Impact Report"), regenerates as total updates |
 | `feedback.md` (hackathon deliverable) | ✅ Live | [feedback.md](./feedback.md) |
-| Verifikasi kontrak di Arbiscan | ✅ Live | All 5 kontrak (SGD, cSGD, Factory, Registry, demo Campaign) verified via Etherscan API V2 dengan source code publik |
-| Live demo URL (Vercel) | ⏳ Pending | Frontend siap untuk deploy |
-| Demo video 4 menit | ⏳ Pending | Script outline ready |
+| Arbiscan contract verification | ✅ Live | All 5 contracts (SGD, cSGD, Factory, Registry, demo Campaign) verified via Etherscan API V2 |
+| Live demo URL (Vercel) | ⏳ Pending | Frontend ready for deploy |
+| Demo video ≤ 4 min | ⏳ Pending | Script outline ready |
 
-## 📋 Checklist Submission Hackathon
+---
 
-- [x] Repository GitHub publik (open source, MIT)
-- [x] README dengan instruksi installation, deployment, dan usage
-- [x] Frontend fungsional
-- [x] dApp end-to-end jalan di Arbitrum Sepolia (no mock data)
-- [x] Confidential Token terintegrasi sebagai utility inti (private donations)
-- [x] Semua 5 kontrak [verified di Arbiscan](#-live-di-arbitrum-sepolia) (source code publik)
-- [x] `feedback.md` tentang dev experience iExec — [link](./feedback.md)
-- [ ] Video demo 4 menit (script ready, recording pending)
-- [ ] Submission post di X menandai `@iEx_ec` dan `@Chain_GPT`
-- [x] Bergabung di Discord iExec & channel Vibe Coding Challenge
+## Submission Checklist
 
-## 👥 Tim
+- [x] Public open-source GitHub repository (MIT)
+- [x] README with installation, deployment, and usage instructions
+- [x] Functional frontend
+- [x] dApp runs end-to-end on Arbitrum Sepolia (no mock data)
+- [x] Confidential Token integrated as core utility (private donations)
+- [x] All 5 contracts [verified on Arbiscan](#live-on-arbitrum-sepolia)
+- [x] `feedback.md` on iExec dev experience — [link](./feedback.md)
+- [ ] 4-minute demo video (script ready, recording pending)
+- [ ] Submission post on X tagging `@iEx_ec` and `@Chain_GPT`
+- [x] Joined iExec Discord & Vibe Coding Challenge channel
 
-| Nama | Peran | Link |
+---
+
+## Team
+
+| Name | Role | Links |
 | --- | --- | --- |
-| **Ezra Kristanto Nahumury** | Full-stack & contracts | [GitHub](#) · [X](#) |
+| **Ezra Kristanto Nahumury** | Full-stack & contracts | [GitHub](https://github.com/EzraNahumury) |
 
-> Solo entry untuk Vibe Coding Challenge.
+> Solo entry for the iExec Vibe Coding Challenge.
 
-## 📚 Referensi & Acknowledgment
+---
 
-- [Dokumentasi Nox Protocol iExec](https://docs.iex.ec/nox-protocol/getting-started/welcome)
-- [Confidential DeFi Wizard iExec](https://cdefi-wizard.iex.ec/)
-- [Demo Confidential Token + Faucet](https://cdefi.iex.ec/)
-- [Paket npm iExec Nox](https://www.npmjs.com/org/iexec-nox)
-- [iExec-Nox demo-ctoken (referensi cUSDC address)](https://github.com/iExec-Nox/demo-ctoken)
-- [Linktree Developer iExec](https://linktr.ee/iexec.tech)
-- [Dokumentasi ChainGPT](https://chaingpt.org)
+## References
+
+- [iExec Nox Protocol docs](https://docs.iex.ec/nox-protocol/getting-started/welcome)
+- [iExec Confidential DeFi Wizard](https://cdefi-wizard.iex.ec/)
+- [Confidential Token + Faucet demo](https://cdefi.iex.ec/)
+- [iExec Nox npm packages](https://www.npmjs.com/org/iexec-nox)
+- [iExec-Nox demo-ctoken (cUSDC reference)](https://github.com/iExec-Nox/demo-ctoken)
+- [iExec Developer Linktree](https://linktr.ee/iexec.tech)
+- [ChainGPT documentation](https://chaingpt.org)
 - [ERC-7984 — Confidential Token Extension](https://eips.ethereum.org/)
-- Terinspirasi secara semangat (bukan kode) dari [SQUIDL](https://ethglobal.com/showcase/squidl-psquk) — Finalist ETHGlobal Singapore 2024 — yang membuktikan bahwa UX privasi level konsumer dapat dicapai di EVM. StealthGive menerapkan prinsip yang sama (batas transparan, interior privat) ke domain crowdfunding, bukan pembayaran personal.
+- Spiritually inspired (not code) by [SQUIDL](https://ethglobal.com/showcase/squidl-psquk) — ETHGlobal Singapore 2024 finalist — which proved consumer-grade privacy UX is achievable on EVM. StealthGive applies the same principle (transparent boundary, private interior) to crowdfunding instead of personal payments.
 
-## 📜 Lisensi
+---
 
-MIT © 2026 kontributor StealthGive. Lihat [LICENSE](LICENSE).
+## License
+
+MIT © 2026 StealthGive contributors. See [LICENSE](LICENSE).
 
 ---
 
 <div align="center">
 
-**Dibangun untuk [iExec Vibe Coding Challenge](https://docs.iex.ec/) · April 2026**
+**Built for the [iExec Vibe Coding Challenge](https://docs.iex.ec/) · April 2026**
 
-**Ditenagai Nox · Token cSGD Self-Sovereign · Deploy di Arbitrum Sepolia**
+**Powered by Nox · Self-Sovereign cSGD · Deployed on Arbitrum Sepolia**
 
 </div>
