@@ -102,7 +102,7 @@ export function isAuthError(err: unknown): boolean {
  */
 export function friendlyAuthError(err: unknown): string {
     if (isAuthError(err)) {
-        return "Your gateway session has expired. Reconnect your wallet to refresh it.";
+        return "The Nox gateway rejected your signature. This usually means the EIP-712 session token expired. Reconnecting your wallet will request a fresh signature; if it still fails, check that your system clock is accurate.";
     }
     const raw = (err as Error)?.message ?? "Something went wrong.";
     // Trim huge JSON-data dumps the SDK appends.
