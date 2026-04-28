@@ -6,6 +6,8 @@ import Link from "next/link";
 import {useState} from "react";
 import {motion, AnimatePresence} from "framer-motion";
 
+import {NetworkCanvas} from "@/components/landing/network-canvas";
+
 type Path = {
     id: string;
     icon: React.ReactNode;
@@ -149,30 +151,17 @@ export default function WelcomePage() {
                     transition={{duration: 0.7, delay: 0.4}}
                     className="mt-10 rounded-3xl border border-zinc-200 bg-white shadow-[0_24px_60px_-24px_rgba(0,0,0,0.18)] overflow-hidden"
                 >
-                    {/* Hero zone — three uniform chips on a clean dotted backdrop */}
+                    {/* Hero zone — three uniform chips on an animated network backdrop */}
                     <div className="relative aspect-[16/8] bg-gradient-to-br from-zinc-50 to-zinc-100 overflow-hidden">
-                        <svg
-                            className="absolute inset-0 w-full h-full"
-                            xmlns="http://www.w3.org/2000/svg"
-                            aria-hidden
-                        >
-                            <defs>
-                                <pattern
-                                    id="welcome-dots"
-                                    width="22"
-                                    height="22"
-                                    patternUnits="userSpaceOnUse"
-                                >
-                                    <circle cx="11" cy="11" r="1" fill="rgba(0,0,0,0.07)" />
-                                </pattern>
-                            </defs>
-                            <rect width="100%" height="100%" fill="url(#welcome-dots)" />
-                        </svg>
+                        {/* Animated network — light theme */}
+                        <NetworkCanvas theme="light" density={120} speed={1.6} connectDist={70} />
+
+                        {/* Soft white wash so the chips stay legible against the network */}
                         <div
-                            className="absolute inset-0"
+                            className="absolute inset-0 pointer-events-none"
                             style={{
                                 background:
-                                    "radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,255,255,0.95), rgba(255,255,255,0))",
+                                    "radial-gradient(ellipse 55% 60% at 50% 50%, rgba(255,255,255,0.85), rgba(255,255,255,0.1))",
                             }}
                             aria-hidden
                         />
