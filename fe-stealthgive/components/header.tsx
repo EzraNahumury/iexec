@@ -2,6 +2,7 @@
 
 import {ArrowUpRight} from "lucide-react";
 import {ConnectButton} from "@rainbow-me/rainbowkit";
+import Image from "next/image";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
 import {useEffect, useState} from "react";
@@ -38,8 +39,15 @@ export function Header() {
         >
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2.5 group">
-                    <span className="size-8 rounded-full bg-zinc-900 text-white inline-flex items-center justify-center text-sm">
-                        🦑
+                    <span className="size-9 inline-flex items-center justify-center overflow-hidden">
+                        <Image
+                            src="/logo-new.png"
+                            alt="StealthGive logo"
+                            width={36}
+                            height={36}
+                            className="size-full object-contain"
+                            priority
+                        />
                     </span>
                     <span className="font-semibold tracking-wide text-zinc-900 group-hover:text-zinc-700 transition-colors">
                         StealthGive

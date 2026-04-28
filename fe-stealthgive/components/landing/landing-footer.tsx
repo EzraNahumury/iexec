@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const navLinks = [
@@ -19,8 +20,14 @@ export function LandingFooter() {
         <footer className="border-t border-zinc-200">
             <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-3 gap-10 items-start">
                 <Link href="/" className="inline-flex items-center gap-2.5">
-                    <span className="size-8 rounded-full bg-zinc-900 text-white inline-flex items-center justify-center text-sm">
-                        🦑
+                    <span className="size-9 inline-flex items-center justify-center overflow-hidden">
+                        <Image
+                            src="/logo-new.png"
+                            alt="StealthGive logo"
+                            width={36}
+                            height={36}
+                            className="size-full object-contain"
+                        />
                     </span>
                     <span className="font-semibold tracking-wide uppercase text-sm">StealthGive</span>
                 </Link>

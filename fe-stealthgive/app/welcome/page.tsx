@@ -1,6 +1,7 @@
 "use client";
 
 import {ArrowRight, Coins, Heart, Plus} from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import {useState} from "react";
 import {motion, AnimatePresence} from "framer-motion";
@@ -99,8 +100,15 @@ export default function WelcomePage() {
                     transition={{duration: 0.5, ease: [0.22, 0.61, 0.36, 1]}}
                     className="flex justify-center mb-7"
                 >
-                    <div className="size-14 rounded-full bg-zinc-900 text-white inline-flex items-center justify-center text-2xl shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
-                        🦑
+                    <div className="size-16 inline-flex items-center justify-center overflow-hidden">
+                        <Image
+                            src="/logo-new.png"
+                            alt="StealthGive logo"
+                            width={64}
+                            height={64}
+                            className="size-full object-contain"
+                            priority
+                        />
                     </div>
                 </motion.div>
 
