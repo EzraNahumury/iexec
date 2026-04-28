@@ -181,10 +181,10 @@ export default function WelcomePage() {
                                             stiffness: 280,
                                             damping: 22,
                                         }}
-                                        className={`size-16 md:size-20 rounded-full inline-flex items-center justify-center transition-colors ${
+                                        className={`size-16 md:size-20 rounded-full inline-flex items-center justify-center transition-all ${
                                             isActive
-                                                ? "bg-zinc-900 text-white shadow-xl"
-                                                : "bg-white border border-zinc-200 text-zinc-400 hover:text-zinc-700 hover:border-zinc-400"
+                                                ? "bg-zinc-900 text-white shadow-[0_12px_32px_-8px_rgba(0,0,0,0.45)] ring-2 ring-zinc-900/15"
+                                                : "bg-white border-2 border-zinc-300 text-zinc-600 hover:text-zinc-900 hover:border-zinc-900 shadow-[0_8px_20px_-8px_rgba(0,0,0,0.18)] hover:shadow-[0_12px_28px_-8px_rgba(0,0,0,0.25)]"
                                         }`}
                                         aria-label={p.eyebrow}
                                     >
