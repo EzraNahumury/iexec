@@ -306,7 +306,8 @@ export default function DashboardPage() {
                         <DotPatternDark />
                         <div className="absolute -bottom-12 -right-12 size-48 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
 
-                        <div className="flex items-center justify-between mb-6 relative">
+                        <div className="relative z-10">
+                        <div className="flex items-center justify-between mb-6">
                             <div className="inline-flex items-center gap-2">
                                 <div className="size-9 rounded-xl bg-white/10 backdrop-blur border border-white/15 flex items-center justify-center">
                                     <Lock className="size-4" />
@@ -436,6 +437,7 @@ export default function DashboardPage() {
                                 {(cSGDHandle as string).slice(0, 28)}…
                             </p>
                         )}
+                        </div>
                     </motion.section>
                 </div>
 
