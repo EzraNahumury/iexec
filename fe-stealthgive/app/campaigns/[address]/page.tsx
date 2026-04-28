@@ -31,6 +31,7 @@ import {loadHeroImage} from "@/lib/hero-image";
 import Image from "next/image";
 import {campaignAbi, confidentialSGDAbi} from "@/lib/abis";
 import {addresses} from "@/lib/addresses";
+import {withCorrectedClock} from "@/lib/clock";
 import {arbSepoliaGas} from "@/lib/gas";
 import {parseMetadataURI} from "@/lib/metadata";
 import {friendlyAuthError, isAuthError, useHandleClient} from "@/lib/nox";
@@ -142,12 +143,16 @@ export default function CampaignDetailPage({
 
             let encrypted;
             try {
-                encrypted = await handleClient.encryptInput(amount, "uint256", campaignAddress);
+                encrypted = await withCorrectedClock(() =>
+                    handleClient.encryptInput(amount, "uint256", campaignAddress),
+                );
             } catch (err) {
                 if (isAuthError(err)) {
                     const fresh = await refreshHandleClient();
                     if (!fresh) throw err;
-                    encrypted = await fresh.encryptInput(amount, "uint256", campaignAddress);
+                    encrypted = await withCorrectedClock(() =>
+                        fresh.encryptInput(amount, "uint256", campaignAddress),
+                    );
                 } else {
                     throw err;
                 }

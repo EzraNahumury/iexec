@@ -26,6 +26,7 @@ import {arbitrumSepolia} from "wagmi/chains";
 
 import {confidentialSGDAbi, stealthGiveDollarAbi} from "@/lib/abis";
 import {addresses} from "@/lib/addresses";
+import {withCorrectedClock} from "@/lib/clock";
 import {formatSGD, shortAddress} from "@/lib/format";
 import {arbSepoliaGas} from "@/lib/gas";
 import {friendlyAuthError, isAuthError, useHandleClient} from "@/lib/nox";
@@ -87,14 +88,18 @@ export default function DashboardPage() {
         setDecryptError(null);
         setAuthExpired(false);
         try {
-            const res = await handleClient.decrypt(cSGDHandle as `0x${string}`);
+            const res = await withCorrectedClock(() =>
+                handleClient.decrypt(cSGDHandle as `0x${string}`),
+            );
             setDecrypted(res.value as bigint);
         } catch (err) {
             if (isAuthError(err)) {
                 try {
                     const fresh = await refreshHandleClient();
                     if (!fresh) throw err;
-                    const res = await fresh.decrypt(cSGDHandle as `0x${string}`);
+                    const res = await withCorrectedClock(() =>
+                        fresh.decrypt(cSGDHandle as `0x${string}`),
+                    );
                     setDecrypted(res.value as bigint);
                     return;
                 } catch (retryErr) {

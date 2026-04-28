@@ -3,6 +3,7 @@
 import {Lock, RefreshCw, Sparkles} from "lucide-react";
 import {useCallback, useEffect, useRef, useState} from "react";
 
+import {withCorrectedClock} from "@/lib/clock";
 import {formatPercent, formatSGD} from "@/lib/format";
 import {friendlyAuthError, isAuthError, useHandleClient} from "@/lib/nox";
 
@@ -42,12 +43,16 @@ export function TotalRaised({encryptedTotal, goal, autoLoad = true, onReveal}: P
             try {
                 let res;
                 try {
-                    res = await handleClient.publicDecrypt(encryptedTotal as `0x${string}`);
+                    res = await withCorrectedClock(() =>
+                        handleClient.publicDecrypt(encryptedTotal as `0x${string}`),
+                    );
                 } catch (err) {
                     if (isAuthError(err)) {
                         const fresh = await refreshHandleClient();
                         if (!fresh) throw err;
-                        res = await fresh.publicDecrypt(encryptedTotal as `0x${string}`);
+                        res = await withCorrectedClock(() =>
+                            fresh.publicDecrypt(encryptedTotal as `0x${string}`),
+                        );
                     } else {
                         throw err;
                     }
