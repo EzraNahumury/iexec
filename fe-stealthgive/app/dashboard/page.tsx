@@ -24,6 +24,7 @@ import {
 } from "wagmi";
 import {arbitrumSepolia} from "wagmi/chains";
 
+import {ClockSkewBanner} from "@/components/clock-skew-banner";
 import {confidentialSGDAbi, stealthGiveDollarAbi} from "@/lib/abis";
 import {addresses} from "@/lib/addresses";
 import {withCorrectedClock} from "@/lib/clock";
@@ -241,6 +242,8 @@ export default function DashboardPage() {
                     </div>
                     <p className="text-zinc-500 mt-3 font-mono text-sm">{shortAddress(address, 8, 6)}</p>
                 </motion.header>
+
+                <ClockSkewBanner />
 
                 {/* Two-card stat row */}
                 <div className="grid md:grid-cols-2 gap-5">
